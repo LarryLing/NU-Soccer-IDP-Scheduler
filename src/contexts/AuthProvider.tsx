@@ -112,7 +112,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
           email: user.email ?? "",
         });
       } catch (error) {
-        console.error("Error requesting password reset:", error);
+        console.error("Error loading user:", error);
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -145,7 +145,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   return (
     <AuthContext.Provider value={value}>
-      {isLoading && children}
+      {isLoading ? <div>Loading...</div> : children}
     </AuthContext.Provider>
   );
 }

@@ -10,8 +10,8 @@ const router = createRouter({
   routeTree,
   context: {
     auth: undefined!,
-  }
- });
+  },
+});
 
 declare module "@tanstack/react-router" {
   interface Register {
@@ -29,7 +29,7 @@ function App() {
     <AuthProvider>
       <InnerApp />
     </AuthProvider>
-  )
+  );
 }
 
 const rootElement = document.getElementById("root")!;
