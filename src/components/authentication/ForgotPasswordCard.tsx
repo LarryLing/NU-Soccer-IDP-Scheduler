@@ -21,10 +21,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useState } from "react";
+import ErrorAlert from "./ErrorAlert.tsx";
+import SuccessAlert from "./SuccessAlert.tsx";
 
 type FormSchema = z.infer<typeof ForgotPasswordFormSchema>;
 
 export default function ForgotPasswordCard() {
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const { requestPasswordReset } = useAuth();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(ForgotPasswordFormSchema),
     mode: "onSubmit",
@@ -38,7 +47,15 @@ export default function ForgotPasswordCard() {
   } = form;
 
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
-    console.log(data);
+    try {
+      const { email } = data;
+      await requestPasswordReset(email);
+      setSuccess("Check your email for a reset link.");
+      setError(null);
+    } catch {
+      setError("Failed to send reset link. Please try again.");
+      setSuccess(null);
+    }
   };
 
   return (
@@ -52,6 +69,8 @@ export default function ForgotPasswordCard() {
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 mb-6">
+            {error && <ErrorAlert message={error} />}
+            {success && <SuccessAlert message={success} />}
             <FormField
               control={control}
               name="email"
@@ -60,7 +79,6 @@ export default function ForgotPasswordCard() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      type="email"
                       placeholder="Enter your email"
                       {...field}
                     />

@@ -2,7 +2,7 @@ import { ResetPasswordFormSchema } from "../../lib/schemas.ts";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,10 +21,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useState } from "react";
+import ErrorAlert from "./ErrorAlert.tsx";
 
 type FormSchema = z.infer<typeof ResetPasswordFormSchema>;
 
 export default function ResetPasswordCard() {
+  const [error, setError] = useState<string | null>(null);
+
+  const { resetPassword } = useAuth();
+
+  const navigate = useNavigate();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(ResetPasswordFormSchema),
     mode: "onSubmit",
@@ -38,18 +47,26 @@ export default function ResetPasswordCard() {
   } = form;
 
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
-    console.log(data);
+    try {
+      const { password } = data;
+      await resetPassword(password);
+
+      navigate({ to: "/login", replace: true });
+    } catch {
+      setError("Failed to reset password. Please try again.");
+    }
   };
 
   return (
     <Card className="w-[400px]">
       <CardHeader>
         <CardTitle>Reset Password</CardTitle>
-        <CardDescription>Enter your new password below.</CardDescription>
+        <CardDescription>After resetting your password, you will be asked to login again.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 mb-6">
+            {error && <ErrorAlert message={error} />}
             <FormField
               control={control}
               name="password"
@@ -60,6 +77,23 @@ export default function ResetPasswordCard() {
                     <Input
                       type="password"
                       placeholder="Enter your password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Confirm your password"
                       {...field}
                     />
                   </FormControl>

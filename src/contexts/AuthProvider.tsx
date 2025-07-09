@@ -32,8 +32,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
         email: user.email ?? "",
       });
     } catch (error) {
-      console.error("Login error:", error);
-      setUser(null);
+      console.error("Error signing up:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -57,8 +57,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
         id: user.id,
         email: user.email ?? "",
       });
-    } catch {
-      setUser(null);
+    } catch (error) {
+      console.error("Error logging in:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -80,10 +81,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
       }
     } catch (error) {
       console.error("Error requesting password reset:", error);
+      throw error;
     }
   }, []);
 
-  const updatePassword = useCallback(async (password: string) => {
+  const resetPassword = useCallback(async (password: string) => {
     try {
       const { error } = await supabase.auth.updateUser({ password });
 
@@ -91,7 +93,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
         throw error;
       }
     } catch (error) {
-      console.error("Error updating password:", error);
+      console.error("Error resetting password:", error);
+      throw error;
     }
   }, []);
 
@@ -130,7 +133,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       login,
       logout,
       requestPasswordReset,
-      updatePassword,
+      resetPassword,
     }),
     [
       user,
@@ -139,7 +142,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       login,
       logout,
       requestPasswordReset,
-      updatePassword,
+      resetPassword,
     ],
   );
 

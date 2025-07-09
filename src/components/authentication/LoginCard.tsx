@@ -2,7 +2,7 @@ import { LoginFormSchema } from "../../lib/schemas.ts";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,10 +21,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useState } from "react";
+import ErrorAlert from "./ErrorAlert.tsx";
 
 type FormSchema = z.infer<typeof LoginFormSchema>;
 
 export default function LoginCard() {
+  const [error, setError] = useState<string | null>(null);
+
+  const { login } = useAuth();
+
+  const navigate = useNavigate();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(LoginFormSchema),
     mode: "onSubmit",
@@ -38,7 +47,13 @@ export default function LoginCard() {
   } = form;
 
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
-    console.log(data);
+    try {
+      const { email, password } = data;
+      await login(email, password);
+      navigate({ to: "/", replace: true });
+    } catch {
+      setError("Invalid email or password. Please try again.");
+    }
   };
 
   return (
@@ -52,6 +67,7 @@ export default function LoginCard() {
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 mb-6">
+            {error && <ErrorAlert message={error} />}
             <FormField
               control={control}
               name="email"
@@ -60,7 +76,6 @@ export default function LoginCard() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      type="email"
                       placeholder="Enter your email"
                       {...field}
                     />

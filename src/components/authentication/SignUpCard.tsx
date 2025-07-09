@@ -21,10 +21,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useState } from "react";
+import ErrorAlert from "./ErrorAlert.tsx";
+import SuccessAlert from "./SuccessAlert.tsx";
 
 type FormSchema = z.infer<typeof SignupFormSchema>;
 
 export default function SignUpCard() {
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const { signup } = useAuth();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(SignupFormSchema),
     mode: "onSubmit",
@@ -38,7 +47,15 @@ export default function SignUpCard() {
   } = form;
 
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
-    console.log(data);
+    try {
+      const { email, password } = data;
+      await signup(email, password);
+      setSuccess("Account created successfully. Please verify your email.");
+      setError(null);
+    } catch{
+      setError("Failed to create account. Please try again.");
+      setSuccess(null);
+    }
   };
 
   return (
@@ -52,6 +69,8 @@ export default function SignUpCard() {
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 mb-6">
+            {error && <ErrorAlert message={error} />}
+            {success && <SuccessAlert message={success} />}
             <FormField
               control={control}
               name="email"
@@ -60,7 +79,6 @@ export default function SignUpCard() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      type="email"
                       placeholder="Enter your email"
                       {...field}
                     />
