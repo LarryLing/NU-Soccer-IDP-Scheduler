@@ -1,8 +1,8 @@
-import { LoginFormSchema } from "../../lib/schemas.ts";
+import { SignupFormSchema } from "../../lib/schemas.ts";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,19 +23,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
 import { useState } from "react";
-import ErrorAlert from "./ErrorAlert.tsx";
+import ErrorAlert from "@/components/authentication/error-alert.tsx";
+import SuccessAlert from "@/components/authentication/success-alert.tsx";
 
-type FormSchema = z.infer<typeof LoginFormSchema>;
+type FormSchema = z.infer<typeof SignupFormSchema>;
 
-export default function LoginCard() {
+export default function SignUpCard() {
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  const { login } = useAuth();
-
-  const navigate = useNavigate();
+  const { signup } = useAuth();
 
   const form = useForm<FormSchema>({
-    resolver: zodResolver(LoginFormSchema),
+    resolver: zodResolver(SignupFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
   });
@@ -49,25 +49,28 @@ export default function LoginCard() {
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
     try {
       const { email, password } = data;
-      await login(email, password);
-      navigate({ to: "/", replace: true });
+      await signup(email, password);
+      setSuccess("Account created successfully. Please verify your email.");
+      setError(null);
     } catch {
-      setError("Invalid email or password. Please try again.");
+      setError("Failed to create account. Please try again.");
+      setSuccess(null);
     }
   };
 
   return (
     <Card className="w-[400px]">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
+        <CardTitle>Sign Up</CardTitle>
         <CardDescription>
-          Enter your email and password below to login.
+          Enter your email and password below to create an account.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 mb-6">
             {error && <ErrorAlert message={error} />}
+            {success && <SuccessAlert message={success} />}
             <FormField
               control={control}
               name="email"
@@ -75,10 +78,7 @@ export default function LoginCard() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter your email"
-                      {...field}
-                    />
+                    <Input placeholder="Enter your email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -89,14 +89,7 @@ export default function LoginCard() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Password</FormLabel>
-                    <Link to="/forgot-password">
-                      <p className="text-sm text-primary hover:underline">
-                        Forgot Password?
-                      </p>
-                    </Link>
-                  </div>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
@@ -108,18 +101,35 @@ export default function LoginCard() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Confirm your password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
           <CardFooter className="flex flex-row-reverse gap-4">
             <Button type="submit" disabled={isSubmitting || isValidating}>
-              Login
+              Sign Up
             </Button>
-            <Link to="/signup">
+            <Link to="/login">
               <Button
                 type="button"
                 variant="secondary"
                 disabled={isSubmitting || isValidating}
               >
-                Sign Up
+                Go Back
               </Button>
             </Link>
           </CardFooter>

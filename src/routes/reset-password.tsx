@@ -1,4 +1,4 @@
-import ResetPasswordCard from "@/components/authentication/ResetPasswordCard";
+import ResetPasswordCard from "@/components/authentication/reset-password-card";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/reset-password")({

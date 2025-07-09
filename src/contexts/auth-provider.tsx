@@ -6,8 +6,8 @@ import {
   useState,
 } from "react";
 import type { UserData } from "../lib/types.ts";
-import { AuthContext } from "./AuthContext.tsx";
 import supabase from "@/services/supabase.ts";
+import { AuthContext } from "@/contexts/auth-context.tsx";
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<UserData | null>(null);

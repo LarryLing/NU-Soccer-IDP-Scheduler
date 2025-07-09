@@ -1,4 +1,4 @@
-import { SignupFormSchema } from "../../lib/schemas.ts";
+import { ForgotPasswordFormSchema } from "../../lib/schemas.ts";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,19 +23,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
 import { useState } from "react";
-import ErrorAlert from "./ErrorAlert.tsx";
-import SuccessAlert from "./SuccessAlert.tsx";
+import ErrorAlert from "@/components/authentication/error-alert.tsx";
+import SuccessAlert from "@/components/authentication/success-alert.tsx";
 
-type FormSchema = z.infer<typeof SignupFormSchema>;
+type FormSchema = z.infer<typeof ForgotPasswordFormSchema>;
 
-export default function SignUpCard() {
+export default function ForgotPasswordCard() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const { signup } = useAuth();
+  const { requestPasswordReset } = useAuth();
 
   const form = useForm<FormSchema>({
-    resolver: zodResolver(SignupFormSchema),
+    resolver: zodResolver(ForgotPasswordFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
   });
@@ -48,12 +48,12 @@ export default function SignUpCard() {
 
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
     try {
-      const { email, password } = data;
-      await signup(email, password);
-      setSuccess("Account created successfully. Please verify your email.");
+      const { email } = data;
+      await requestPasswordReset(email);
+      setSuccess("Check your email for a reset link.");
       setError(null);
-    } catch{
-      setError("Failed to create account. Please try again.");
+    } catch {
+      setError("Failed to send reset link. Please try again.");
       setSuccess(null);
     }
   };
@@ -61,9 +61,9 @@ export default function SignUpCard() {
   return (
     <Card className="w-[400px]">
       <CardHeader>
-        <CardTitle>Sign Up</CardTitle>
+        <CardTitle>Forgot Password</CardTitle>
         <CardDescription>
-          Enter your email and password below to create an account.
+          Enter your email address below to reset your password.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -78,44 +78,7 @@ export default function SignUpCard() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter your email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Confirm your password"
-                      {...field}
-                    />
+                    <Input placeholder="Enter your email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -124,7 +87,7 @@ export default function SignUpCard() {
           </CardContent>
           <CardFooter className="flex flex-row-reverse gap-4">
             <Button type="submit" disabled={isSubmitting || isValidating}>
-              Sign Up
+              Send Reset Link
             </Button>
             <Link to="/login">
               <Button

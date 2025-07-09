@@ -8,11 +8,11 @@ type ErrorAlertProps = {
 export default function ErrorAlert({ message }: ErrorAlertProps) {
   return (
     <Alert variant="destructive" className="mb-4">
-        <AlertCircleIcon />
-        <AlertTitle>Something went wrong...</AlertTitle>
-        <AlertDescription>
-          <p>{message}</p>
-        </AlertDescription>
-      </Alert>
+      <AlertCircleIcon />
+      <AlertTitle>Something went wrong...</AlertTitle>
+      <AlertDescription>
+        <p>{message}</p>
+      </AlertDescription>
+    </Alert>
   );
 }

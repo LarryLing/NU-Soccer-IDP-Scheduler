@@ -1,8 +1,8 @@
-import { ForgotPasswordFormSchema } from "../../lib/schemas.ts";
+import { LoginFormSchema } from "../../lib/schemas.ts";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,19 +23,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
 import { useState } from "react";
-import ErrorAlert from "./ErrorAlert.tsx";
-import SuccessAlert from "./SuccessAlert.tsx";
+import ErrorAlert from "@/components/authentication/error-alert.tsx";
 
-type FormSchema = z.infer<typeof ForgotPasswordFormSchema>;
+type FormSchema = z.infer<typeof LoginFormSchema>;
 
-export default function ForgotPasswordCard() {
+export default function LoginCard() {
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
-  const { requestPasswordReset } = useAuth();
+  const { login } = useAuth();
+
+  const navigate = useNavigate();
 
   const form = useForm<FormSchema>({
-    resolver: zodResolver(ForgotPasswordFormSchema),
+    resolver: zodResolver(LoginFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
   });
@@ -48,29 +48,26 @@ export default function ForgotPasswordCard() {
 
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
     try {
-      const { email } = data;
-      await requestPasswordReset(email);
-      setSuccess("Check your email for a reset link.");
-      setError(null);
+      const { email, password } = data;
+      await login(email, password);
+      navigate({ to: "/", replace: true });
     } catch {
-      setError("Failed to send reset link. Please try again.");
-      setSuccess(null);
+      setError("Invalid email or password. Please try again.");
     }
   };
 
   return (
     <Card className="w-[400px]">
       <CardHeader>
-        <CardTitle>Forgot Password</CardTitle>
+        <CardTitle>Login</CardTitle>
         <CardDescription>
-          Enter your email address below to reset your password.
+          Enter your email and password below to login.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 mb-6">
             {error && <ErrorAlert message={error} />}
-            {success && <SuccessAlert message={success} />}
             <FormField
               control={control}
               name="email"
@@ -78,8 +75,29 @@ export default function ForgotPasswordCard() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
+                    <Input placeholder="Enter your email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Password</FormLabel>
+                    <Link to="/forgot-password">
+                      <p className="text-sm text-primary hover:underline">
+                        Forgot Password?
+                      </p>
+                    </Link>
+                  </div>
+                  <FormControl>
                     <Input
-                      placeholder="Enter your email"
+                      type="password"
+                      placeholder="Enter your password"
                       {...field}
                     />
                   </FormControl>
@@ -90,15 +108,15 @@ export default function ForgotPasswordCard() {
           </CardContent>
           <CardFooter className="flex flex-row-reverse gap-4">
             <Button type="submit" disabled={isSubmitting || isValidating}>
-              Send Reset Link
+              Login
             </Button>
-            <Link to="/login">
+            <Link to="/signup">
               <Button
                 type="button"
                 variant="secondary"
                 disabled={isSubmitting || isValidating}
               >
-                Go Back
+                Sign Up
               </Button>
             </Link>
           </CardFooter>

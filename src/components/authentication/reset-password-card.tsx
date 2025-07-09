@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
 import { useState } from "react";
-import ErrorAlert from "./ErrorAlert.tsx";
+import ErrorAlert from "@/components/authentication/error-alert.tsx";
 
 type FormSchema = z.infer<typeof ResetPasswordFormSchema>;
 
@@ -61,7 +61,9 @@ export default function ResetPasswordCard() {
     <Card className="w-[400px]">
       <CardHeader>
         <CardTitle>Reset Password</CardTitle>
-        <CardDescription>After resetting your password, you will be asked to login again.</CardDescription>
+        <CardDescription>
+          After resetting your password, you will be asked to login again.
+        </CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>

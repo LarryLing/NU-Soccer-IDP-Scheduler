@@ -1,4 +1,4 @@
-import LoginCard from "@/components/authentication/LoginCard";
+import LoginCard from "@/components/authentication/login-card";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/login")({
