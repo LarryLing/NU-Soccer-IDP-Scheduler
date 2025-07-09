@@ -47,9 +47,9 @@ export default function ResetPasswordCard() {
         <CardTitle>Reset Password</CardTitle>
         <CardDescription>Enter your new password below.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4 mb-6">
             <FormField
               control={control}
               name="password"
@@ -67,23 +67,23 @@ export default function ResetPasswordCard() {
                 </FormItem>
               )}
             />
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="flex flex-row-reverse gap-4">
-        <Button type="submit" disabled={isSubmitting || isValidating}>
-          Reset Password
-        </Button>
-        <Link to="/login">
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={isSubmitting || isValidating}
-          >
-            Go Back
-          </Button>
-        </Link>
-      </CardFooter>
+          </CardContent>
+          <CardFooter className="flex flex-row-reverse gap-4">
+            <Button type="submit" disabled={isSubmitting || isValidating}>
+              Reset Password
+            </Button>
+            <Link to="/login">
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={isSubmitting || isValidating}
+              >
+                Go Back
+              </Button>
+            </Link>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   );
 }

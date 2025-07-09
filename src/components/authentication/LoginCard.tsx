@@ -49,9 +49,9 @@ export default function LoginCard() {
           Enter your email and password below to login.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4 mb-6">
             <FormField
               control={control}
               name="email"
@@ -74,7 +74,14 @@ export default function LoginCard() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Password</FormLabel>
+                    <Link to="/forgot-password">
+                      <p className="text-sm text-primary hover:underline">
+                        Forgot Password?
+                      </p>
+                    </Link>
+                  </div>
                   <FormControl>
                     <Input
                       type="password"
@@ -86,23 +93,23 @@ export default function LoginCard() {
                 </FormItem>
               )}
             />
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="flex flex-row-reverse gap-4">
-        <Button type="submit" disabled={isSubmitting || isValidating}>
-          Login
-        </Button>
-        <Link to="/signup">
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={isSubmitting || isValidating}
-          >
-            Sign Up
-          </Button>
-        </Link>
-      </CardFooter>
+          </CardContent>
+          <CardFooter className="flex flex-row-reverse gap-4">
+            <Button type="submit" disabled={isSubmitting || isValidating}>
+              Login
+            </Button>
+            <Link to="/signup">
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={isSubmitting || isValidating}
+              >
+                Sign Up
+              </Button>
+            </Link>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   );
 }

@@ -49,9 +49,9 @@ export default function ForgotPasswordCard() {
           Enter your email address below to reset your password.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4 mb-6">
             <FormField
               control={control}
               name="email"
@@ -69,23 +69,23 @@ export default function ForgotPasswordCard() {
                 </FormItem>
               )}
             />
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="flex flex-row-reverse gap-4">
-        <Button type="submit" disabled={isSubmitting || isValidating}>
-          Send Reset Link
-        </Button>
-        <Link to="/login">
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={isSubmitting || isValidating}
-          >
-            Go Back
-          </Button>
-        </Link>
-      </CardFooter>
+          </CardContent>
+          <CardFooter className="flex flex-row-reverse gap-4">
+            <Button type="submit" disabled={isSubmitting || isValidating}>
+              Send Reset Link
+            </Button>
+            <Link to="/login">
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={isSubmitting || isValidating}
+              >
+                Go Back
+              </Button>
+            </Link>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   );
 }
