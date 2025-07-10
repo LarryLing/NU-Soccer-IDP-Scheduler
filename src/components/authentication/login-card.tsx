@@ -22,13 +22,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
-import { useState } from "react";
 import ErrorAlert from "@/components/authentication/error-alert.tsx";
+import { useState } from "react";
 
 type FormSchema = z.infer<typeof LoginFormSchema>;
 
 export default function LoginCard() {
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>();
 
   const { login } = useAuth();
 
@@ -50,9 +50,10 @@ export default function LoginCard() {
     try {
       const { email, password } = data;
       await login(email, password);
-      navigate({ to: "/", replace: true });
-    } catch {
-      setError("Invalid email or password. Please try again.");
+      navigate({ to: "/" });
+    } catch (error) {
+      console.error("Error logging in:", error);
+      setError("Incorrect email or password. Please try again.");
     }
   };
 

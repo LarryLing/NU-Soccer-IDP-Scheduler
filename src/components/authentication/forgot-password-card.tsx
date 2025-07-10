@@ -22,15 +22,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
-import { useState } from "react";
 import ErrorAlert from "@/components/authentication/error-alert.tsx";
 import SuccessAlert from "@/components/authentication/success-alert.tsx";
+import { useState } from "react";
 
 type FormSchema = z.infer<typeof ForgotPasswordFormSchema>;
 
 export default function ForgotPasswordCard() {
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>();
+  const [error, setError] = useState<string | null>();
 
   const { requestPasswordReset } = useAuth();
 
@@ -50,11 +50,10 @@ export default function ForgotPasswordCard() {
     try {
       const { email } = data;
       await requestPasswordReset(email);
-      setSuccess("Check your email for a reset link.");
-      setError(null);
-    } catch {
-      setError("Failed to send reset link. Please try again.");
-      setSuccess(null);
+      setSuccess("Please check your email for the password reset link.");
+    } catch (error) {
+      console.error("Error requesting password reset:", error);
+      setError("Failed to send a password reset link. Please try again.");
     }
   };
 

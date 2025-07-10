@@ -22,13 +22,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
-import { useState } from "react";
 import ErrorAlert from "@/components/authentication/error-alert.tsx";
+import { useState } from "react";
 
 type FormSchema = z.infer<typeof ResetPasswordFormSchema>;
 
 export default function ResetPasswordCard() {
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>();
 
   const { resetPassword } = useAuth();
 
@@ -50,9 +50,9 @@ export default function ResetPasswordCard() {
     try {
       const { password } = data;
       await resetPassword(password);
-
-      navigate({ to: "/login", replace: true });
-    } catch {
+      navigate({ to: "/login" });
+    } catch (error) {
+      console.error("Error resetting password:", error);
       setError("Failed to reset password. Please try again.");
     }
   };

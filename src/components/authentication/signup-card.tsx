@@ -22,15 +22,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
-import { useState } from "react";
 import ErrorAlert from "@/components/authentication/error-alert.tsx";
 import SuccessAlert from "@/components/authentication/success-alert.tsx";
+import { useState } from "react";
 
 type FormSchema = z.infer<typeof SignupFormSchema>;
 
 export default function SignUpCard() {
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>();
+  const [error, setError] = useState<string | null>();
 
   const { signup } = useAuth();
 
@@ -50,11 +50,10 @@ export default function SignUpCard() {
     try {
       const { email, password } = data;
       await signup(email, password);
-      setSuccess("Account created successfully. Please verify your email.");
-      setError(null);
+      setSuccess("Please verify your email to complete the sign up.");
     } catch {
-      setError("Failed to create account. Please try again.");
-      setSuccess(null);
+      console.error("Error creating account:", error);
+      setError("Failed to sign up. Please try again.");
     }
   };
 

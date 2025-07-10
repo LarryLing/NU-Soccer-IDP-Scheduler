@@ -11,91 +11,44 @@ import { AuthContext } from "@/contexts/auth-context.tsx";
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<UserData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const signup = useCallback(async (email: string, password: string) => {
-    try {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-
-      if (error || !user) {
-        throw error;
-      }
-
-      setUser({
-        id: user.id,
-        email: user.email ?? "",
-      });
-    } catch (error) {
-      console.error("Error signing up:", error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.signUp({ email, password });
+    if (error || !user) throw error;
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    try {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error || !user) {
-        throw error;
-      }
-
-      setUser({
-        id: user.id,
-        email: user.email ?? "",
-      });
-    } catch (error) {
-      console.error("Error logging in:", error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.signInWithPassword({ email, password });
+    if (error || !user) throw error;
+    setUser({
+      id: user.id,
+      email: user.email ?? "",
+    });
   }, []);
 
   const logout = useCallback(async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
     setUser(null);
   }, []);
 
   const requestPasswordReset = useCallback(async (email: string) => {
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${import.meta.env.VITE_APP_URL}/reset-password`,
-      });
-
-      if (error) {
-        throw error;
-      }
-    } catch (error) {
-      console.error("Error requesting password reset:", error);
-      throw error;
-    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${import.meta.env.VITE_APP_URL}/reset-password`,
+    });
+    if (error) throw error;
   }, []);
 
   const resetPassword = useCallback(async (password: string) => {
-    try {
-      const { error } = await supabase.auth.updateUser({ password });
-
-      if (error) {
-        throw error;
-      }
-    } catch (error) {
-      console.error("Error resetting password:", error);
-      throw error;
-    }
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
   }, []);
 
   useEffect(() => {
@@ -105,23 +58,17 @@ export function AuthProvider({ children }: PropsWithChildren) {
           data: { user },
           error,
         } = await supabase.auth.getUser();
-
-        if (error || !user) {
-          throw error;
-        }
-
+        if (error || !user) throw error;
         setUser({
           id: user.id,
           email: user.email ?? "",
         });
-      } catch (error) {
-        console.error("Error loading user:", error);
+      } catch {
         setUser(null);
       } finally {
         setIsLoading(false);
       }
     };
-
     loadUser();
   }, []);
 
