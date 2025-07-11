@@ -26,6 +26,7 @@ function Index() {
     setIsPlayerSheetOpen,
     handleOpenPlayerSheet,
     form,
+    fieldArray,
     playerMetadata,
   } = usePlayerSheet();
 
@@ -64,6 +65,7 @@ function Index() {
         isPlayerSheetOpen={isPlayerSheetOpen}
         setIsPlayerSheetOpen={setIsPlayerSheetOpen}
         form={form}
+        fieldArray={fieldArray}
         playerMetadata={playerMetadata}
         insertPlayer={insertPlayer}
         updatePlayer={updatePlayer}

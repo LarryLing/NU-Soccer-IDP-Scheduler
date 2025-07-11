@@ -1,7 +1,7 @@
 import type { Availability, Player, PlayerMetadata } from "@/lib/types";
 import { useCallback, useState } from "react";
 import type z from "zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { PlayerFormSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DEFAULT_PLAYER } from "@/lib/constants";
@@ -21,7 +21,12 @@ export const usePlayerSheet = () => {
     defaultValues: DEFAULT_PLAYER,
   });
 
-  const { reset } = form;
+  const { control, reset } = form;
+
+  const fieldArray = useFieldArray({
+    control,
+    name: "availabilities",
+  });
 
   const handleOpenPlayerSheet = useCallback((player: Player | null) => {
     if (player) {
@@ -43,6 +48,7 @@ export const usePlayerSheet = () => {
     isPlayerSheetOpen,
     setIsPlayerSheetOpen,
     form,
+    fieldArray,
     handleOpenPlayerSheet,
     playerMetadata,
   };

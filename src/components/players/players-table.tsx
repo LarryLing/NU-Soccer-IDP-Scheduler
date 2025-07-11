@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import ActionContextMenu from "./action-context-menu";
+import { ActionContextMenu } from "./action-context-menu";
 
 type PlayersTableProps = {
   table: TanstackTable<Player>;

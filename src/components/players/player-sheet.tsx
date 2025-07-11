@@ -24,12 +24,18 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import type { SubmitHandler, UseFormReturn } from "react-hook-form";
+import type {
+  SubmitHandler,
+  UseFieldArrayReturn,
+  UseFormReturn,
+} from "react-hook-form";
 import type z from "zod";
 import type { PlayerFormSchema } from "@/lib/schemas";
-import { POSITIONS } from "@/lib/constants";
-import type { Player, PlayerMetadata } from "@/lib/types";
+import { DAYS, POSITIONS } from "@/lib/constants";
+import type { Availability, Player, PlayerMetadata } from "@/lib/types";
 import { useAuth } from "@/hooks/useAuth";
+import { parseTime } from "@/lib/utils";
+import AvailabilityDay from "./availability-day";
 
 type FormSchema = z.infer<typeof PlayerFormSchema>;
 
@@ -37,6 +43,7 @@ type PlayerSheetProps = {
   isPlayerSheetOpen: boolean;
   setIsPlayerSheetOpen: (isPlayerSheetOpen: boolean) => void;
   form: UseFormReturn<FormSchema>;
+  fieldArray: UseFieldArrayReturn<FormSchema, "availabilities", "id">;
   playerMetadata: PlayerMetadata | null;
   insertPlayer: (player: Player) => Promise<void>;
   updatePlayer: (player: Player) => Promise<void>;
@@ -46,6 +53,7 @@ export default function PlayerSheet({
   isPlayerSheetOpen,
   setIsPlayerSheetOpen,
   form,
+  fieldArray,
   playerMetadata,
   insertPlayer,
   updatePlayer,
@@ -58,20 +66,34 @@ export default function PlayerSheet({
     formState: { isSubmitting, isValidating },
   } = form;
 
+  const { fields, append, remove } = fieldArray;
+
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
     if (!user) return;
 
+    const sortedAvailabilities: Availability[] = data.availabilities
+      .map((availability) => {
+        return {
+          ...availability,
+          start_int: parseTime(availability.start),
+          end_int: parseTime(availability.end),
+        };
+      })
+      .sort((a, b) => a.start_int - b.start_int);
+
     if (!playerMetadata) {
       await insertPlayer({
+        ...data,
         id: crypto.randomUUID(),
         user_id: user.id,
         training_block_id: null,
-        ...data,
+        availabilities: sortedAvailabilities,
       });
     } else {
       await updatePlayer({
         ...playerMetadata,
         ...data,
+        availabilities: sortedAvailabilities,
       });
     }
 
@@ -80,7 +102,7 @@ export default function PlayerSheet({
 
   return (
     <Sheet open={isPlayerSheetOpen} onOpenChange={setIsPlayerSheetOpen}>
-      <SheetContent>
+      <SheetContent className="overflow-y-scroll">
         <SheetHeader>
           <SheetTitle>
             {playerMetadata ? "Edit Player" : "Add Player"}
@@ -93,7 +115,7 @@ export default function PlayerSheet({
         </SheetHeader>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="space-y-4 px-4 mb-4">
+            <div className="space-y-6 px-4 mb-4">
               <FormField
                 control={control}
                 name="name"
@@ -154,6 +176,21 @@ export default function PlayerSheet({
                   </FormItem>
                 )}
               />
+              {DAYS.map((day) => {
+                const dayFields = fields
+                  .map((field, idx) => ({ ...field, originalIndex: idx }))
+                  .filter((field) => field.day === day);
+                return (
+                  <AvailabilityDay
+                    key={day}
+                    day={day}
+                    dayFields={dayFields}
+                    append={append}
+                    remove={remove}
+                    control={control}
+                  />
+                );
+              })}
             </div>
             <SheetFooter>
               <Button type="submit" disabled={isSubmitting || isValidating}>

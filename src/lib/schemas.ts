@@ -73,31 +73,13 @@ export const ForgotPasswordFormSchema = z.object({
 
 export const AvailabilitySchema = z
   .object({
-    day: z.enum([
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ]),
-    start: z
-      .string()
-      .min(1, {
-        message: "Start time is required",
-      })
-      .regex(/^(1[0-2]|0?[1-9]):([0-5][0-9])([AP]M)$/, {
-        message: "Start time must be in format '9:30AM' or '12:45PM'.",
-      }),
-    end: z
-      .string()
-      .min(1, {
-        message: "End time is required",
-      })
-      .regex(/^(1[0-2]|0?[1-9]):([0-5][0-9])([AP]M)$/, {
-        message: "End time must be in format '9:30AM' or '12:45PM'.",
-      }),
+    day: z.enum(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]),
+    start: z.string().min(1, {
+      message: "Start time is required",
+    }),
+    end: z.string().min(1, {
+      message: "End time is required",
+    }),
   })
   .refine(
     (data) => {

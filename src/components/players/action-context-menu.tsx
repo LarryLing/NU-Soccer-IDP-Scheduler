@@ -14,7 +14,7 @@ type ActionContextMenuProps = {
   deletePlayer: (playerId: string) => Promise<void>;
 } & PropsWithChildren;
 
-export default function ActionContextMenu({
+export function ActionContextMenu({
   children,
   player,
   handleOpenPlayerSheet,
