@@ -1,6 +1,6 @@
 import type { Player, Availability } from "@/lib/types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowDownUpIcon, PencilIcon } from "lucide-react";
+import { ArrowDownUpIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
@@ -86,17 +86,6 @@ export const columns: ColumnDef<Player>[] = [
           {availability.day} {availability.start} - {availability.end}
         </Badge>
       ));
-    },
-  },
-  {
-    id: "edit",
-    header: "Edit",
-    cell: () => {
-      return (
-        <Button variant="ghost" size="icon">
-          <PencilIcon />
-        </Button>
-      );
     },
   },
 ];

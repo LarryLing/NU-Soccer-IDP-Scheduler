@@ -9,13 +9,19 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import ActionContextMenu from "./action-context-menu";
 
 type PlayersTableProps = {
   table: TanstackTable<Player>;
   numColumns: number;
+  deletePlayer: (playerId: string) => Promise<void>;
 };
 
-export function PlayersTable({ table, numColumns }: PlayersTableProps) {
+export function PlayersTable({
+  table,
+  numColumns,
+  deletePlayer,
+}: PlayersTableProps) {
   return (
     <div className="border">
       <Table>
@@ -40,16 +46,25 @@ export function PlayersTable({ table, numColumns }: PlayersTableProps) {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
+              <ActionContextMenu
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                player={row.original}
+                deletePlayer={deletePlayer}
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </ActionContextMenu>
             ))
           ) : (
             <TableRow>

@@ -41,7 +41,11 @@ function Index() {
       </section>
       <section className="sm:px-8 px-4">
         {display === "players" && (
-          <PlayersTable table={table} numColumns={columns.length} />
+          <PlayersTable
+            table={table}
+            numColumns={columns.length}
+            deletePlayer={deletePlayer}
+          />
         )}
       </section>
     </div>
