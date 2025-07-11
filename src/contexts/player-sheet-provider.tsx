@@ -13,8 +13,16 @@ import type {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatTime, parseTime } from "@/lib/utils";
 import { useForm, useFieldArray } from "react-hook-form";
+import { useMemo } from "react";
 
-export default function PlayerSheetProvider({ children }: PropsWithChildren) {
+type PlayerSheetProviderProps = {
+  players: Player[];
+} & PropsWithChildren;
+
+export default function PlayerSheetProvider({
+  children,
+  players,
+}: PlayerSheetProviderProps) {
   const [playerMetadata, setPlayerMetadata] = useState<PlayerMetadata | null>(
     null,
   );
@@ -37,8 +45,10 @@ export default function PlayerSheetProvider({ children }: PropsWithChildren) {
   const { fields, append } = fieldArray;
 
   const openPlayerSheet = useCallback(
-    (player: Player | null) => {
-      if (player) {
+    (playerId: string | null) => {
+      if (playerId) {
+        const player = players.find((player) => player.id === playerId);
+        if (!player) return;
         reset({
           name: player.name,
           number: player.number,
@@ -52,7 +62,7 @@ export default function PlayerSheetProvider({ children }: PropsWithChildren) {
       }
       setIsPlayerSheetOpen(true);
     },
-    [reset],
+    [reset, players],
   );
 
   const addAvailability = useCallback(
@@ -79,15 +89,26 @@ export default function PlayerSheetProvider({ children }: PropsWithChildren) {
     [fields, append],
   );
 
-  const value: PlayerSheetContextType = {
-    playerMetadata,
-    isPlayerSheetOpen,
-    setIsPlayerSheetOpen,
-    form,
-    fieldArray,
-    openPlayerSheet,
-    addAvailability,
-  };
+  const value: PlayerSheetContextType = useMemo(
+    () => ({
+      playerMetadata,
+      isPlayerSheetOpen,
+      setIsPlayerSheetOpen,
+      form,
+      fieldArray,
+      openPlayerSheet,
+      addAvailability,
+    }),
+    [
+      playerMetadata,
+      isPlayerSheetOpen,
+      setIsPlayerSheetOpen,
+      form,
+      fieldArray,
+      openPlayerSheet,
+      addAvailability,
+    ],
+  );
 
   return (
     <PlayerSheetContext.Provider value={value}>

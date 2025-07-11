@@ -14,14 +14,9 @@ import { ActionContextMenu } from "./action-context-menu";
 type PlayersTableProps = {
   table: TanstackTable<Player>;
   numColumns: number;
-  deletePlayer: (playerId: string) => Promise<void>;
 };
 
-export function PlayersTable({
-  table,
-  numColumns,
-  deletePlayer,
-}: PlayersTableProps) {
+export function PlayersTable({ table, numColumns }: PlayersTableProps) {
   return (
     <div className="border">
       <Table>
@@ -46,14 +41,7 @@ export function PlayersTable({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              //TODO: create players context
-              <ActionContextMenu
-                key={row.id}
-                player={row.original}
-                handleDeletePlayer={async () =>
-                  await deletePlayer(row.original.id)
-                }
-              >
+              <ActionContextMenu key={row.id} id={row.original.id}>
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}

@@ -5,11 +5,14 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { useAuth } from "./hooks/useAuth";
 import { AuthProvider } from "./contexts/auth-provider";
+import { usePlayers } from "./hooks/usePlayers";
+import { PlayersProvider } from "./contexts/players-provider";
 
 const router = createRouter({
   routeTree,
   context: {
     auth: undefined!,
+    players: undefined!,
   },
 });
 
@@ -21,13 +24,16 @@ declare module "@tanstack/react-router" {
 
 function InnerApp() {
   const auth = useAuth();
-  return <RouterProvider router={router} context={{ auth }} />;
+  const players = usePlayers();
+  return <RouterProvider router={router} context={{ auth, players }} />;
 }
 
 function App() {
   return (
     <AuthProvider>
-      <InnerApp />
+      <PlayersProvider>
+        <InnerApp />
+      </PlayersProvider>
     </AuthProvider>
   );
 }

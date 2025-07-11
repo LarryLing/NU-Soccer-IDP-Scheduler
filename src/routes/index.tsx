@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { players, insertPlayer, updatePlayer, deletePlayer } = usePlayers();
+  const { players } = usePlayers();
 
   const table = usePlayersTable(players, columns);
 
@@ -30,7 +30,7 @@ function Index() {
     .rows.map((row) => row.original.id);
 
   return (
-    <PlayerSheetProvider>
+    <PlayerSheetProvider players={players}>
       <div className="flex flex-col h-screen gap-y-4">
         <Navbar />
         <section className="sm:px-8 px-4">
@@ -38,20 +38,15 @@ function Index() {
             display={display}
             setDisplay={setDisplay}
             selectedPlayerIds={selectedPlayerIds}
-            deletePlayer={deletePlayer}
             table={table}
           />
         </section>
         <section className="sm:px-8 px-4">
           {display === "players" && (
-            <PlayersTable
-              table={table}
-              numColumns={columns.length}
-              deletePlayer={deletePlayer}
-            />
+            <PlayersTable table={table} numColumns={columns.length} />
           )}
         </section>
-        <PlayerSheet insertPlayer={insertPlayer} updatePlayer={updatePlayer} />
+        <PlayerSheet />
       </div>
     </PlayerSheetProvider>
   );

@@ -25,28 +25,19 @@ import {
   FormMessage,
 } from "../ui/form";
 import type { SubmitHandler } from "react-hook-form";
-import type z from "zod";
-import type { PlayerFormSchema } from "@/lib/schemas";
 import { DAYS, POSITIONS } from "@/lib/constants";
-import type { Availability, Player } from "@/lib/types";
+import type { Availability, PlayerSheetFormSchemaType } from "@/lib/types";
 import { useAuth } from "@/hooks/useAuth";
 import { parseTime } from "@/lib/utils";
 import AvailabilityDay from "./availability-day";
 import { memo } from "react";
 import { usePlayerSheet } from "@/hooks/usePlayerSheet";
+import { usePlayers } from "@/hooks/usePlayers";
 
-type FormSchema = z.infer<typeof PlayerFormSchema>;
-
-type PlayerSheetProps = {
-  insertPlayer: (player: Player) => Promise<void>;
-  updatePlayer: (player: Player) => Promise<void>;
-};
-
-const PlayerSheet = memo(function PlayerSheet({
-  insertPlayer,
-  updatePlayer,
-}: PlayerSheetProps) {
+const PlayerSheet = memo(function PlayerSheet() {
   const { user } = useAuth();
+
+  const { insertPlayer, updatePlayer } = usePlayers();
 
   const {
     isPlayerSheetOpen,
@@ -62,7 +53,7 @@ const PlayerSheet = memo(function PlayerSheet({
     formState: { isSubmitting, isValidating },
   } = form;
 
-  const onSubmit: SubmitHandler<FormSchema> = async (data) => {
+  const onSubmit: SubmitHandler<PlayerSheetFormSchemaType> = async (data) => {
     if (!user) return;
 
     const sortedAvailabilities: Availability[] = data.availabilities

@@ -4,12 +4,12 @@ import { CalendarIcon, PlusIcon, TrashIcon } from "lucide-react";
 import type { Table } from "@tanstack/react-table";
 import type { Player } from "@/lib/types";
 import { usePlayerSheet } from "@/hooks/usePlayerSheet";
+import { usePlayers } from "@/hooks/usePlayers";
 
 type ActionBarProps = {
   display: "players" | "schedule";
   setDisplay: (display: "players" | "schedule") => void;
   selectedPlayerIds: string[];
-  deletePlayer: (playerId: string) => Promise<void>;
   table: Table<Player>;
 };
 
@@ -17,9 +17,10 @@ export default function ActionBar({
   display,
   setDisplay,
   selectedPlayerIds,
-  deletePlayer,
   table,
 }: ActionBarProps) {
+  const { deletePlayer } = usePlayers();
+
   const { openPlayerSheet } = usePlayerSheet();
 
   const handleDeletePlayers = async () => {
@@ -30,6 +31,7 @@ export default function ActionBar({
     const removePlayersPromise = selectedPlayerIds.map((playerId) =>
       deletePlayer(playerId),
     );
+
     await Promise.all(removePlayersPromise);
     table.resetRowSelection();
   };

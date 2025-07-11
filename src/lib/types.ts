@@ -37,6 +37,13 @@ export type AuthContextType = {
   resetPassword: (password: string) => Promise<void>;
 };
 
+export type PlayersContextType = {
+  players: Player[];
+  insertPlayer: (player: Player) => Promise<void>;
+  updatePlayer: (player: Player) => Promise<void>;
+  deletePlayer: (playerId: string) => Promise<void>;
+};
+
 export type PlayerSheetFormSchemaType = z.infer<typeof PlayerFormSchema>;
 
 export type PlayerSheetContextType = {
@@ -49,6 +56,6 @@ export type PlayerSheetContextType = {
     "availabilities",
     "id"
   >;
-  openPlayerSheet: (player: Player | null) => void;
+  openPlayerSheet: (playerId: string | null) => void;
   addAvailability: (day: Days) => void;
 };
