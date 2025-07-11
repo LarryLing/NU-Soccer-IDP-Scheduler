@@ -10,6 +10,7 @@ type ActionBarProps = {
   selectedPlayerIds: string[];
   deletePlayer: (playerId: string) => Promise<void>;
   table: Table<Player>;
+  handleOpenPlayerSheet: (player: Player | null) => void;
 };
 
 export default function ActionBar({
@@ -18,6 +19,7 @@ export default function ActionBar({
   selectedPlayerIds,
   deletePlayer,
   table,
+  handleOpenPlayerSheet,
 }: ActionBarProps) {
   const handleDeletePlayers = async () => {
     const selectedPlayerIds = table
@@ -41,7 +43,7 @@ export default function ActionBar({
             {selectedPlayerIds.length > 1 ? "s" : ""}
           </Button>
         ) : (
-          <Button>
+          <Button onClick={() => handleOpenPlayerSheet(null)}>
             <PlusIcon />
             Add Player
           </Button>

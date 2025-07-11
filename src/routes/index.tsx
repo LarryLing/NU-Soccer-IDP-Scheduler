@@ -1,8 +1,10 @@
 import ActionBar from "@/components/misc/action-bar";
 import Navbar from "@/components/misc/navbar";
 import { columns } from "@/components/players/columns";
+import PlayerSheet from "@/components/players/player-sheet";
 import { PlayersTable } from "@/components/players/players-table";
 import { usePlayers } from "@/hooks/usePlayers";
+import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 import { usePlayersTable } from "@/hooks/usePlayersTable";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
@@ -18,6 +20,13 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { players, deletePlayer } = usePlayers();
+
+  const {
+    isPlayerSheetOpen,
+    setIsPlayerSheetOpen,
+    handleOpenPlayerSheet,
+    playerToEdit,
+  } = usePlayerSheet();
 
   const table = usePlayersTable(players, columns);
 
@@ -37,6 +46,7 @@ function Index() {
           selectedPlayerIds={selectedPlayerIds}
           deletePlayer={deletePlayer}
           table={table}
+          handleOpenPlayerSheet={handleOpenPlayerSheet}
         />
       </section>
       <section className="sm:px-8 px-4">
@@ -45,9 +55,15 @@ function Index() {
             table={table}
             numColumns={columns.length}
             deletePlayer={deletePlayer}
+            handleOpenPlayerSheet={handleOpenPlayerSheet}
           />
         )}
       </section>
+      <PlayerSheet
+        isPlayerSheetOpen={isPlayerSheetOpen}
+        setIsPlayerSheetOpen={setIsPlayerSheetOpen}
+        playerToEdit={playerToEdit}
+      />
     </div>
   );
 }

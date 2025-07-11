@@ -10,19 +10,16 @@ import type { PropsWithChildren } from "react";
 
 type ActionContextMenuProps = {
   player: Player;
+  handleOpenPlayerSheet: (player: Player | null) => void;
   deletePlayer: (playerId: string) => Promise<void>;
 } & PropsWithChildren;
 
 export default function ActionContextMenu({
   children,
   player,
+  handleOpenPlayerSheet,
   deletePlayer,
 }: ActionContextMenuProps) {
-  const handleEditPlayer = async () => {
-    console.log(player);
-    throw new Error("Not implemented");
-  };
-
   const handleDeletePlayer = async () => {
     await deletePlayer(player.id);
   };
@@ -31,7 +28,7 @@ export default function ActionContextMenu({
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={handleEditPlayer}>
+        <ContextMenuItem onClick={() => handleOpenPlayerSheet(player)}>
           <PencilIcon />
           Edit Player
         </ContextMenuItem>
