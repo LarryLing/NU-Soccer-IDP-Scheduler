@@ -24,49 +24,43 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import type {
-  SubmitHandler,
-  UseFieldArrayReturn,
-  UseFormReturn,
-} from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
 import type z from "zod";
 import type { PlayerFormSchema } from "@/lib/schemas";
 import { DAYS, POSITIONS } from "@/lib/constants";
-import type { Availability, Player, PlayerMetadata } from "@/lib/types";
+import type { Availability, Player } from "@/lib/types";
 import { useAuth } from "@/hooks/useAuth";
 import { parseTime } from "@/lib/utils";
 import AvailabilityDay from "./availability-day";
+import { memo } from "react";
+import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 
 type FormSchema = z.infer<typeof PlayerFormSchema>;
 
 type PlayerSheetProps = {
-  isPlayerSheetOpen: boolean;
-  setIsPlayerSheetOpen: (isPlayerSheetOpen: boolean) => void;
-  form: UseFormReturn<FormSchema>;
-  fieldArray: UseFieldArrayReturn<FormSchema, "availabilities", "id">;
-  playerMetadata: PlayerMetadata | null;
   insertPlayer: (player: Player) => Promise<void>;
   updatePlayer: (player: Player) => Promise<void>;
 };
 
-export default function PlayerSheet({
-  isPlayerSheetOpen,
-  setIsPlayerSheetOpen,
-  form,
-  fieldArray,
-  playerMetadata,
+const PlayerSheet = memo(function PlayerSheet({
   insertPlayer,
   updatePlayer,
 }: PlayerSheetProps) {
   const { user } = useAuth();
 
   const {
+    isPlayerSheetOpen,
+    setIsPlayerSheetOpen,
+    form,
+    fieldArray: { fields },
+    playerMetadata,
+  } = usePlayerSheet();
+
+  const {
     handleSubmit,
     control,
     formState: { isSubmitting, isValidating },
   } = form;
-
-  const { fields, append, remove } = fieldArray;
 
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
     if (!user) return;
@@ -181,14 +175,7 @@ export default function PlayerSheet({
                   .map((field, idx) => ({ ...field, originalIndex: idx }))
                   .filter((field) => field.day === day);
                 return (
-                  <AvailabilityDay
-                    key={day}
-                    day={day}
-                    dayFields={dayFields}
-                    append={append}
-                    remove={remove}
-                    control={control}
-                  />
+                  <AvailabilityDay key={day} day={day} dayFields={dayFields} />
                 );
               })}
             </div>
@@ -211,4 +198,6 @@ export default function PlayerSheet({
       </SheetContent>
     </Sheet>
   );
-}
+});
+
+export default PlayerSheet;

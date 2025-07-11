@@ -1,4 +1,7 @@
+import type { UseFieldArrayReturn, UseFormReturn } from "react-hook-form";
 import type { Database } from "../../database.types";
+import type { PlayerFormSchema } from "./schemas";
+import type z from "zod";
 
 export type UserData = {
   id: string;
@@ -32,4 +35,20 @@ export type AuthContextType = {
   logout: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   resetPassword: (password: string) => Promise<void>;
+};
+
+export type PlayerSheetFormSchemaType = z.infer<typeof PlayerFormSchema>;
+
+export type PlayerSheetContextType = {
+  playerMetadata: PlayerMetadata | null;
+  isPlayerSheetOpen: boolean;
+  setIsPlayerSheetOpen: (isPlayerSheetOpen: boolean) => void;
+  form: UseFormReturn<PlayerSheetFormSchemaType>;
+  fieldArray: UseFieldArrayReturn<
+    PlayerSheetFormSchemaType,
+    "availabilities",
+    "id"
+  >;
+  openPlayerSheet: (player: Player | null) => void;
+  addAvailability: (day: Days) => void;
 };

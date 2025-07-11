@@ -3,15 +3,10 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { PlusIcon } from "lucide-react";
 import type { PlayerFormSchema } from "@/lib/schemas";
-import type {
-  Control,
-  FieldArrayWithId,
-  UseFieldArrayAppend,
-  UseFieldArrayRemove,
-} from "react-hook-form";
+import type { FieldArrayWithId } from "react-hook-form";
 import type z from "zod";
 import AvailabilityTimeSlot from "./availability-time-slot";
-import { formatTime, parseTime } from "@/lib/utils";
+import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 
 type FormSchema = z.infer<typeof PlayerFormSchema>;
 
@@ -20,36 +15,16 @@ type AvailabilityDayProps = {
   dayFields: (FieldArrayWithId<FormSchema, "availabilities", "id"> & {
     originalIndex: number;
   })[];
-  append: UseFieldArrayAppend<FormSchema, "availabilities">;
-  remove: UseFieldArrayRemove;
-  control: Control<FormSchema>;
 };
 
 export default function AvailabilityDay({
   day,
   dayFields,
-  append,
-  remove,
-  control,
 }: AvailabilityDayProps) {
+  const { addAvailability } = usePlayerSheet();
+
   const handleAddAvailability = () => {
-    const lastField = dayFields[dayFields.length - 1];
-    if (!lastField) {
-      append({
-        day,
-        start: "08:00",
-        end: "09:00",
-      });
-      return;
-    }
-    const endInt = parseTime(lastField.end);
-    const nextStartInt = Math.min(endInt + 60, 1439);
-    const nextEndInt = Math.min(endInt + 120, 1439);
-    append({
-      day,
-      start: formatTime(nextStartInt),
-      end: formatTime(nextEndInt),
-    });
+    addAvailability(day);
   };
 
   return (
@@ -63,8 +38,6 @@ export default function AvailabilityDay({
             <AvailabilityTimeSlot
               key={field.id}
               originalIndex={field.originalIndex}
-              remove={remove}
-              control={control}
             />
           ))
         )}

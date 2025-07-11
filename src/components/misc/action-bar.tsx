@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { CalendarIcon, PlusIcon, TrashIcon } from "lucide-react";
 import type { Table } from "@tanstack/react-table";
 import type { Player } from "@/lib/types";
+import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 
 type ActionBarProps = {
   display: "players" | "schedule";
@@ -10,7 +11,6 @@ type ActionBarProps = {
   selectedPlayerIds: string[];
   deletePlayer: (playerId: string) => Promise<void>;
   table: Table<Player>;
-  openPlayerSheet: (player: Player | null) => void;
 };
 
 export default function ActionBar({
@@ -19,8 +19,9 @@ export default function ActionBar({
   selectedPlayerIds,
   deletePlayer,
   table,
-  openPlayerSheet,
 }: ActionBarProps) {
+  const { openPlayerSheet } = usePlayerSheet();
+
   const handleDeletePlayers = async () => {
     const selectedPlayerIds = table
       .getFilteredSelectedRowModel()

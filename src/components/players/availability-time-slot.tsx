@@ -1,23 +1,25 @@
-import type { Control, UseFieldArrayRemove } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import type { PlayerFormSchema } from "@/lib/schemas";
-import type z from "zod";
-
-type FormSchema = z.infer<typeof PlayerFormSchema>;
+import { memo } from "react";
+import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 
 type AvailabilityTimeSlotProps = {
   originalIndex: number;
-  remove: UseFieldArrayRemove;
-  control: Control<FormSchema>;
 };
 
-export default function AvailabilityTimeSlot({
-  remove,
+const AvailabilityTimeSlot = memo(function AvailabilityTimeSlot({
   originalIndex,
-  control,
 }: AvailabilityTimeSlotProps) {
+  const {
+    form: { control },
+    fieldArray: { remove },
+  } = usePlayerSheet();
+
+  const handleRemove = () => {
+    remove(originalIndex);
+  };
+
   return (
     <div className="flex items-center gap-2">
       <FormField
@@ -45,13 +47,11 @@ export default function AvailabilityTimeSlot({
           </FormItem>
         )}
       />
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => remove(originalIndex)}
-      >
+      <Button type="button" variant="outline" onClick={handleRemove}>
         Remove
       </Button>
     </div>
   );
-}
+});
+
+export default AvailabilityTimeSlot;

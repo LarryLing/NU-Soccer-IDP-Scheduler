@@ -3,8 +3,8 @@ import Navbar from "@/components/misc/navbar";
 import { columns } from "@/components/players/columns";
 import PlayerSheet from "@/components/players/player-sheet";
 import { PlayersTable } from "@/components/players/players-table";
+import PlayerSheetProvider from "@/contexts/player-sheet-provider";
 import { usePlayers } from "@/hooks/usePlayers";
-import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 import { usePlayersTable } from "@/hooks/usePlayersTable";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
@@ -21,15 +21,6 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { players, insertPlayer, updatePlayer, deletePlayer } = usePlayers();
 
-  const {
-    isPlayerSheetOpen,
-    setIsPlayerSheetOpen,
-    openPlayerSheet,
-    form,
-    fieldArray,
-    playerMetadata,
-  } = usePlayerSheet();
-
   const table = usePlayersTable(players, columns);
 
   const [display, setDisplay] = useState<"players" | "schedule">("players");
@@ -39,37 +30,29 @@ function Index() {
     .rows.map((row) => row.original.id);
 
   return (
-    <div className="flex flex-col h-screen gap-y-4">
-      <Navbar />
-      <section className="sm:px-8 px-4">
-        <ActionBar
-          display={display}
-          setDisplay={setDisplay}
-          selectedPlayerIds={selectedPlayerIds}
-          deletePlayer={deletePlayer}
-          table={table}
-          openPlayerSheet={openPlayerSheet}
-        />
-      </section>
-      <section className="sm:px-8 px-4">
-        {display === "players" && (
-          <PlayersTable
-            table={table}
-            numColumns={columns.length}
+    <PlayerSheetProvider>
+      <div className="flex flex-col h-screen gap-y-4">
+        <Navbar />
+        <section className="sm:px-8 px-4">
+          <ActionBar
+            display={display}
+            setDisplay={setDisplay}
+            selectedPlayerIds={selectedPlayerIds}
             deletePlayer={deletePlayer}
-            openPlayerSheet={openPlayerSheet}
+            table={table}
           />
-        )}
-      </section>
-      <PlayerSheet
-        isPlayerSheetOpen={isPlayerSheetOpen}
-        setIsPlayerSheetOpen={setIsPlayerSheetOpen}
-        form={form}
-        fieldArray={fieldArray}
-        playerMetadata={playerMetadata}
-        insertPlayer={insertPlayer}
-        updatePlayer={updatePlayer}
-      />
-    </div>
+        </section>
+        <section className="sm:px-8 px-4">
+          {display === "players" && (
+            <PlayersTable
+              table={table}
+              numColumns={columns.length}
+              deletePlayer={deletePlayer}
+            />
+          )}
+        </section>
+        <PlayerSheet insertPlayer={insertPlayer} updatePlayer={updatePlayer} />
+      </div>
+    </PlayerSheetProvider>
   );
 }
