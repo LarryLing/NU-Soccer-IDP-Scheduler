@@ -1,21 +1,51 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "../ui/button";
-import { CalendarIcon, PlusIcon } from "lucide-react";
+import { CalendarIcon, PlusIcon, TrashIcon } from "lucide-react";
+import type { Table } from "@tanstack/react-table";
+import type { Player } from "@/lib/types";
 
 type ActionBarProps = {
   display: "players" | "schedule";
   setDisplay: (display: "players" | "schedule") => void;
+  selectedPlayerIds: string[];
+  deletePlayer: (playerId: string) => Promise<void>;
+  table: Table<Player>;
 };
 
-export default function ActionBar({ display, setDisplay }: ActionBarProps) {
+export default function ActionBar({
+  display,
+  setDisplay,
+  selectedPlayerIds,
+  deletePlayer,
+  table,
+}: ActionBarProps) {
+  const handleDeletePlayers = async () => {
+    const selectedPlayerIds = table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original.id);
+
+    const removePlayersPromise = selectedPlayerIds.map((playerId) =>
+      deletePlayer(playerId),
+    );
+    await Promise.all(removePlayersPromise);
+    table.resetRowSelection();
+  };
+
   return (
-    <div className="w-full flex justify-between items-center">
-      {display === "players" && (
-        <Button>
-          <PlusIcon />
-          Add Player
-        </Button>
-      )}
+    <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-y-2">
+      {display === "players" &&
+        (selectedPlayerIds.length > 0 ? (
+          <Button variant="destructive" onClick={handleDeletePlayers}>
+            <TrashIcon />
+            Remove {selectedPlayerIds.length} Player
+            {selectedPlayerIds.length > 1 ? "s" : ""}
+          </Button>
+        ) : (
+          <Button>
+            <PlusIcon />
+            Add Player
+          </Button>
+        ))}
       {display === "schedule" && (
         <Button>
           <CalendarIcon />

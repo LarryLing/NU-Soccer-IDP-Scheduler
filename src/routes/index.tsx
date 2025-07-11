@@ -3,15 +3,8 @@ import Navbar from "@/components/misc/navbar";
 import { columns } from "@/components/players/columns";
 import { PlayersTable } from "@/components/players/players-table";
 import { usePlayers } from "@/hooks/usePlayers";
+import { usePlayersTable } from "@/hooks/usePlayersTable";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import {
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  useReactTable,
-  type ColumnFiltersState,
-  type SortingState,
-} from "@tanstack/react-table";
 import { useState } from "react";
 
 export const Route = createFileRoute("/")({
@@ -24,34 +17,27 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { players } = usePlayers();
+  const { players, deletePlayer } = usePlayers();
 
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowSelection, setRowSelection] = useState({});
+  const table = usePlayersTable(players, columns);
+
   const [display, setDisplay] = useState<"players" | "schedule">("players");
 
-  const table = useReactTable({
-    data: players || [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      rowSelection,
-    },
-  });
+  const selectedPlayerIds = table
+    .getFilteredSelectedRowModel()
+    .rows.map((row) => row.original.id);
 
   return (
     <div className="flex flex-col h-screen gap-y-4">
       <Navbar />
       <section className="sm:px-8 px-4">
-        <ActionBar display={display} setDisplay={setDisplay} />
+        <ActionBar
+          display={display}
+          setDisplay={setDisplay}
+          selectedPlayerIds={selectedPlayerIds}
+          deletePlayer={deletePlayer}
+          table={table}
+        />
       </section>
       <section className="sm:px-8 px-4">
         {display === "players" && (

@@ -9,7 +9,7 @@ export const usePlayers = () => {
 
   const [players, setPlayers] = useState<Player[]>([]);
 
-  const addPlayer = useCallback(async (player: Player) => {
+  const insertPlayer = useCallback(async (player: Player) => {
     const { error } = await supabase.from("players").insert(player);
     if (error) {
       console.error("Error adding player", error);
@@ -104,5 +104,5 @@ export const usePlayers = () => {
     };
   }, [user]);
 
-  return { players, addPlayer, updatePlayer, deletePlayer };
+  return { players, insertPlayer, updatePlayer, deletePlayer };
 };

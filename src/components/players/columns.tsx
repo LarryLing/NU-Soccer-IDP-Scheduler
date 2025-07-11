@@ -1,10 +1,9 @@
 import type { Player, Availability } from "@/lib/types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowDownUpIcon } from "lucide-react";
+import { ArrowDownUpIcon, PencilIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
-import ActionDropdown from "./action-dropdown";
 
 export const columns: ColumnDef<Player>[] = [
   {
@@ -90,10 +89,14 @@ export const columns: ColumnDef<Player>[] = [
     },
   },
   {
-    id: "actions",
-    header: "Actions",
-    cell: ({ table, row }) => {
-      return <ActionDropdown player={row.original} table={table} />;
+    id: "edit",
+    header: "Edit",
+    cell: () => {
+      return (
+        <Button variant="ghost" size="icon">
+          <PencilIcon />
+        </Button>
+      );
     },
   },
 ];
