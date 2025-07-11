@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { EllipsisIcon } from "lucide-react";
+import { EllipsisIcon, PencilIcon, TrashIcon } from "lucide-react";
 
 type ActionDropdownProps = {
   player: Player;
@@ -27,14 +27,20 @@ export default function ActionDropdown({ player, table }: ActionDropdownProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button size="icon" variant="ghost">
-          <EllipsisIcon size={15} />
+          <EllipsisIcon />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center">
-        <DropdownMenuItem onClick={handleEditPlayer}>Edit</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleRemovePlayer}>Delete</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleEditPlayer}>
+          <PencilIcon />
+          Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleRemovePlayer}>
+          <TrashIcon color="red" />
+          Delete
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

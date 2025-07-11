@@ -2,9 +2,7 @@ import ActionBar from "@/components/misc/action-bar";
 import Navbar from "@/components/misc/navbar";
 import { columns } from "@/components/players/columns";
 import { PlayersTable } from "@/components/players/players-table";
-import { useAuth } from "@/hooks/useAuth";
-import { getPlayers } from "@/lib/queries";
-import type { Player } from "@/lib/types";
+import { usePlayers } from "@/hooks/usePlayers";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
   getCoreRowModel,
@@ -14,7 +12,7 @@ import {
   type ColumnFiltersState,
   type SortingState,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   beforeLoad: ({ context }) => {
@@ -26,9 +24,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { user } = useAuth();
+  const { players } = usePlayers();
 
-  const [players, setPlayers] = useState<Player[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
@@ -49,19 +46,6 @@ function Index() {
       rowSelection,
     },
   });
-
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      if (!user) return;
-      try {
-        const players = await getPlayers(user.id);
-        setPlayers(players);
-      } catch {
-        console.error("Error fetching players");
-      }
-    };
-    fetchPlayers();
-  }, [user]);
 
   return (
     <div className="flex flex-col h-screen gap-y-4">
