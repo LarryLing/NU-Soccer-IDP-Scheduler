@@ -2,7 +2,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect, useCallback } from "react";
 import type { Player } from "@/lib/types";
 import supabase from "@/services/supabase";
-import { getPlayers } from "@/lib/queries";
 
 export const usePlayers = () => {
   const { user } = useAuth();
@@ -40,12 +39,13 @@ export const usePlayers = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       if (!user) return;
-      try {
-        const players = await getPlayers(user.id);
-        setPlayers(players);
-      } catch {
-        console.error("Error fetching players");
-      }
+      const { data: players, error } = await supabase
+        .from("players")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("number", { ascending: true });
+      if (error) console.error("Error fetching players");
+      setPlayers(players || []);
     };
     fetchPlayers();
   }, [user]);

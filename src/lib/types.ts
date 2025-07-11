@@ -7,6 +7,11 @@ export type UserData = {
 
 export type Player = Database["public"]["Tables"]["players"]["Row"];
 
+export type PlayerMetadata = Pick<
+  Player,
+  "id" | "user_id" | "training_block_id"
+>;
+
 export type TrainingBlock =
   Database["public"]["Tables"]["training_blocks"]["Row"];
 

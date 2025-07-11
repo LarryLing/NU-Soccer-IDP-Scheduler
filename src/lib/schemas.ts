@@ -109,7 +109,7 @@ export const AvailabilitySchema = z
     },
   );
 
-export const PlayerSchema = z.object({
+export const PlayerFormSchema = z.object({
   name: z
     .string()
     .min(1, {
@@ -118,7 +118,7 @@ export const PlayerSchema = z.object({
     .regex(/^[A-Za-z]+(?:[ '-.][A-Za-z]+)*$/, {
       message: "Name cannot contain special characters.",
     }),
-  number: z
+  number: z.coerce
     .number({ message: "Number is required" })
     .min(0, {
       message: "Number must be greater than or equal to 0.",

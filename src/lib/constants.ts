@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { PlayerSchema } from "./schemas.ts";
+import { PlayerFormSchema } from "./schemas.ts";
 
-export const DEFAULT_PLAYER: z.infer<typeof PlayerSchema> = {
+export const DEFAULT_PLAYER: z.infer<typeof PlayerFormSchema> = {
   name: "",
-  number: 99,
+  number: 0,
   position: "Goalkeeper",
   availabilities: [],
 } as const;

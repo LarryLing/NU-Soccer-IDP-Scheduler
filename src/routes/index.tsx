@@ -19,13 +19,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { players, deletePlayer } = usePlayers();
+  const { players, insertPlayer, updatePlayer, deletePlayer } = usePlayers();
 
   const {
     isPlayerSheetOpen,
     setIsPlayerSheetOpen,
     handleOpenPlayerSheet,
-    playerToEdit,
+    form,
+    playerMetadata,
   } = usePlayerSheet();
 
   const table = usePlayersTable(players, columns);
@@ -62,7 +63,10 @@ function Index() {
       <PlayerSheet
         isPlayerSheetOpen={isPlayerSheetOpen}
         setIsPlayerSheetOpen={setIsPlayerSheetOpen}
-        playerToEdit={playerToEdit}
+        form={form}
+        playerMetadata={playerMetadata}
+        insertPlayer={insertPlayer}
+        updatePlayer={updatePlayer}
       />
     </div>
   );
