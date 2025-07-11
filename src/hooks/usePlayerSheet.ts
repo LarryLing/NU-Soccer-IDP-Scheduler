@@ -28,7 +28,7 @@ export const usePlayerSheet = () => {
     name: "availabilities",
   });
 
-  const handleOpenPlayerSheet = useCallback((player: Player | null) => {
+  const openPlayerSheet = useCallback((player: Player | null) => {
     if (player) {
       reset({
         name: player.name,
@@ -49,7 +49,7 @@ export const usePlayerSheet = () => {
     setIsPlayerSheetOpen,
     form,
     fieldArray,
-    handleOpenPlayerSheet,
+    openPlayerSheet,
     playerMetadata,
   };
 };

@@ -24,7 +24,7 @@ function Index() {
   const {
     isPlayerSheetOpen,
     setIsPlayerSheetOpen,
-    handleOpenPlayerSheet,
+    openPlayerSheet,
     form,
     fieldArray,
     playerMetadata,
@@ -48,7 +48,7 @@ function Index() {
           selectedPlayerIds={selectedPlayerIds}
           deletePlayer={deletePlayer}
           table={table}
-          handleOpenPlayerSheet={handleOpenPlayerSheet}
+          openPlayerSheet={openPlayerSheet}
         />
       </section>
       <section className="sm:px-8 px-4">
@@ -57,7 +57,7 @@ function Index() {
             table={table}
             numColumns={columns.length}
             deletePlayer={deletePlayer}
-            handleOpenPlayerSheet={handleOpenPlayerSheet}
+            openPlayerSheet={openPlayerSheet}
           />
         )}
       </section>

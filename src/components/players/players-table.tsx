@@ -15,14 +15,14 @@ type PlayersTableProps = {
   table: TanstackTable<Player>;
   numColumns: number;
   deletePlayer: (playerId: string) => Promise<void>;
-  handleOpenPlayerSheet: (player: Player | null) => void;
+  openPlayerSheet: (player: Player | null) => void;
 };
 
 export function PlayersTable({
   table,
   numColumns,
   deletePlayer,
-  handleOpenPlayerSheet,
+  openPlayerSheet,
 }: PlayersTableProps) {
   return (
     <div className="border">
@@ -50,11 +50,10 @@ export function PlayersTable({
             table.getRowModel().rows.map((row) => (
               <ActionContextMenu
                 key={row.id}
-                player={row.original}
-                deletePlayer={deletePlayer}
-                handleOpenPlayerSheet={() =>
-                  handleOpenPlayerSheet(row.original)
+                handleDeletePlayer={async () =>
+                  await deletePlayer(row.original.id)
                 }
+                handleOpenPlayerSheet={() => openPlayerSheet(row.original)}
               >
                 <TableRow
                   key={row.id}

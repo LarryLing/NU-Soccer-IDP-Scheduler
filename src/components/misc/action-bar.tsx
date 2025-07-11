@@ -10,7 +10,7 @@ type ActionBarProps = {
   selectedPlayerIds: string[];
   deletePlayer: (playerId: string) => Promise<void>;
   table: Table<Player>;
-  handleOpenPlayerSheet: (player: Player | null) => void;
+  openPlayerSheet: (player: Player | null) => void;
 };
 
 export default function ActionBar({
@@ -19,7 +19,7 @@ export default function ActionBar({
   selectedPlayerIds,
   deletePlayer,
   table,
-  handleOpenPlayerSheet,
+  openPlayerSheet,
 }: ActionBarProps) {
   const handleDeletePlayers = async () => {
     const selectedPlayerIds = table
@@ -33,6 +33,10 @@ export default function ActionBar({
     table.resetRowSelection();
   };
 
+  const handleOpenPlayerSheet = () => {
+    openPlayerSheet(null);
+  };
+
   return (
     <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-y-2">
       {display === "players" &&
@@ -43,7 +47,7 @@ export default function ActionBar({
             {selectedPlayerIds.length > 1 ? "s" : ""}
           </Button>
         ) : (
-          <Button onClick={() => handleOpenPlayerSheet(null)}>
+          <Button onClick={handleOpenPlayerSheet}>
             <PlusIcon />
             Add Player
           </Button>

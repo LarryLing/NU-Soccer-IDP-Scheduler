@@ -4,31 +4,24 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import type { Player } from "@/lib/types";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import type { PropsWithChildren } from "react";
 
 type ActionContextMenuProps = {
-  player: Player;
-  handleOpenPlayerSheet: (player: Player | null) => void;
-  deletePlayer: (playerId: string) => Promise<void>;
+  handleDeletePlayer: () => Promise<void>;
+  handleOpenPlayerSheet: () => void;
 } & PropsWithChildren;
 
 export function ActionContextMenu({
   children,
-  player,
+  handleDeletePlayer,
   handleOpenPlayerSheet,
-  deletePlayer,
 }: ActionContextMenuProps) {
-  const handleDeletePlayer = async () => {
-    await deletePlayer(player.id);
-  };
-
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={() => handleOpenPlayerSheet(player)}>
+        <ContextMenuItem onClick={handleOpenPlayerSheet}>
           <PencilIcon />
           Edit Player
         </ContextMenuItem>
