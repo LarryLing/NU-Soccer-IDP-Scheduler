@@ -2,20 +2,20 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { memo } from "react";
-import { usePlayerSheet } from "@/hooks/usePlayerSheet";
+import type { Control, UseFieldArrayRemove } from "react-hook-form";
+import type { PlayerSheetForm } from "@/lib/types";
 
 type AvailabilityTimeSlotProps = {
   originalIndex: number;
+  remove: UseFieldArrayRemove;
+  control: Control<PlayerSheetForm>;
 };
 
 const AvailabilityTimeSlot = memo(function AvailabilityTimeSlot({
   originalIndex,
+  remove,
+  control,
 }: AvailabilityTimeSlotProps) {
-  const {
-    form: { control },
-    fieldArray: { remove },
-  } = usePlayerSheet();
-
   const handleRemove = () => {
     remove(originalIndex);
   };

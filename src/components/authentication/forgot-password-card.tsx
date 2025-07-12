@@ -1,6 +1,5 @@
 import { ForgotPasswordFormSchema } from "../../lib/schemas.ts";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -25,8 +24,7 @@ import { useAuth } from "@/hooks/useAuth.ts";
 import ErrorAlert from "@/components/authentication/error-alert.tsx";
 import SuccessAlert from "@/components/authentication/success-alert.tsx";
 import { useState } from "react";
-
-type FormSchema = z.infer<typeof ForgotPasswordFormSchema>;
+import type { ForgotPasswordForm } from "@/lib/types.ts";
 
 export default function ForgotPasswordCard() {
   const [success, setSuccess] = useState<string | null>();
@@ -34,7 +32,7 @@ export default function ForgotPasswordCard() {
 
   const { requestPasswordReset } = useAuth();
 
-  const form = useForm<FormSchema>({
+  const form = useForm<ForgotPasswordForm>({
     resolver: zodResolver(ForgotPasswordFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -46,7 +44,7 @@ export default function ForgotPasswordCard() {
     formState: { isSubmitting, isValidating },
   } = form;
 
-  const onSubmit: SubmitHandler<FormSchema> = async (data) => {
+  const onSubmit: SubmitHandler<ForgotPasswordForm> = async (data) => {
     try {
       const { email } = data;
       await requestPasswordReset(email);

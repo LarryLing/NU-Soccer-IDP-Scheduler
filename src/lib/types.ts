@@ -1,6 +1,12 @@
 import type { UseFieldArrayReturn, UseFormReturn } from "react-hook-form";
 import type { Database } from "../../database.types";
-import type { PlayerFormSchema } from "./schemas";
+import type {
+  ForgotPasswordFormSchema,
+  LoginFormSchema,
+  PlayerFormSchema,
+  ResetPasswordFormSchema,
+  SignupFormSchema,
+} from "./schemas";
 import type z from "zod";
 
 export type UserData = {
@@ -27,6 +33,29 @@ export type Days = Database["public"]["Enums"]["days"];
 
 export type Positions = Database["public"]["Enums"]["positions"];
 
+export type LoginForm = z.infer<typeof LoginFormSchema>;
+export type SignupForm = z.infer<typeof SignupFormSchema>;
+export type ForgotPasswordForm = z.infer<typeof ForgotPasswordFormSchema>;
+export type ResetPasswordForm = z.infer<typeof ResetPasswordFormSchema>;
+export type PlayerSheetForm = z.infer<typeof PlayerFormSchema>;
+
+export type UsePlayersReturn = {
+  players: Player[];
+  insertPlayer: (player: Player) => Promise<void>;
+  updatePlayer: (player: Player) => Promise<void>;
+  deletePlayer: (playerId: string) => Promise<void>;
+};
+
+export type UsePlayersSheetReturn = {
+  playerMetadata: PlayerMetadata | null;
+  isPlayerSheetOpen: boolean;
+  setIsPlayerSheetOpen: (isPlayerSheetOpen: boolean) => void;
+  form: UseFormReturn<PlayerSheetForm>;
+  fieldArray: UseFieldArrayReturn<PlayerSheetForm, "availabilities", "id">;
+  openPlayerSheet: (playerId: string | null) => void;
+  addAvailability: (day: Days) => void;
+};
+
 export type AuthContextType = {
   user: UserData | null;
   isLoading: boolean;
@@ -35,27 +64,4 @@ export type AuthContextType = {
   logout: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   resetPassword: (password: string) => Promise<void>;
-};
-
-export type PlayersContextType = {
-  players: Player[];
-  insertPlayer: (player: Player) => Promise<void>;
-  updatePlayer: (player: Player) => Promise<void>;
-  deletePlayer: (playerId: string) => Promise<void>;
-};
-
-export type PlayerSheetFormSchemaType = z.infer<typeof PlayerFormSchema>;
-
-export type PlayerSheetContextType = {
-  playerMetadata: PlayerMetadata | null;
-  isPlayerSheetOpen: boolean;
-  setIsPlayerSheetOpen: (isPlayerSheetOpen: boolean) => void;
-  form: UseFormReturn<PlayerSheetFormSchemaType>;
-  fieldArray: UseFieldArrayReturn<
-    PlayerSheetFormSchemaType,
-    "availabilities",
-    "id"
-  >;
-  openPlayerSheet: (playerId: string | null) => void;
-  addAvailability: (day: Days) => void;
 };

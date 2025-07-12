@@ -1,12 +1,15 @@
-import type { Days } from "@/lib/types";
+import type { Days, PlayerSheetForm } from "@/lib/types";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { PlusIcon } from "lucide-react";
 import type { PlayerFormSchema } from "@/lib/schemas";
-import type { FieldArrayWithId } from "react-hook-form";
+import type {
+  Control,
+  FieldArrayWithId,
+  UseFieldArrayRemove,
+} from "react-hook-form";
 import type z from "zod";
 import AvailabilityTimeSlot from "./availability-time-slot";
-import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 
 type FormSchema = z.infer<typeof PlayerFormSchema>;
 
@@ -15,14 +18,18 @@ type AvailabilityDayProps = {
   dayFields: (FieldArrayWithId<FormSchema, "availabilities", "id"> & {
     originalIndex: number;
   })[];
+  addAvailability: (day: Days) => void;
+  remove: UseFieldArrayRemove;
+  control: Control<PlayerSheetForm>;
 };
 
 export default function AvailabilityDay({
   day,
   dayFields,
+  addAvailability,
+  remove,
+  control,
 }: AvailabilityDayProps) {
-  const { addAvailability } = usePlayerSheet();
-
   const handleAddAvailability = () => {
     addAvailability(day);
   };
@@ -38,6 +45,8 @@ export default function AvailabilityDay({
             <AvailabilityTimeSlot
               key={field.id}
               originalIndex={field.originalIndex}
+              remove={remove}
+              control={control}
             />
           ))
         )}

@@ -26,26 +26,38 @@ import {
 } from "../ui/form";
 import type { SubmitHandler } from "react-hook-form";
 import { DAYS, POSITIONS } from "@/lib/constants";
-import type { Availability, PlayerSheetFormSchemaType } from "@/lib/types";
+import type {
+  Availability,
+  PlayerSheetForm,
+  UsePlayersReturn,
+  UsePlayersSheetReturn,
+} from "@/lib/types";
 import { useAuth } from "@/hooks/useAuth";
 import { parseTime } from "@/lib/utils";
 import AvailabilityDay from "./availability-day";
-import { memo } from "react";
-import { usePlayerSheet } from "@/hooks/usePlayerSheet";
-import { usePlayers } from "@/hooks/usePlayers";
 
-const PlayerSheet = memo(function PlayerSheet() {
+type PlayerSheetProps = {
+  form: UsePlayersSheetReturn["form"];
+  playerMetadata: UsePlayersSheetReturn["playerMetadata"];
+  isPlayerSheetOpen: UsePlayersSheetReturn["isPlayerSheetOpen"];
+  setIsPlayerSheetOpen: UsePlayersSheetReturn["setIsPlayerSheetOpen"];
+  fieldArray: UsePlayersSheetReturn["fieldArray"];
+  addAvailability: UsePlayersSheetReturn["addAvailability"];
+  insertPlayer: UsePlayersReturn["insertPlayer"];
+  updatePlayer: UsePlayersReturn["updatePlayer"];
+};
+
+export default function PlayerSheet({
+  form,
+  playerMetadata,
+  isPlayerSheetOpen,
+  setIsPlayerSheetOpen,
+  fieldArray: { fields, remove },
+  addAvailability,
+  insertPlayer,
+  updatePlayer,
+}: PlayerSheetProps) {
   const { user } = useAuth();
-
-  const { insertPlayer, updatePlayer } = usePlayers();
-
-  const {
-    isPlayerSheetOpen,
-    setIsPlayerSheetOpen,
-    form,
-    fieldArray: { fields },
-    playerMetadata,
-  } = usePlayerSheet();
 
   const {
     handleSubmit,
@@ -53,7 +65,7 @@ const PlayerSheet = memo(function PlayerSheet() {
     formState: { isSubmitting, isValidating },
   } = form;
 
-  const onSubmit: SubmitHandler<PlayerSheetFormSchemaType> = async (data) => {
+  const onSubmit: SubmitHandler<PlayerSheetForm> = async (data) => {
     if (!user) return;
 
     const sortedAvailabilities: Availability[] = data.availabilities
@@ -166,7 +178,14 @@ const PlayerSheet = memo(function PlayerSheet() {
                   .map((field, idx) => ({ ...field, originalIndex: idx }))
                   .filter((field) => field.day === day);
                 return (
-                  <AvailabilityDay key={day} day={day} dayFields={dayFields} />
+                  <AvailabilityDay
+                    key={day}
+                    day={day}
+                    dayFields={dayFields}
+                    addAvailability={addAvailability}
+                    remove={remove}
+                    control={control}
+                  />
                 );
               })}
             </div>
@@ -189,6 +208,4 @@ const PlayerSheet = memo(function PlayerSheet() {
       </SheetContent>
     </Sheet>
   );
-});
-
-export default PlayerSheet;
+}

@@ -1,6 +1,5 @@
 import { LoginFormSchema } from "../../lib/schemas.ts";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -24,8 +23,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
 import ErrorAlert from "@/components/authentication/error-alert.tsx";
 import { useState } from "react";
-
-type FormSchema = z.infer<typeof LoginFormSchema>;
+import type { LoginForm } from "@/lib/types.ts";
 
 export default function LoginCard() {
   const [error, setError] = useState<string | null>();
@@ -34,7 +32,7 @@ export default function LoginCard() {
 
   const navigate = useNavigate();
 
-  const form = useForm<FormSchema>({
+  const form = useForm<LoginForm>({
     resolver: zodResolver(LoginFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -46,7 +44,7 @@ export default function LoginCard() {
     formState: { isSubmitting, isValidating },
   } = form;
 
-  const onSubmit: SubmitHandler<FormSchema> = async (data) => {
+  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     try {
       const { email, password } = data;
       await login(email, password);

@@ -3,8 +3,8 @@ import Navbar from "@/components/misc/navbar";
 import { columns } from "@/components/players/columns";
 import PlayerSheet from "@/components/players/player-sheet";
 import { PlayersTable } from "@/components/players/players-table";
-import PlayerSheetProvider from "@/contexts/player-sheet-provider";
 import { usePlayers } from "@/hooks/usePlayers";
+import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 import { usePlayersTable } from "@/hooks/usePlayersTable";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
@@ -19,7 +19,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { players } = usePlayers();
+  const { players, insertPlayer, updatePlayer, deletePlayer } = usePlayers();
+
+  const {
+    openPlayerSheet,
+    playerMetadata,
+    isPlayerSheetOpen,
+    setIsPlayerSheetOpen,
+    form,
+    fieldArray,
+    addAvailability,
+  } = usePlayerSheet(players);
 
   const table = usePlayersTable(players, columns);
 
@@ -30,24 +40,38 @@ function Index() {
     .rows.map((row) => row.original.id);
 
   return (
-    <PlayerSheetProvider players={players}>
-      <div className="flex flex-col h-screen gap-y-4">
-        <Navbar />
-        <section className="sm:px-8 px-4">
-          <ActionBar
-            display={display}
-            setDisplay={setDisplay}
-            selectedPlayerIds={selectedPlayerIds}
+    <div className="flex flex-col h-screen gap-y-4">
+      <Navbar />
+      <section className="sm:px-8 px-4">
+        <ActionBar
+          display={display}
+          setDisplay={setDisplay}
+          selectedPlayerIds={selectedPlayerIds}
+          table={table}
+          deletePlayer={deletePlayer}
+          openPlayerSheet={openPlayerSheet}
+        />
+      </section>
+      <section className="sm:px-8 px-4">
+        {display === "players" && (
+          <PlayersTable
             table={table}
+            numColumns={columns.length}
+            deletePlayer={deletePlayer}
+            openPlayerSheet={openPlayerSheet}
           />
-        </section>
-        <section className="sm:px-8 px-4">
-          {display === "players" && (
-            <PlayersTable table={table} numColumns={columns.length} />
-          )}
-        </section>
-        <PlayerSheet />
-      </div>
-    </PlayerSheetProvider>
+        )}
+      </section>
+      <PlayerSheet
+        form={form}
+        playerMetadata={playerMetadata}
+        isPlayerSheetOpen={isPlayerSheetOpen}
+        setIsPlayerSheetOpen={setIsPlayerSheetOpen}
+        fieldArray={fieldArray}
+        addAvailability={addAvailability}
+        insertPlayer={insertPlayer}
+        updatePlayer={updatePlayer}
+      />
+    </div>
   );
 }

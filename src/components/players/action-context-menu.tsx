@@ -4,25 +4,27 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { usePlayers } from "@/hooks/usePlayers";
-import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import type { PropsWithChildren } from "react";
-import type { Player } from "@/lib/types";
+import type {
+  Player,
+  UsePlayersReturn,
+  UsePlayersSheetReturn,
+} from "@/lib/types";
 import { memo } from "react";
 
 type ActionContextMenuProps = {
   id: Player["id"];
+  deletePlayer: UsePlayersReturn["deletePlayer"];
+  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
 } & PropsWithChildren;
 
 export const ActionContextMenu = memo(function ActionContextMenu({
   children,
   id,
+  deletePlayer,
+  openPlayerSheet,
 }: ActionContextMenuProps) {
-  const { deletePlayer } = usePlayers();
-
-  const { openPlayerSheet } = usePlayerSheet();
-
   const handleDeletePlayer = async () => {
     await deletePlayer(id);
   };
