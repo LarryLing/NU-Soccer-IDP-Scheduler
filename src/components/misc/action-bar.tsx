@@ -6,16 +6,17 @@ import type {
   Player,
   UsePlayersReturn,
   UsePlayersSheetReturn,
+  UseScheduleSheetReturn,
 } from "@/lib/types";
 
-type ActionBarProps = {
-  display: "players" | "schedule";
-  setDisplay: (display: "players" | "schedule") => void;
-  selectedPlayerIds: string[];
-  table: Table<Player>;
-  deletePlayer: UsePlayersReturn["deletePlayer"];
-  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
-};
+type ActionBarProps = Pick<UsePlayersReturn, "deletePlayer"> &
+  Pick<UsePlayersSheetReturn, "openPlayerSheet"> &
+  Pick<UseScheduleSheetReturn, "openScheduleSheet"> & {
+    display: "players" | "schedule";
+    setDisplay: (display: "players" | "schedule") => void;
+    selectedPlayerIds: string[];
+    table: Table<Player>;
+  };
 
 export default function ActionBar({
   display,
@@ -24,6 +25,7 @@ export default function ActionBar({
   table,
   deletePlayer,
   openPlayerSheet,
+  openScheduleSheet,
 }: ActionBarProps) {
   const handleDeletePlayers = async () => {
     const selectedPlayerIds = table
@@ -58,7 +60,7 @@ export default function ActionBar({
           </Button>
         ))}
       {display === "schedule" && (
-        <Button>
+        <Button onClick={openScheduleSheet}>
           <CalendarIcon />
           Create Schedule
         </Button>

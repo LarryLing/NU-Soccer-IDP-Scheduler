@@ -3,9 +3,11 @@ import Navbar from "@/components/misc/navbar";
 import { columns } from "@/components/players/columns";
 import PlayerSheet from "@/components/players/player-sheet";
 import { PlayersTable } from "@/components/players/players-table";
+import ScheduleSheet from "@/components/schedule/schedule-sheet";
 import { usePlayers } from "@/hooks/usePlayers";
 import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 import { usePlayersTable } from "@/hooks/usePlayersTable";
+import { useScheduleSheet } from "@/hooks/useScheduleSheet";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -19,19 +21,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { players, insertPlayer, updatePlayer, deletePlayer } = usePlayers();
+  const playersReturn = usePlayers();
+  const { players, deletePlayer } = playersReturn;
 
-  const {
-    openPlayerSheet,
-    playerMetadata,
-    isPlayerSheetOpen,
-    setIsPlayerSheetOpen,
-    error,
-    setError,
-    form,
-    fieldArray,
-    addAvailability,
-  } = usePlayerSheet(players);
+  const playerSheetReturn = usePlayerSheet(players);
+  const { openPlayerSheet } = playerSheetReturn;
+
+  const scheduleSheetReturn = useScheduleSheet(players);
+  const { openScheduleSheet } = scheduleSheetReturn;
 
   const table = usePlayersTable(players, columns);
 
@@ -52,6 +49,7 @@ function Index() {
           table={table}
           deletePlayer={deletePlayer}
           openPlayerSheet={openPlayerSheet}
+          openScheduleSheet={openScheduleSheet}
         />
       </section>
       <section className="sm:px-8 px-4">
@@ -64,18 +62,10 @@ function Index() {
           />
         )}
       </section>
-      <PlayerSheet
-        form={form}
-        playerMetadata={playerMetadata}
-        isPlayerSheetOpen={isPlayerSheetOpen}
-        setIsPlayerSheetOpen={setIsPlayerSheetOpen}
-        error={error}
-        setError={setError}
-        fieldArray={fieldArray}
-        addAvailability={addAvailability}
-        insertPlayer={insertPlayer}
-        updatePlayer={updatePlayer}
-      />
+      {display === "players" && (
+        <PlayerSheet {...playerSheetReturn} {...playersReturn} />
+      )}
+      {display === "schedule" && <ScheduleSheet {...scheduleSheetReturn} />}
     </div>
   );
 }

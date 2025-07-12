@@ -58,6 +58,18 @@ export type UsePlayersSheetReturn = {
   addAvailability: (day: Days) => void;
 };
 
+export type UseScheduleSheetReturn = {
+  isScheduleSheetOpen: boolean;
+  setIsScheduleSheetOpen: (isScheduleSheetOpen: boolean) => void;
+  isSchedulingPlayers: boolean;
+  setIsSchedulingPlayers: (isSchedulingPlayers: boolean) => void;
+  error: string | null;
+  setError: (error: string | null) => void;
+  openScheduleSheet: () => void;
+  addFieldAvailability: () => void;
+  schedulePlayers: () => void;
+};
+
 export type AuthContextType = {
   user: UserData | null;
   isLoading: boolean;

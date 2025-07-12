@@ -37,18 +37,18 @@ import { formatTimeWithPeriod, parseTime } from "@/lib/utils";
 import AvailabilityDay from "./availability-day";
 import ErrorAlert from "../misc/error-alert";
 
-type PlayerSheetProps = {
-  form: UsePlayersSheetReturn["form"];
-  playerMetadata: UsePlayersSheetReturn["playerMetadata"];
-  isPlayerSheetOpen: UsePlayersSheetReturn["isPlayerSheetOpen"];
-  error: UsePlayersSheetReturn["error"];
-  setError: UsePlayersSheetReturn["setError"];
-  setIsPlayerSheetOpen: UsePlayersSheetReturn["setIsPlayerSheetOpen"];
-  fieldArray: UsePlayersSheetReturn["fieldArray"];
-  addAvailability: UsePlayersSheetReturn["addAvailability"];
-  insertPlayer: UsePlayersReturn["insertPlayer"];
-  updatePlayer: UsePlayersReturn["updatePlayer"];
-};
+type PlayerSheetProps = Pick<
+  UsePlayersSheetReturn,
+  | "form"
+  | "playerMetadata"
+  | "isPlayerSheetOpen"
+  | "error"
+  | "setError"
+  | "setIsPlayerSheetOpen"
+  | "fieldArray"
+  | "addAvailability"
+> &
+  Pick<UsePlayersReturn, "insertPlayer" | "updatePlayer">;
 
 export default function PlayerSheet({
   form,

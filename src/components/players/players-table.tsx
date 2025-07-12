@@ -15,12 +15,11 @@ import {
 } from "../ui/table";
 import { ActionContextMenu } from "./action-context-menu";
 
-type PlayersTableProps = {
-  table: TanstackTable<Player>;
-  numColumns: number;
-  deletePlayer: UsePlayersReturn["deletePlayer"];
-  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
-};
+type PlayersTableProps = Pick<UsePlayersReturn, "deletePlayer"> &
+  Pick<UsePlayersSheetReturn, "openPlayerSheet"> & {
+    table: TanstackTable<Player>;
+    numColumns: number;
+  };
 
 export function PlayersTable({
   table,
