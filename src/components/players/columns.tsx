@@ -4,7 +4,8 @@ import { ArrowDownUpIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
-import { formatTimeWithPeriod } from "@/lib/utils";
+import { DAYS } from "@/lib/constants";
+import AvailabilityHoverCard from "./availability-hover-card";
 
 export const columns: ColumnDef<Player>[] = [
   {
@@ -79,15 +80,12 @@ export const columns: ColumnDef<Player>[] = [
     header: "Availabilities",
     cell: ({ row }) => {
       const availabilities: Availability[] = row.getValue("availabilities");
-      return availabilities.map((availability, index) => (
-        <Badge
-          key={`${availability.day}.${availability.start}.${availability.end}.${index}`}
-          variant="secondary"
-          className="mr-2"
-        >
-          {availability.day} {formatTimeWithPeriod(availability.start_int)} -{" "}
-          {formatTimeWithPeriod(availability.end_int)}
-        </Badge>
+      return DAYS.map((day) => (
+        <AvailabilityHoverCard
+          key={day}
+          day={day}
+          availabilities={availabilities}
+        />
       ));
     },
   },
