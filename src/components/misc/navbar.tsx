@@ -19,7 +19,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full flex justify-between items-center sm:px-8 px-4 py-4 border-b border-gray-200">
+    <nav className="w-full flex justify-between items-center sm:px-8 px-4 py-4 border-b">
       <div className="flex items-center gap-3">
         <NorthwesternLogo height={36} width={23.51} />
         <h3 className="text-2xl font-bold hidden sm:block text-nowrap">
@@ -27,7 +27,7 @@ export default function Navbar() {
         </h3>
       </div>
       <Button onClick={handleLogout}>
-        <LogOutIcon size={15} />
+        <LogOutIcon />
         Sign Out
       </Button>
     </nav>

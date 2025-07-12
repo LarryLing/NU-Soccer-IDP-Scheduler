@@ -7,7 +7,7 @@ type SuccessAlertProps = {
 
 export default function SuccessAlert({ message }: SuccessAlertProps) {
   return (
-    <Alert variant="default" className="mb-4">
+    <Alert variant="default">
       <CheckCircle2Icon />
       <AlertTitle>Success!</AlertTitle>
       <AlertDescription>
