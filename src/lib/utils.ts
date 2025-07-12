@@ -6,17 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const parseTime = (timeStr: string) => {
-  const [hours, minutes] = timeStr.slice(0, -2).split(":").map(Number);
-  const period = timeStr.slice(-2).toUpperCase();
-
-  let totalHours = hours ?? 0;
-  if (period === "AM" && (hours ?? 0) === 12) {
-    totalHours = 0;
-  } else if (period === "PM" && (hours ?? 0) !== 12) {
-    totalHours = (hours ?? 0) + 12;
-  }
-
-  return totalHours * 60 + (minutes ?? 0);
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  if (hours === undefined || minutes === undefined) return 0;
+  return hours * 60 + minutes;
 };
 
 export const formatTime = (time: number) => {

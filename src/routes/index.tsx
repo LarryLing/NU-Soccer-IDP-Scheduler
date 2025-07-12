@@ -26,6 +26,8 @@ function Index() {
     playerMetadata,
     isPlayerSheetOpen,
     setIsPlayerSheetOpen,
+    error,
+    setError,
     form,
     fieldArray,
     addAvailability,
@@ -67,6 +69,8 @@ function Index() {
         playerMetadata={playerMetadata}
         isPlayerSheetOpen={isPlayerSheetOpen}
         setIsPlayerSheetOpen={setIsPlayerSheetOpen}
+        error={error}
+        setError={setError}
         fieldArray={fieldArray}
         addAvailability={addAvailability}
         insertPlayer={insertPlayer}

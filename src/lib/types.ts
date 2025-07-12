@@ -50,6 +50,8 @@ export type UsePlayersSheetReturn = {
   playerMetadata: PlayerMetadata | null;
   isPlayerSheetOpen: boolean;
   setIsPlayerSheetOpen: (isPlayerSheetOpen: boolean) => void;
+  error: string | null;
+  setError: (error: string | null) => void;
   form: UseFormReturn<PlayerSheetForm>;
   fieldArray: UseFieldArrayReturn<PlayerSheetForm, "availabilities", "id">;
   openPlayerSheet: (playerId: string | null) => void;

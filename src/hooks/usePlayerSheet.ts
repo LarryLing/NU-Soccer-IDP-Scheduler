@@ -18,6 +18,7 @@ export const usePlayerSheet = (players: Player[]): UsePlayersSheetReturn => {
     null,
   );
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<PlayerSheetForm>({
     resolver: zodResolver(PlayerFormSchema),
@@ -51,9 +52,10 @@ export const usePlayerSheet = (players: Player[]): UsePlayersSheetReturn => {
         reset(DEFAULT_PLAYER);
         setPlayerMetadata(null);
       }
+      setError(null);
       setIsPlayerSheetOpen(true);
     },
-    [reset, players],
+    [reset, players, setError],
   );
 
   const addAvailability = useCallback(
@@ -84,6 +86,8 @@ export const usePlayerSheet = (players: Player[]): UsePlayersSheetReturn => {
     playerMetadata,
     isPlayerSheetOpen,
     setIsPlayerSheetOpen,
+    error,
+    setError,
     form,
     fieldArray,
     openPlayerSheet,

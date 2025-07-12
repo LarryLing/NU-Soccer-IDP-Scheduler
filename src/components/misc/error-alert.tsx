@@ -7,7 +7,7 @@ type ErrorAlertProps = {
 
 export default function ErrorAlert({ message }: ErrorAlertProps) {
   return (
-    <Alert variant="destructive" className="mb-4">
+    <Alert variant="destructive">
       <AlertCircleIcon />
       <AlertTitle>Something went wrong...</AlertTitle>
       <AlertDescription>

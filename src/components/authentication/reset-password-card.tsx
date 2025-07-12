@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth.ts";
-import ErrorAlert from "@/components/authentication/error-alert.tsx";
+import ErrorAlert from "@/components/misc/error-alert.tsx";
 import { useState } from "react";
 import type { ResetPasswordForm } from "@/lib/types.ts";
 

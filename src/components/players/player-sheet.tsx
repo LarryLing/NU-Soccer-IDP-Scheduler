@@ -33,13 +33,16 @@ import type {
   UsePlayersSheetReturn,
 } from "@/lib/types";
 import { useAuth } from "@/hooks/useAuth";
-import { parseTime } from "@/lib/utils";
+import { formatTimeWithPeriod, parseTime } from "@/lib/utils";
 import AvailabilityDay from "./availability-day";
+import ErrorAlert from "../misc/error-alert";
 
 type PlayerSheetProps = {
   form: UsePlayersSheetReturn["form"];
   playerMetadata: UsePlayersSheetReturn["playerMetadata"];
   isPlayerSheetOpen: UsePlayersSheetReturn["isPlayerSheetOpen"];
+  error: UsePlayersSheetReturn["error"];
+  setError: UsePlayersSheetReturn["setError"];
   setIsPlayerSheetOpen: UsePlayersSheetReturn["setIsPlayerSheetOpen"];
   fieldArray: UsePlayersSheetReturn["fieldArray"];
   addAvailability: UsePlayersSheetReturn["addAvailability"];
@@ -52,6 +55,8 @@ export default function PlayerSheet({
   playerMetadata,
   isPlayerSheetOpen,
   setIsPlayerSheetOpen,
+  error,
+  setError,
   fieldArray: { fields, remove },
   addAvailability,
   insertPlayer,
@@ -77,6 +82,25 @@ export default function PlayerSheet({
         };
       })
       .sort((a, b) => a.start_int - b.start_int);
+
+    for (let i = 0; i < DAYS.length; i++) {
+      const day = DAYS[i];
+      const dayAvailabilities = sortedAvailabilities.filter(
+        (availability) => availability.day === day,
+      );
+
+      for (let i = 1; i < dayAvailabilities.length; i++) {
+        const previous = dayAvailabilities[i - 1];
+        const current = dayAvailabilities[i];
+
+        if (previous && current && previous.end_int > current.start_int) {
+          setError(
+            `Time overlap detected on ${day}: ${formatTimeWithPeriod(previous.start_int)} - ${formatTimeWithPeriod(previous.end_int)} overlaps with ${formatTimeWithPeriod(current.start_int)} - ${formatTimeWithPeriod(current.end_int)}`,
+          );
+          return;
+        }
+      }
+    }
 
     if (!playerMetadata) {
       await insertPlayer({
@@ -188,6 +212,7 @@ export default function PlayerSheet({
                   />
                 );
               })}
+              {error && <ErrorAlert message={error} />}
             </div>
             <SheetFooter>
               <Button type="submit" disabled={isSubmitting || isValidating}>
