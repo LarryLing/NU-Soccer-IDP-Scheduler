@@ -1,4 +1,8 @@
-import type { Days, PlayerSheetForm, UsePlayersSheetReturn } from "@/lib/types";
+import type {
+  Days,
+  ScheduleSheetForm,
+  UseScheduleSheetReturn,
+} from "@/lib/types";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { PlusIcon } from "lucide-react";
@@ -11,23 +15,27 @@ import AvailabilityTimeSlot from "./availability-time-slot";
 
 type AvailabilityDayProps = {
   day: Days;
-  dayFields: (FieldArrayWithId<PlayerSheetForm, "availabilities", "id"> & {
+  dayFields: (FieldArrayWithId<
+    ScheduleSheetForm,
+    "fieldAvailabilities",
+    "id"
+  > & {
     originalIndex: number;
   })[];
-  addAvailability: UsePlayersSheetReturn["addAvailability"];
+  addFieldAvailability: UseScheduleSheetReturn["addFieldAvailability"];
   remove: UseFieldArrayRemove;
-  control: Control<PlayerSheetForm>;
+  control: Control<ScheduleSheetForm>;
 };
 
 export default function AvailabilityDay({
   day,
   dayFields,
-  addAvailability,
+  addFieldAvailability,
   remove,
   control,
 }: AvailabilityDayProps) {
-  const handleAddAvailability = () => {
-    addAvailability(day);
+  const handleAddFieldAvailability = () => {
+    addFieldAvailability(day);
   };
 
   return (
@@ -51,7 +59,7 @@ export default function AvailabilityDay({
         type="button"
         variant="outline"
         size="sm"
-        onClick={handleAddAvailability}
+        onClick={handleAddFieldAvailability}
       >
         <PlusIcon />
         Add Availability

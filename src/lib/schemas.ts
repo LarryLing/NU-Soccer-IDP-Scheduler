@@ -111,3 +111,7 @@ export const PlayerFormSchema = z.object({
   position: z.enum(["Goalkeeper", "Defender", "Midfielder", "Forward"]),
   availabilities: z.array(AvailabilitySchema),
 });
+
+export const ScheduleFormSchema = z.object({
+  fieldAvailabilities: z.array(AvailabilitySchema),
+});

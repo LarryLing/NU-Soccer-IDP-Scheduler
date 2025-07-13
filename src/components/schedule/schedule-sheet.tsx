@@ -7,20 +7,43 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Form } from "@/components/ui/form";
 import { Button } from "../ui/button";
-import type { UseScheduleSheetReturn } from "@/lib/types";
+import type { ScheduleSheetForm, UseScheduleSheetReturn } from "@/lib/types";
 import ErrorAlert from "../misc/error-alert";
+import { DAYS } from "@/lib/constants";
+import AvailabilityDay from "./availability-day";
+import type { SubmitHandler } from "react-hook-form";
 
 type ScheduleSheetProps = Pick<
   UseScheduleSheetReturn,
-  "isScheduleSheetOpen" | "setIsScheduleSheetOpen" | "error" | "setError"
+  | "isScheduleSheetOpen"
+  | "setIsScheduleSheetOpen"
+  | "error"
+  | "setError"
+  | "form"
+  | "fieldArray"
+  | "addFieldAvailability"
 >;
 
 export default function ScheduleSheet({
   isScheduleSheetOpen,
   setIsScheduleSheetOpen,
   error,
+  form,
+  fieldArray: { fields, remove },
+  addFieldAvailability,
 }: ScheduleSheetProps) {
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting, isValidating },
+  } = form;
+
+  const onSubmit: SubmitHandler<ScheduleSheetForm> = async (data) => {
+    console.log(data);
+  };
+
   return (
     <Sheet open={isScheduleSheetOpen} onOpenChange={setIsScheduleSheetOpen}>
       <SheetContent className="overflow-y-scroll">
@@ -30,18 +53,42 @@ export default function ScheduleSheet({
             Create a weekly schedule for the players.
           </SheetDescription>
         </SheetHeader>
-        <div className="space-y-6 px-4 mb-4">
-          Content
-          {error && <ErrorAlert message={error} />}
-        </div>
-        <SheetFooter>
-          <Button type="submit">Schedule Players</Button>
-          <SheetClose asChild>
-            <Button type="button" variant="outline">
-              Close
-            </Button>
-          </SheetClose>
-        </SheetFooter>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="space-y-6 px-4 mb-4">
+              {DAYS.map((day) => {
+                const dayFields = fields
+                  .map((field, idx) => ({ ...field, originalIndex: idx }))
+                  .filter((field) => field.day === day);
+                return (
+                  <AvailabilityDay
+                    key={day}
+                    day={day}
+                    dayFields={dayFields}
+                    addFieldAvailability={addFieldAvailability}
+                    remove={remove}
+                    control={control}
+                  />
+                );
+              })}
+              {error && <ErrorAlert message={error} />}
+            </div>
+            <SheetFooter>
+              <Button type="submit" disabled={isSubmitting || isValidating}>
+                Schedule Players
+              </Button>
+              <SheetClose asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isSubmitting || isValidating}
+                >
+                  Close
+                </Button>
+              </SheetClose>
+            </SheetFooter>
+          </form>
+        </Form>
       </SheetContent>
     </Sheet>
   );

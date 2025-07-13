@@ -16,14 +16,6 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
 import type { SubmitHandler } from "react-hook-form";
 import { DAYS, POSITIONS } from "@/lib/constants";
 import type {
@@ -36,6 +28,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { formatTimeWithPeriod, parseTime } from "@/lib/utils";
 import AvailabilityDay from "./availability-day";
 import ErrorAlert from "../misc/error-alert";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 
 type PlayerSheetProps = Pick<
   UsePlayersSheetReturn,

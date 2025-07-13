@@ -1,6 +1,7 @@
 import type { UseFieldArrayReturn, UseFormReturn } from "react-hook-form";
 import type { Database } from "../../database.types";
 import type {
+  ScheduleFormSchema,
   ForgotPasswordFormSchema,
   LoginFormSchema,
   PlayerFormSchema,
@@ -38,6 +39,7 @@ export type SignupForm = z.infer<typeof SignupFormSchema>;
 export type ForgotPasswordForm = z.infer<typeof ForgotPasswordFormSchema>;
 export type ResetPasswordForm = z.infer<typeof ResetPasswordFormSchema>;
 export type PlayerSheetForm = z.infer<typeof PlayerFormSchema>;
+export type ScheduleSheetForm = z.infer<typeof ScheduleFormSchema>;
 
 export type UsePlayersReturn = {
   players: Player[];
@@ -65,8 +67,14 @@ export type UseScheduleSheetReturn = {
   setIsSchedulingPlayers: (isSchedulingPlayers: boolean) => void;
   error: string | null;
   setError: (error: string | null) => void;
+  form: UseFormReturn<ScheduleSheetForm>;
+  fieldArray: UseFieldArrayReturn<
+    ScheduleSheetForm,
+    "fieldAvailabilities",
+    "id"
+  >;
   openScheduleSheet: () => void;
-  addFieldAvailability: () => void;
+  addFieldAvailability: (day: Days) => void;
   schedulePlayers: () => void;
 };
 
