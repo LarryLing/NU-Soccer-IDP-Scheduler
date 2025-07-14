@@ -1,4 +1,4 @@
-import type { Days } from "@/lib/types";
+import type { Days, UseTrainingBlockDialogReturn } from "@/lib/types";
 import { TIMES } from "@/lib/constants";
 import CalendarCell from "./calendar-cell";
 import { getDayAbbreviation } from "@/lib/utils";
@@ -8,9 +8,10 @@ import { useTrainingBlocks } from "@/hooks/useTrainingBlocks";
 
 type CalendarDayColumnProps = {
   day: Days;
+  openTrainingBlockDialog: UseTrainingBlockDialogReturn["openTrainingBlockDialog"];
 };
 
-const CalendarDayColumn = ({ day }: CalendarDayColumnProps) => {
+const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnProps) => {
   const { trainingBlocks } = useTrainingBlocks(day);
 
   const dayAbbreviation = getDayAbbreviation(day);
@@ -32,10 +33,9 @@ const CalendarDayColumn = ({ day }: CalendarDayColumnProps) => {
         return (
           <CalendarTrainingBlock
             key={filteredTrainingBlock.id}
-            trainingBlockId={filteredTrainingBlock.id}
             currentCellStartInt={currentEntry[1]}
-            startInt={filteredTrainingBlock.start_int}
-            endInt={filteredTrainingBlock.end_int}
+            openTrainingBlockDialog={openTrainingBlockDialog}
+            {...filteredTrainingBlock}
           />
         );
       });

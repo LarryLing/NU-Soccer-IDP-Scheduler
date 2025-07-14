@@ -1,23 +1,27 @@
 import { useAssignedPlayers } from "@/hooks/useAssignedPlayers";
-import type { TrainingBlock } from "@/lib/types";
+import type { TrainingBlock, UseTrainingBlockDialogReturn } from "@/lib/types";
 
 type CalendarTrainingBlockProps = {
-  trainingBlockId: TrainingBlock["id"];
   currentCellStartInt: number;
-  startInt: number;
-  endInt: number;
-};
+  openTrainingBlockDialog: UseTrainingBlockDialogReturn["openTrainingBlockDialog"];
+} & Pick<TrainingBlock, "id" | "day" | "start_int" | "end_int">;
 
 export default function CalendarTrainingBlock({
-  trainingBlockId,
   currentCellStartInt,
-  startInt,
-  endInt,
+  openTrainingBlockDialog,
+  id,
+  day,
+  start_int,
+  end_int,
 }: CalendarTrainingBlockProps) {
-  const { assignedPlayerNames } = useAssignedPlayers(trainingBlockId);
+  const { assignedPlayerNames } = useAssignedPlayers(id);
 
-  const topPercentage = ((startInt - currentCellStartInt) / 60) * 100;
-  const heightPercentage = ((endInt - startInt) / 60) * 100;
+  const handleOpenTrainingBlockDialog = () => {
+    openTrainingBlockDialog(day, start_int, end_int, assignedPlayerNames);
+  };
+
+  const topPercentage = ((start_int - currentCellStartInt) / 60) * 100;
+  const heightPercentage = ((end_int - start_int) / 60) * 100;
 
   return (
     <div
@@ -26,11 +30,12 @@ export default function CalendarTrainingBlock({
         width: `calc(100% - 2px)`,
         height: `calc(${heightPercentage}% - 2px)`,
       }}
+      onClick={handleOpenTrainingBlockDialog}
     >
       {assignedPlayerNames.length === 0 ? (
         <i className="text-xs text-muted-foreground">No players assigned</i>
       ) : (
-        <p className="text-xs">{assignedPlayerNames.length} players assigned</p>
+        <p className="text-xs text-nowrap truncate">{assignedPlayerNames.join(", ")}</p>
       )}
     </div>
   );

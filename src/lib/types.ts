@@ -36,6 +36,13 @@ export type PlayerSheetForm = z.infer<typeof PlayerFormSchema>;
 export type ScheduleSheetForm = z.infer<typeof ScheduleFormSchema>;
 export type AvailabilitySheetForm = z.infer<typeof AvailabilitySchema>;
 
+export type TrainingBlockDialogConfig = {
+  day: Days;
+  start: TrainingBlock["start"];
+  end: TrainingBlock["end"];
+  assignedPlayerNames: Player["name"][];
+};
+
 export type UsePlayersReturn = {
   players: Player[];
   insertPlayer: (player: Player) => Promise<void>;
@@ -69,6 +76,18 @@ export type UseScheduleSheetReturn = {
   openScheduleSheet: () => void;
   addFieldAvailability: (day: Days) => void;
   onSubmit: SubmitHandler<ScheduleSheetForm>;
+};
+
+export type UseTrainingBlockDialogReturn = {
+  dialogConfig: TrainingBlockDialogConfig | null;
+  isTrainingBlockDialogOpen: boolean;
+  setIsTrainingBlockDialogOpen: (isTrainingBlockDialogOpen: boolean) => void;
+  openTrainingBlockDialog: (
+    day: Days,
+    start_int: TrainingBlock["start_int"],
+    end_int: TrainingBlock["end_int"],
+    assignedPlayerNames: Player["name"][],
+  ) => void;
 };
 
 export type AuthContextType = {
