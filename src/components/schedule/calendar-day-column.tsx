@@ -1,17 +1,17 @@
 import type { Days, TrainingBlock } from "@/lib/types";
 import { TIMES } from "@/lib/constants";
-import ScheduleCalendarCell from "./schedule-calendar-cell";
+import CalendarCell from "./calendar-cell";
 import { getDayAbbreviation } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import supabase from "@/services/supabase";
 import { useEffect, useState, type JSX } from "react";
-import ScheduleCalendarTrainingBlock from "./schedule-calendar-training-block";
+import CalendarTrainingBlock from "./calendar-training-block";
 
-type ScheduleCalendarDayColumnProps = {
+type CalendarDayColumnProps = {
   day: Days;
 };
 
-export default function ScheduleCalendarDayColumn({ day }: ScheduleCalendarDayColumnProps) {
+export default function CalendarDayColumn({ day }: CalendarDayColumnProps) {
   const { user } = useAuth();
 
   const [trainingBlocks, setTrainingBlocks] = useState<TrainingBlock[]>([]);
@@ -52,7 +52,7 @@ export default function ScheduleCalendarDayColumn({ day }: ScheduleCalendarDayCo
 
     const children: JSX.Element[] = filteredTrainingBlocks.map((filteredTrainingBlock) => {
       return (
-        <ScheduleCalendarTrainingBlock
+        <CalendarTrainingBlock
           key={filteredTrainingBlock.id}
           currentCellStartInt={currentEntry[1]}
           startInt={filteredTrainingBlock.start_int}
@@ -62,9 +62,9 @@ export default function ScheduleCalendarDayColumn({ day }: ScheduleCalendarDayCo
     });
 
     cells.push(
-      <ScheduleCalendarCell cellStartInt={currentEntry[1]} cellEndInt={nextEntry[1]}>
+      <CalendarCell cellStartInt={currentEntry[1]} cellEndInt={nextEntry[1]}>
         {children}
-      </ScheduleCalendarCell>,
+      </CalendarCell>,
     );
   }
 

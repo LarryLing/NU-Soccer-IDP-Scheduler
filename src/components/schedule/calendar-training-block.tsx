@@ -1,16 +1,16 @@
 import { formatTimeWithPeriod } from "@/lib/utils";
 
-type ScheduleCalendarTrainingBlockProps = {
+type CalendarTrainingBlockProps = {
   currentCellStartInt: number;
   startInt: number;
   endInt: number;
 };
 
-export default function ScheduleCalendarTrainingBlock({
+export default function CalendarTrainingBlock({
   currentCellStartInt,
   startInt,
   endInt,
-}: ScheduleCalendarTrainingBlockProps) {
+}: CalendarTrainingBlockProps) {
   const topPercentage = ((startInt - currentCellStartInt) / 60) * 100;
   const heightPercentage = ((endInt - startInt) / 60) * 100;
 
