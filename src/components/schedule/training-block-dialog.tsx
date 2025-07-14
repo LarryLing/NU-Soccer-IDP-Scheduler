@@ -7,17 +7,18 @@ import {
 } from "@/components/ui/dialog";
 import type { UseTrainingBlockDialogReturn } from "@/lib/types";
 import { Calendar, Clock } from "lucide-react";
+import { memo } from "react";
 
 type TrainingBlockDialogProps = Pick<
   UseTrainingBlockDialogReturn,
   "dialogConfig" | "isTrainingBlockDialogOpen" | "setIsTrainingBlockDialogOpen"
 >;
 
-export default function TrainingBlockDialog({
+const TrainingBlockDialog = ({
   dialogConfig,
   isTrainingBlockDialogOpen,
   setIsTrainingBlockDialogOpen,
-}: TrainingBlockDialogProps) {
+}: TrainingBlockDialogProps) => {
   return (
     <Dialog open={isTrainingBlockDialogOpen} onOpenChange={setIsTrainingBlockDialogOpen}>
       <DialogContent>
@@ -46,4 +47,6 @@ export default function TrainingBlockDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default memo(TrainingBlockDialog);

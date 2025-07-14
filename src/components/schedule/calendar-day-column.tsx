@@ -2,7 +2,7 @@ import type { Days, UseTrainingBlockDialogReturn } from "@/lib/types";
 import { TIMES } from "@/lib/constants";
 import CalendarCell from "./calendar-cell";
 import { getDayAbbreviation } from "@/lib/utils";
-import React, { useMemo, type JSX } from "react";
+import { memo, useMemo, type JSX } from "react";
 import CalendarTrainingBlock from "./calendar-training-block";
 import { useTrainingBlocks } from "@/hooks/useTrainingBlocks";
 
@@ -62,4 +62,4 @@ const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnPr
   );
 };
 
-export default React.memo(CalendarDayColumn);
+export default memo(CalendarDayColumn);
