@@ -6,11 +6,7 @@ import {
 } from "@/components/ui/context-menu";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import type { PropsWithChildren } from "react";
-import type {
-  Player,
-  UsePlayersReturn,
-  UsePlayersSheetReturn,
-} from "@/lib/types";
+import type { Player, UsePlayersReturn, UsePlayersSheetReturn } from "@/lib/types";
 import { memo } from "react";
 
 type ActionContextMenuProps = {

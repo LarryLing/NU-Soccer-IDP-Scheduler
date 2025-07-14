@@ -1,21 +1,22 @@
 import { useState, useCallback } from "react";
-import type {
-  Days,
-  Player,
-  ScheduleSheetForm,
-  UseScheduleSheetReturn,
-} from "../lib/types.ts";
+import type { Days, Player, ScheduleSheetForm, UseScheduleSheetReturn } from "../lib/types.ts";
 import { ScheduleFormSchema } from "@/lib/schemas.ts";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formatTime } from "@/lib/utils.ts";
+import {
+  formatTime,
+  formatTimeWithPeriod,
+  hasOverlaps,
+  transformAvailabilities,
+} from "@/lib/utils.ts";
 import { parseTime } from "@/lib/utils.ts";
+import { useAuth } from "./useAuth.ts";
 
 export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
-  const [isScheduleSheetOpen, setIsScheduleSheetOpen] =
-    useState<boolean>(false);
-  const [isSchedulingPlayers, setIsSchedulingPlayers] =
-    useState<boolean>(false);
+  const { user } = useAuth();
+
+  const [isScheduleSheetOpen, setIsScheduleSheetOpen] = useState<boolean>(false);
+  const [isSchedulingPlayers, setIsSchedulingPlayers] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<ScheduleSheetForm>({
@@ -62,10 +63,25 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
     [fields, append],
   );
 
-  const schedulePlayers = useCallback(() => {
+  const onSubmit: SubmitHandler<ScheduleSheetForm> = async (data) => {
+    if (!user) return;
+
+    const transformedAvailabilities = transformAvailabilities(data.fieldAvailabilities);
+
+    const overlap = hasOverlaps(transformedAvailabilities);
+    if (overlap) {
+      const formattedPreviousStartInt = formatTimeWithPeriod(overlap.previous.start_int);
+      const formattedPreviousEndInt = formatTimeWithPeriod(overlap.previous.end_int);
+      const formattedCurrentStartInt = formatTimeWithPeriod(overlap.current.start_int);
+      const formattedCurrentEndInt = formatTimeWithPeriod(overlap.current.end_int);
+      setError(
+        `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`,
+      );
+      return;
+    }
+    console.log(transformAvailabilities);
     console.log(players);
-    throw new Error("Not yet implemented");
-  }, []);
+  };
 
   return {
     isScheduleSheetOpen,
@@ -78,6 +94,6 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
     fieldArray,
     openScheduleSheet,
     addFieldAvailability,
-    schedulePlayers,
+    onSubmit,
   };
 };

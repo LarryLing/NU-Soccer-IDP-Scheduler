@@ -59,9 +59,7 @@ export default function ForgotPasswordCard() {
     <Card className="w-[400px]">
       <CardHeader>
         <CardTitle>Forgot Password</CardTitle>
-        <CardDescription>
-          Enter your email address below to reset your password.
-        </CardDescription>
+        <CardDescription>Enter your email address below to reset your password.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -87,11 +85,7 @@ export default function ForgotPasswordCard() {
               Send Reset Link
             </Button>
             <Link to="/login">
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={isSubmitting || isValidating}
-              >
+              <Button type="button" variant="secondary" disabled={isSubmitting || isValidating}>
                 Go Back
               </Button>
             </Link>

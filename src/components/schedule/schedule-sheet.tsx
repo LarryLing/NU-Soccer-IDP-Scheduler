@@ -9,21 +9,20 @@ import {
 } from "@/components/ui/sheet";
 import { Form } from "@/components/ui/form";
 import { Button } from "../ui/button";
-import type { ScheduleSheetForm, UseScheduleSheetReturn } from "@/lib/types";
+import type { UseScheduleSheetReturn } from "@/lib/types";
 import ErrorAlert from "../misc/error-alert";
 import { DAYS } from "@/lib/constants";
-import AvailabilityDay from "./availability-day";
-import type { SubmitHandler } from "react-hook-form";
+import FieldAvailabilityDay from "./field-availability-day";
 
 type ScheduleSheetProps = Pick<
   UseScheduleSheetReturn,
   | "isScheduleSheetOpen"
   | "setIsScheduleSheetOpen"
   | "error"
-  | "setError"
   | "form"
   | "fieldArray"
   | "addFieldAvailability"
+  | "onSubmit"
 >;
 
 export default function ScheduleSheet({
@@ -33,6 +32,7 @@ export default function ScheduleSheet({
   form,
   fieldArray: { fields, remove },
   addFieldAvailability,
+  onSubmit,
 }: ScheduleSheetProps) {
   const {
     control,
@@ -40,18 +40,12 @@ export default function ScheduleSheet({
     formState: { isSubmitting, isValidating },
   } = form;
 
-  const onSubmit: SubmitHandler<ScheduleSheetForm> = async (data) => {
-    console.log(data);
-  };
-
   return (
     <Sheet open={isScheduleSheetOpen} onOpenChange={setIsScheduleSheetOpen}>
       <SheetContent className="overflow-y-scroll">
         <SheetHeader>
           <SheetTitle>Schedule Players</SheetTitle>
-          <SheetDescription>
-            Create a weekly schedule for the players.
-          </SheetDescription>
+          <SheetDescription>Create a weekly schedule for the players.</SheetDescription>
         </SheetHeader>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -61,7 +55,7 @@ export default function ScheduleSheet({
                   .map((field, idx) => ({ ...field, originalIndex: idx }))
                   .filter((field) => field.day === day);
                 return (
-                  <AvailabilityDay
+                  <FieldAvailabilityDay
                     key={day}
                     day={day}
                     dayFields={dayFields}
@@ -78,11 +72,7 @@ export default function ScheduleSheet({
                 Schedule Players
               </Button>
               <SheetClose asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isSubmitting || isValidating}
-                >
+                <Button type="button" variant="outline" disabled={isSubmitting || isValidating}>
                   Close
                 </Button>
               </SheetClose>

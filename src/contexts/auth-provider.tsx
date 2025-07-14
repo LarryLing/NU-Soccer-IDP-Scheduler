@@ -1,10 +1,4 @@
-import {
-  type PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import type { UserData } from "../lib/types.ts";
 import supabase from "@/services/supabase.ts";
 import { AuthContext } from "@/contexts/auth-context.tsx";
@@ -82,15 +76,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       requestPasswordReset,
       resetPassword,
     }),
-    [
-      user,
-      isLoading,
-      signup,
-      login,
-      logout,
-      requestPasswordReset,
-      resetPassword,
-    ],
+    [user, isLoading, signup, login, logout, requestPasswordReset, resetPassword],
   );
 
   return (

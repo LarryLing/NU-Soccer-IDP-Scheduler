@@ -59,9 +59,7 @@ export default function SignUpCard() {
     <Card className="w-[400px]">
       <CardHeader>
         <CardTitle>Sign Up</CardTitle>
-        <CardDescription>
-          Enter your email and password below to create an account.
-        </CardDescription>
+        <CardDescription>Enter your email and password below to create an account.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -88,11 +86,7 @@ export default function SignUpCard() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your password"
-                      {...field}
-                    />
+                    <Input type="password" placeholder="Enter your password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -105,11 +99,7 @@ export default function SignUpCard() {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Confirm your password"
-                      {...field}
-                    />
+                    <Input type="password" placeholder="Confirm your password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,11 +111,7 @@ export default function SignUpCard() {
               Sign Up
             </Button>
             <Link to="/login">
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={isSubmitting || isValidating}
-              >
+              <Button type="button" variant="secondary" disabled={isSubmitting || isValidating}>
                 Go Back
               </Button>
             </Link>

@@ -22,9 +22,9 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const playersReturn = usePlayers();
-  const { players, deletePlayer } = playersReturn;
+  const { players, insertPlayer, updatePlayer, deletePlayer } = playersReturn;
 
-  const playerSheetReturn = usePlayerSheet(players);
+  const playerSheetReturn = usePlayerSheet(players, insertPlayer, updatePlayer);
   const { openPlayerSheet } = playerSheetReturn;
 
   const scheduleSheetReturn = useScheduleSheet(players);
@@ -34,9 +34,7 @@ function Index() {
 
   const [display, setDisplay] = useState<"players" | "schedule">("players");
 
-  const selectedPlayerIds = table
-    .getFilteredSelectedRowModel()
-    .rows.map((row) => row.original.id);
+  const selectedPlayerIds = table.getFilteredSelectedRowModel().rows.map((row) => row.original.id);
 
   return (
     <div className="flex flex-col h-screen gap-y-4">
@@ -62,9 +60,7 @@ function Index() {
           />
         )}
       </section>
-      {display === "players" && (
-        <PlayerSheet {...playerSheetReturn} {...playersReturn} />
-      )}
+      {display === "players" && <PlayerSheet {...playerSheetReturn} />}
       {display === "schedule" && <ScheduleSheet {...scheduleSheetReturn} />}
     </div>
   );

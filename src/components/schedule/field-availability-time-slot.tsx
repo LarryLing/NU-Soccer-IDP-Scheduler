@@ -11,7 +11,7 @@ type AvailabilityTimeSlotProps = {
   control: Control<ScheduleSheetForm>;
 };
 
-const AvailabilityTimeSlot = memo(function AvailabilityTimeSlot({
+const AvailabilityTimeSlot = memo(function FieldAvailabilityTimeSlot({
   originalIndex,
   remove,
   control,

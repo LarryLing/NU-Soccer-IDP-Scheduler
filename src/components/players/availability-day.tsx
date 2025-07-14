@@ -2,11 +2,7 @@ import type { Days, PlayerSheetForm, UsePlayersSheetReturn } from "@/lib/types";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { PlusIcon } from "lucide-react";
-import type {
-  Control,
-  FieldArrayWithId,
-  UseFieldArrayRemove,
-} from "react-hook-form";
+import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
 import AvailabilityTimeSlot from "./availability-time-slot";
 
 type AvailabilityDayProps = {
@@ -47,12 +43,7 @@ export default function AvailabilityDay({
           ))
         )}
       </div>
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={handleAddAvailability}
-      >
+      <Button type="button" variant="outline" size="sm" onClick={handleAddAvailability}>
         <PlusIcon />
         Add Availability
       </Button>

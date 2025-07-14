@@ -32,9 +32,7 @@ export default function ActionBar({
       .getFilteredSelectedRowModel()
       .rows.map((row) => row.original.id);
 
-    const removePlayersPromise = selectedPlayerIds.map((playerId) =>
-      deletePlayer(playerId),
-    );
+    const removePlayersPromise = selectedPlayerIds.map((playerId) => deletePlayer(playerId));
 
     await Promise.all(removePlayersPromise);
     table.resetRowSelection();

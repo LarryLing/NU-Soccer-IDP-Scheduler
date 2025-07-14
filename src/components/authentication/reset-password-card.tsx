@@ -74,11 +74,7 @@ export default function ResetPasswordCard() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your password"
-                      {...field}
-                    />
+                    <Input type="password" placeholder="Enter your password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -91,11 +87,7 @@ export default function ResetPasswordCard() {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Confirm your password"
-                      {...field}
-                    />
+                    <Input type="password" placeholder="Confirm your password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -107,11 +99,7 @@ export default function ResetPasswordCard() {
               Reset Password
             </Button>
             <Link to="/login">
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={isSubmitting || isValidating}
-              >
+              <Button type="button" variant="secondary" disabled={isSubmitting || isValidating}>
                 Go Back
               </Button>
             </Link>

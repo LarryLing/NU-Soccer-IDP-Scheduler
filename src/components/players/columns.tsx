@@ -13,8 +13,7 @@ export const columns: ColumnDef<Player>[] = [
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -81,11 +80,7 @@ export const columns: ColumnDef<Player>[] = [
     cell: ({ row }) => {
       const availabilities: Availability[] = row.getValue("availabilities");
       return DAYS.map((day) => (
-        <AvailabilityHoverCard
-          key={day}
-          day={day}
-          availabilities={availabilities}
-        />
+        <AvailabilityHoverCard key={day} day={day} availabilities={availabilities} />
       ));
     },
   },

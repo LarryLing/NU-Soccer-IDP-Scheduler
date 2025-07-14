@@ -17,20 +17,14 @@ export const usePlayers = (): UsePlayersReturn => {
   }, []);
 
   const updatePlayer = useCallback(async (player: Player) => {
-    const { error } = await supabase
-      .from("players")
-      .update(player)
-      .eq("id", player.id);
+    const { error } = await supabase.from("players").update(player).eq("id", player.id);
     if (error) {
       console.error("Error updating player", error);
     }
   }, []);
 
   const deletePlayer = useCallback(async (playerId: string) => {
-    const { error } = await supabase
-      .from("players")
-      .delete()
-      .eq("id", playerId);
+    const { error } = await supabase.from("players").delete().eq("id", playerId);
     if (error) {
       console.error("Error deleting player", error);
     }
@@ -79,9 +73,7 @@ export const usePlayers = (): UsePlayersReturn => {
         (message) => {
           setPlayers((prev) =>
             prev.map((player) =>
-              player.id === message.payload.id
-                ? (message.payload as Player)
-                : player,
+              player.id === message.payload.id ? (message.payload as Player) : player,
             ),
           );
         },
@@ -92,9 +84,7 @@ export const usePlayers = (): UsePlayersReturn => {
           event: "DELETE",
         },
         (message) => {
-          setPlayers((prev) =>
-            prev.filter((player) => player.id !== message.payload.id),
-          );
+          setPlayers((prev) => prev.filter((player) => player.id !== message.payload.id));
         },
       )
       .subscribe();

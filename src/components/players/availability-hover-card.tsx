@@ -1,8 +1,4 @@
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Badge } from "../ui/badge";
 import { formatTimeWithPeriod } from "@/lib/utils";
 import type { Days, Availability } from "@/lib/types";
@@ -12,13 +8,8 @@ type AvailabilityHoverCardProps = {
   availabilities: Availability[];
 };
 
-export default function AvailabilityHoverCard({
-  day,
-  availabilities,
-}: AvailabilityHoverCardProps) {
-  const dayAvailabilities = availabilities.filter(
-    (availability) => availability.day === day,
-  );
+export default function AvailabilityHoverCard({ day, availabilities }: AvailabilityHoverCardProps) {
+  const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
   if (dayAvailabilities.length === 0) return null;
 

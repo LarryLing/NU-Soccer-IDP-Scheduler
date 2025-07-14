@@ -1,18 +1,7 @@
-import type {
-  Player,
-  UsePlayersReturn,
-  UsePlayersSheetReturn,
-} from "@/lib/types";
+import type { Player, UsePlayersReturn, UsePlayersSheetReturn } from "@/lib/types";
 import { flexRender } from "@tanstack/react-table";
 import type { Table as TanstackTable } from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { ActionContextMenu } from "./action-context-menu";
 
 type PlayersTableProps = Pick<UsePlayersReturn, "deletePlayer"> &
@@ -38,10 +27,7 @@ export function PlayersTable({
                   <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                      : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
               })}
@@ -60,10 +46,7 @@ export function PlayersTable({
                 <TableRow data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>

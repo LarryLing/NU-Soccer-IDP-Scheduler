@@ -16,39 +16,23 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import type { SubmitHandler } from "react-hook-form";
 import { DAYS, POSITIONS } from "@/lib/constants";
-import type {
-  Availability,
-  PlayerSheetForm,
-  UsePlayersReturn,
-  UsePlayersSheetReturn,
-} from "@/lib/types";
-import { useAuth } from "@/hooks/useAuth";
-import { formatTimeWithPeriod, parseTime } from "@/lib/utils";
+import type { UsePlayersSheetReturn } from "@/lib/types";
 import AvailabilityDay from "./availability-day";
 import ErrorAlert from "../misc/error-alert";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 
 type PlayerSheetProps = Pick<
   UsePlayersSheetReturn,
   | "form"
   | "playerMetadata"
   | "isPlayerSheetOpen"
-  | "error"
-  | "setError"
   | "setIsPlayerSheetOpen"
+  | "error"
   | "fieldArray"
   | "addAvailability"
-> &
-  Pick<UsePlayersReturn, "insertPlayer" | "updatePlayer">;
+  | "onSubmit"
+>;
 
 export default function PlayerSheet({
   form,
@@ -56,82 +40,23 @@ export default function PlayerSheet({
   isPlayerSheetOpen,
   setIsPlayerSheetOpen,
   error,
-  setError,
   fieldArray: { fields, remove },
   addAvailability,
-  insertPlayer,
-  updatePlayer,
+  onSubmit,
 }: PlayerSheetProps) {
-  const { user } = useAuth();
-
   const {
     handleSubmit,
     control,
     formState: { isSubmitting, isValidating },
   } = form;
 
-  const onSubmit: SubmitHandler<PlayerSheetForm> = async (data) => {
-    if (!user) return;
-
-    const sortedAvailabilities: Availability[] = data.availabilities
-      .map((availability) => {
-        return {
-          ...availability,
-          start_int: parseTime(availability.start),
-          end_int: parseTime(availability.end),
-        };
-      })
-      .sort((a, b) => a.start_int - b.start_int);
-
-    for (let i = 0; i < DAYS.length; i++) {
-      const day = DAYS[i];
-      const dayAvailabilities = sortedAvailabilities.filter(
-        (availability) => availability.day === day,
-      );
-
-      for (let i = 1; i < dayAvailabilities.length; i++) {
-        const previous = dayAvailabilities[i - 1];
-        const current = dayAvailabilities[i];
-
-        if (previous && current && previous.end_int > current.start_int) {
-          setError(
-            `Time overlap detected on ${day}: ${formatTimeWithPeriod(previous.start_int)} - ${formatTimeWithPeriod(previous.end_int)} overlaps with ${formatTimeWithPeriod(current.start_int)} - ${formatTimeWithPeriod(current.end_int)}`,
-          );
-          return;
-        }
-      }
-    }
-
-    if (!playerMetadata) {
-      await insertPlayer({
-        ...data,
-        id: crypto.randomUUID(),
-        user_id: user.id,
-        training_block_id: null,
-        availabilities: sortedAvailabilities,
-      });
-    } else {
-      await updatePlayer({
-        ...playerMetadata,
-        ...data,
-        availabilities: sortedAvailabilities,
-      });
-    }
-
-    setIsPlayerSheetOpen(false);
-  };
-
   return (
     <Sheet open={isPlayerSheetOpen} onOpenChange={setIsPlayerSheetOpen}>
       <SheetContent className="overflow-y-scroll">
         <SheetHeader>
-          <SheetTitle>
-            {playerMetadata ? "Edit Player" : "Add Player"}
-          </SheetTitle>
+          <SheetTitle>{playerMetadata ? "Edit Player" : "Add Player"}</SheetTitle>
           <SheetDescription>
-            {playerMetadata
-              ? "Edit the selected player."
-              : "Add a new player to the table."}
+            {playerMetadata ? "Edit the selected player." : "Add a new player to the table."}
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
@@ -176,10 +101,7 @@ export default function PlayerSheet({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Position</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select a position" />
@@ -219,11 +141,7 @@ export default function PlayerSheet({
                 {playerMetadata ? "Save Player" : "Add Player"}
               </Button>
               <SheetClose asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isSubmitting || isValidating}
-                >
+                <Button type="button" variant="outline" disabled={isSubmitting || isValidating}>
                   Close
                 </Button>
               </SheetClose>
