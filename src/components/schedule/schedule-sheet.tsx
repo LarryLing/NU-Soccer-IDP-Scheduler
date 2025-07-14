@@ -13,6 +13,8 @@ import type { UseScheduleSheetReturn } from "@/lib/types";
 import ErrorAlert from "../misc/error-alert";
 import { DAYS } from "@/lib/constants";
 import FieldAvailabilityDay from "./field-availability-day";
+import { Label } from "../ui/label";
+import { Select, SelectTrigger, SelectValue } from "../ui/select";
 
 type ScheduleSheetProps = Pick<
   UseScheduleSheetReturn,
@@ -50,6 +52,14 @@ export default function ScheduleSheet({
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6 px-4 mb-4">
+              <div className="flex flex-col gap-2">
+                <Label>Training Block Duration</Label>
+                <Select>
+                  <SelectTrigger disabled className="w-full">
+                    <SelectValue placeholder="30 minutes" />
+                  </SelectTrigger>
+                </Select>
+              </div>
               {DAYS.map((day) => {
                 const dayFields = fields
                   .map((field, idx) => ({ ...field, originalIndex: idx }))
