@@ -29,7 +29,7 @@ export default function AvailabilityHoverCard({ day, availabilities }: Availabil
           {day} ({dayAvailabilities.length})
         </Badge>
       </HoverCardTrigger>
-      <HoverCardContent className="p-4 w-auto">
+      <HoverCardContent className="p-2 w-auto">
         {dayAvailabilities.map((dayAvailability, index) => (
           <p key={index} className="text-sm text-muted-foreground">
             {formatTimeWithPeriod(dayAvailability.start_int)} -{" "}

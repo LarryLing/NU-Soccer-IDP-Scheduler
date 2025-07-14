@@ -31,7 +31,7 @@ export default function FieldAvailabilityDay({
       <Label>{day}</Label>
       <div className="flex flex-col justify-center gap-2 text-sm border py-2 px-3 min-h-[54px]">
         {dayFields.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No field availabilities</p>
+          <i className="text-sm text-muted-foreground">No field availabilities</i>
         ) : (
           dayFields.map((field) => (
             <FieldAvailabilityTimeSlot

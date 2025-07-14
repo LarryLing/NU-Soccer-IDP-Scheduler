@@ -19,6 +19,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   const [isScheduleSheetOpen, setIsScheduleSheetOpen] = useState<boolean>(false);
   const [isSchedulingPlayers, setIsSchedulingPlayers] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<ScheduleSheetForm>({
     resolver: zodResolver(ScheduleFormSchema),
@@ -72,23 +73,32 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
       return;
     }
 
-    const transformedAvailabilities = transformAvailabilities(data.fieldAvailabilities);
+    try {
+      setIsLoading(true);
 
-    const overlap = hasOverlaps(transformedAvailabilities);
-    if (overlap) {
-      const formattedPreviousStartInt = formatTimeWithPeriod(overlap.previous.start_int);
-      const formattedPreviousEndInt = formatTimeWithPeriod(overlap.previous.end_int);
-      const formattedCurrentStartInt = formatTimeWithPeriod(overlap.current.start_int);
-      const formattedCurrentEndInt = formatTimeWithPeriod(overlap.current.end_int);
-      setError(
-        `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`,
-      );
-      return;
+      const transformedAvailabilities = transformAvailabilities(data.fieldAvailabilities);
+
+      const overlap = hasOverlaps(transformedAvailabilities);
+      if (overlap) {
+        const formattedPreviousStartInt = formatTimeWithPeriod(overlap.previous.start_int);
+        const formattedPreviousEndInt = formatTimeWithPeriod(overlap.previous.end_int);
+        const formattedCurrentStartInt = formatTimeWithPeriod(overlap.current.start_int);
+        const formattedCurrentEndInt = formatTimeWithPeriod(overlap.current.end_int);
+        setError(
+          `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`,
+        );
+        return;
+      }
+
+      await createTrainingBlocks(user.id, transformedAvailabilities, 30);
+
+      setIsScheduleSheetOpen(false);
+    } catch (error) {
+      console.log("Error creating schedule", error);
+    } finally {
+      setIsLoading(false);
     }
 
-    await createTrainingBlocks(user.id, transformedAvailabilities, 30);
-
-    setIsScheduleSheetOpen(false);
     console.log(players);
   };
 
@@ -99,6 +109,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
     setIsSchedulingPlayers,
     error,
     setError,
+    isLoading,
     form,
     fieldArray,
     openScheduleSheet,
