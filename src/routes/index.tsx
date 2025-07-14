@@ -4,6 +4,7 @@ import { columns } from "@/components/players/columns";
 import PlayerSheet from "@/components/players/player-sheet";
 import { PlayersTable } from "@/components/players/players-table";
 import ScheduleSheet from "@/components/schedule/schedule-sheet";
+import TrainingBlockCalendar from "@/components/schedule/schedule-calendar";
 import { usePlayers } from "@/hooks/usePlayers";
 import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 import { usePlayersTable } from "@/hooks/usePlayersTable";
@@ -59,6 +60,7 @@ function Index() {
             openPlayerSheet={openPlayerSheet}
           />
         )}
+        {display === "schedule" && <TrainingBlockCalendar />}
       </section>
       {display === "players" && <PlayerSheet {...playerSheetReturn} />}
       {display === "schedule" && <ScheduleSheet {...scheduleSheetReturn} />}
