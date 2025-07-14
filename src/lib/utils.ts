@@ -1,7 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Availability, AvailabilitySheetForm } from "./types";
+import type { Availability, AvailabilitySheetForm, Days, UserData } from "./types";
 import { DAYS } from "./constants";
+import supabase from "@/services/supabase";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -42,9 +43,9 @@ export const hasOverlaps = (availabilities: Availability[]) => {
     const day = DAYS[i];
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
-    for (let i = 1; i < dayAvailabilities.length; i++) {
-      const previous = dayAvailabilities[i - 1];
-      const current = dayAvailabilities[i];
+    for (let j = 1; j < dayAvailabilities.length; j++) {
+      const previous = dayAvailabilities[j - 1];
+      const current = dayAvailabilities[j];
 
       if (previous && current && previous.end_int > current.start_int) {
         return {
@@ -57,4 +58,56 @@ export const hasOverlaps = (availabilities: Availability[]) => {
   }
 
   return null;
+};
+
+export const createTrainingBlocks = async (
+  userId: UserData["id"],
+  availabilities: Availability[],
+  trainingBlockDuration: number,
+) => {
+  const createTrainingBlockPromises = [];
+
+  for (let i = 0; i < DAYS.length; i++) {
+    const day = DAYS[i];
+    const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
+
+    for (let j = 0; j < dayAvailabilities.length; j++) {
+      let currentInt = dayAvailabilities[j]?.start_int;
+      const endInt = dayAvailabilities[j]?.end_int;
+
+      if (currentInt === undefined || endInt === undefined) continue;
+
+      while (currentInt < endInt) {
+        createTrainingBlockPromises.push(
+          supabase.from("training_blocks").insert({
+            user_id: userId,
+            day: day,
+            start: formatTime(currentInt),
+            end: formatTime(currentInt + trainingBlockDuration),
+            start_int: currentInt,
+            end_int: currentInt + trainingBlockDuration,
+          }),
+        );
+        currentInt += trainingBlockDuration;
+      }
+    }
+  }
+
+  await supabase.from("training_blocks").delete().eq("user_id", userId);
+  await Promise.all(createTrainingBlockPromises);
+};
+
+export const getDayAbbreviation = (day: Days) => {
+  switch (day) {
+    case "Monday":
+      return "Mo";
+    case "Tuesday":
+      return "Tu";
+    case "Wednesday":
+      return "We";
+    case "Thursday":
+      return "Th";
+    case "Friday":
+      return "Fr";
+  }
 };

@@ -51,7 +51,7 @@ function Index() {
           openScheduleSheet={openScheduleSheet}
         />
       </section>
-      <section className="sm:px-8 px-4">
+      <section className="sm:px-8 px-4 pb-4">
         {display === "players" && (
           <PlayersTable
             table={table}

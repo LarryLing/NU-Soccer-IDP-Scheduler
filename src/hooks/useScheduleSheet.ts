@@ -7,6 +7,7 @@ import {
   formatTime,
   formatTimeWithPeriod,
   hasOverlaps,
+  createTrainingBlocks,
   transformAvailabilities,
 } from "@/lib/utils.ts";
 import { parseTime } from "@/lib/utils.ts";
@@ -66,6 +67,11 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   const onSubmit: SubmitHandler<ScheduleSheetForm> = async (data) => {
     if (!user) return;
 
+    if (data.fieldAvailabilities.length === 0) {
+      setIsScheduleSheetOpen(false);
+      return;
+    }
+
     const transformedAvailabilities = transformAvailabilities(data.fieldAvailabilities);
 
     const overlap = hasOverlaps(transformedAvailabilities);
@@ -79,7 +85,10 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
       );
       return;
     }
-    console.log(transformAvailabilities);
+
+    await createTrainingBlocks(user.id, transformedAvailabilities, 30);
+
+    setIsScheduleSheetOpen(false);
     console.log(players);
   };
 
