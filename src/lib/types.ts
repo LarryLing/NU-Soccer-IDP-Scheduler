@@ -78,18 +78,6 @@ export type UseScheduleSheetReturn = {
   onSubmit: SubmitHandler<ScheduleSheetForm>;
 };
 
-export type UseTrainingBlockDialogReturn = {
-  dialogConfig: TrainingBlockDialogConfig | null;
-  isTrainingBlockDialogOpen: boolean;
-  setIsTrainingBlockDialogOpen: (isTrainingBlockDialogOpen: boolean) => void;
-  openTrainingBlockDialog: (
-    day: Days,
-    start_int: TrainingBlock["start_int"],
-    end_int: TrainingBlock["end_int"],
-    assignedPlayerNames: Player["name"][],
-  ) => void;
-};
-
 export type AuthContextType = {
   user: UserData | null;
   isLoading: boolean;

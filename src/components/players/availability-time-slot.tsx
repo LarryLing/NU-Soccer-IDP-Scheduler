@@ -11,11 +11,7 @@ type AvailabilityTimeSlotProps = {
   control: Control<PlayerSheetForm>;
 };
 
-const AvailabilityTimeSlot = memo(function AvailabilityTimeSlot({
-  originalIndex,
-  remove,
-  control,
-}: AvailabilityTimeSlotProps) {
+const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTimeSlotProps) => {
   const handleRemove = () => {
     remove(originalIndex);
   };
@@ -52,6 +48,6 @@ const AvailabilityTimeSlot = memo(function AvailabilityTimeSlot({
       </Button>
     </div>
   );
-});
+};
 
-export default AvailabilityTimeSlot;
+export default memo(AvailabilityTimeSlot);

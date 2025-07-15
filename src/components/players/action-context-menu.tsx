@@ -15,12 +15,12 @@ type ActionContextMenuProps = {
   openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
 } & PropsWithChildren;
 
-export const ActionContextMenu = memo(function ActionContextMenu({
+export const ActionContextMenu = ({
   children,
   id,
   deletePlayer,
   openPlayerSheet,
-}: ActionContextMenuProps) {
+}: ActionContextMenuProps) => {
   const handleDeletePlayer = async () => {
     await deletePlayer(id);
   };
@@ -44,4 +44,6 @@ export const ActionContextMenu = memo(function ActionContextMenu({
       </ContextMenuContent>
     </ContextMenu>
   );
-});
+};
+
+export default memo(ActionContextMenu);

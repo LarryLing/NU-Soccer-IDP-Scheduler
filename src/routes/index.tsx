@@ -60,7 +60,7 @@ function Index() {
             openPlayerSheet={openPlayerSheet}
           />
         )}
-        {display === "schedule" && <Calendar />}
+        {display === "schedule" && <Calendar players={players} />}
       </section>
       {display === "players" && <PlayerSheet {...playerSheetReturn} />}
       {display === "schedule" && <ScheduleSheet {...scheduleSheetReturn} />}

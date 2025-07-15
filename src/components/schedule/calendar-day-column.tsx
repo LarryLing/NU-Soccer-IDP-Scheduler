@@ -1,17 +1,17 @@
-import type { Days, UseTrainingBlockDialogReturn } from "@/lib/types";
+import type { Days, Player } from "@/lib/types";
 import { TIMES } from "@/lib/constants";
 import CalendarCell from "./calendar-cell";
 import { getDayAbbreviation } from "@/lib/utils";
 import { memo, useMemo, type JSX } from "react";
-import CalendarTrainingBlock from "./calendar-training-block";
+import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
 import { useTrainingBlocks } from "@/hooks/useTrainingBlocks";
 
 type CalendarDayColumnProps = {
   day: Days;
-  openTrainingBlockDialog: UseTrainingBlockDialogReturn["openTrainingBlockDialog"];
+  players: Player[];
 };
 
-const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnProps) => {
+const CalendarDayColumn = ({ day, players }: CalendarDayColumnProps) => {
   const { trainingBlocks } = useTrainingBlocks(day);
 
   const dayAbbreviation = getDayAbbreviation(day);
@@ -30,27 +30,25 @@ const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnPr
       );
 
       const children: JSX.Element[] = filteredTrainingBlocks.map((filteredTrainingBlock) => {
+        const assignedPlayerNames = players
+          .filter((player) => player.training_block_id === filteredTrainingBlock.id)
+          .map((player) => player.name);
+
         return (
-          <CalendarTrainingBlock
+          <CalendarTrainingBlockPopover
             key={filteredTrainingBlock.id}
             currentCellStartInt={currentEntry[1]}
-            openTrainingBlockDialog={openTrainingBlockDialog}
+            assignedPlayerNames={assignedPlayerNames}
             {...filteredTrainingBlock}
           />
         );
       });
 
       return (
-        <CalendarCell
-          key={`${day}.${currentEntry[0]}.${nextEntry[0]}`}
-          cellStartInt={currentEntry[1]}
-          cellEndInt={nextEntry[1]}
-        >
-          {children}
-        </CalendarCell>
+        <CalendarCell key={`${day}.${currentEntry[0]}.${nextEntry[0]}`}>{children}</CalendarCell>
       );
     });
-  }, [trainingBlocks]);
+  }, [trainingBlocks, players]);
 
   return (
     <div className="flex flex-col h-full">
