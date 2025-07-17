@@ -2,6 +2,7 @@ import { TIMES } from "@/lib/constants";
 
 export default function CalendarTimesColumn() {
   const timesKeys = Object.keys(TIMES);
+
   return (
     <div className="flex flex-col h-full pr-2">
       {timesKeys.map((time) => (

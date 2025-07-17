@@ -9,14 +9,15 @@ import type {
   UseScheduleSheetReturn,
 } from "@/lib/types";
 
-type ActionBarProps = Pick<UsePlayersReturn, "deletePlayer"> &
-  Pick<UsePlayersSheetReturn, "openPlayerSheet"> &
-  Pick<UseScheduleSheetReturn, "openScheduleSheet"> & {
-    display: "players" | "schedule";
-    setDisplay: (display: "players" | "schedule") => void;
-    selectedPlayerIds: string[];
-    table: Table<Player>;
-  };
+type ActionBarProps = {
+  display: "players" | "schedule";
+  setDisplay: (display: "players" | "schedule") => void;
+  selectedPlayerIds: string[];
+  table: Table<Player>;
+  deletePlayer: UsePlayersReturn["deletePlayer"];
+  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
+  openScheduleSheet: UseScheduleSheetReturn["openScheduleSheet"];
+};
 
 export default function ActionBar({
   display,

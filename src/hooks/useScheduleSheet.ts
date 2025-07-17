@@ -6,9 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   formatTime,
   formatTimeWithPeriod,
-  hasOverlaps,
+  findOverlap,
   createTrainingBlocks,
   transformAvailabilities,
+  assignPlayers,
 } from "@/lib/utils.ts";
 import { parseTime } from "@/lib/utils.ts";
 import { useAuth } from "./useAuth.ts";
@@ -45,6 +46,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
     (day: Days) => {
       const dayFields = fields.filter((field) => field.day === day);
       const lastField = dayFields[dayFields.length - 1];
+
       if (!lastField) {
         append({
           day,
@@ -53,9 +55,11 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         });
         return;
       }
+
       const endInt = parseTime(lastField.end);
       const nextStartInt = Math.min(endInt + 60, 1439);
       const nextEndInt = Math.min(endInt + 120, 1439);
+
       append({
         day,
         start: formatTime(nextStartInt),
@@ -78,7 +82,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
 
       const transformedAvailabilities = transformAvailabilities(data.fieldAvailabilities);
 
-      const overlap = hasOverlaps(transformedAvailabilities);
+      const overlap = findOverlap(transformedAvailabilities);
       if (overlap) {
         const formattedPreviousStartInt = formatTimeWithPeriod(overlap.previous.start_int);
         const formattedPreviousEndInt = formatTimeWithPeriod(overlap.previous.end_int);
@@ -90,16 +94,20 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         return;
       }
 
-      await createTrainingBlocks(user.id, transformedAvailabilities, 30);
+      const createdTrainingBlocks = await createTrainingBlocks(
+        user.id,
+        transformedAvailabilities,
+        30,
+      );
+
+      await assignPlayers(players, createdTrainingBlocks);
 
       setIsScheduleSheetOpen(false);
-    } catch (error) {
-      console.log("Error creating schedule", error);
+    } catch {
+      setError("Something went wrong when creating the schedule. Please try again.");
     } finally {
       setIsLoading(false);
     }
-
-    console.log(players);
   };
 
   return {

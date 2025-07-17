@@ -1,6 +1,13 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Availability, AvailabilitySheetForm, Days, UserData } from "./types";
+import type {
+  Availability,
+  AvailabilitySheetForm,
+  Days,
+  Player,
+  TrainingBlock,
+  UserData,
+} from "./types";
 import { DAYS } from "./constants";
 import supabase from "@/services/supabase";
 
@@ -38,16 +45,17 @@ export const transformAvailabilities = (availabilities: AvailabilitySheetForm[])
     .sort((a, b) => a.start_int - b.start_int);
 };
 
-export const hasOverlaps = (availabilities: Availability[]) => {
-  for (let i = 0; i < DAYS.length; i++) {
-    const day = DAYS[i];
+export const findOverlap = (availabilities: Availability[]) => {
+  for (const day in DAYS) {
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
     for (let j = 1; j < dayAvailabilities.length; j++) {
       const previous = dayAvailabilities[j - 1];
       const current = dayAvailabilities[j];
 
-      if (previous && current && previous.end_int > current.start_int) {
+      if (!previous || !current) continue;
+
+      if (previous.end_int > current.start_int) {
         return {
           day,
           previous,
@@ -65,10 +73,10 @@ export const createTrainingBlocks = async (
   availabilities: Availability[],
   trainingBlockDuration: number,
 ) => {
+  const createdTrainingBlocks: TrainingBlock[] = [];
   const createTrainingBlockPromises = [];
 
-  for (let i = 0; i < DAYS.length; i++) {
-    const day = DAYS[i];
+  for (const day in DAYS) {
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
     for (let j = 0; j < dayAvailabilities.length; j++) {
@@ -78,23 +86,43 @@ export const createTrainingBlocks = async (
       if (currentInt === undefined || endInt === undefined) continue;
 
       while (currentInt < endInt) {
+        const createdTrainingBlock: TrainingBlock = {
+          id: crypto.randomUUID(),
+          user_id: userId,
+          day: day as Days,
+          start: formatTime(currentInt),
+          end: formatTime(currentInt + trainingBlockDuration),
+          start_int: currentInt,
+          end_int: currentInt + trainingBlockDuration,
+        };
+        createdTrainingBlocks.push(createdTrainingBlock);
         createTrainingBlockPromises.push(
-          supabase.from("training_blocks").insert({
-            user_id: userId,
-            day: day,
-            start: formatTime(currentInt),
-            end: formatTime(currentInt + trainingBlockDuration),
-            start_int: currentInt,
-            end_int: currentInt + trainingBlockDuration,
-          }),
+          supabase.from("training_blocks").insert(createdTrainingBlock),
         );
         currentInt += trainingBlockDuration;
       }
     }
   }
 
-  await supabase.from("training_blocks").delete().eq("user_id", userId);
+  const { error: deleteError } = await supabase
+    .from("training_blocks")
+    .delete()
+    .eq("user_id", userId);
+
+  if (deleteError) {
+    console.log("Error creating schedule", deleteError);
+    throw deleteError;
+  }
+
   await Promise.all(createTrainingBlockPromises);
+
+  return createdTrainingBlocks;
+};
+
+export const assignPlayers = async (players: Player[], trainingBlocks: TrainingBlock[]) => {
+  console.log(players);
+  console.log(trainingBlocks);
+  throw new Error("Not implemented");
 };
 
 export const getDayAbbreviation = (day: Days) => {

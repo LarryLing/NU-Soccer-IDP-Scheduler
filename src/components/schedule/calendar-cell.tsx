@@ -1,7 +1,5 @@
 import type { PropsWithChildren } from "react";
 
-type CalendarCellProps = PropsWithChildren;
-
-export default function CalendarCell({ children }: CalendarCellProps) {
-  return <div className="relative h-full border-b border-dashed text-sm">{children}</div>;
+export default function CalendarCell({ children }: PropsWithChildren) {
+  return <div className="relative h-full border-b border-dashed">{children}</div>;
 }

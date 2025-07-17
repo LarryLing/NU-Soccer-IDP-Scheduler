@@ -4,11 +4,12 @@ import type { Table as TanstackTable } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { ActionContextMenu } from "./action-context-menu";
 
-type PlayersTableProps = Pick<UsePlayersReturn, "deletePlayer"> &
-  Pick<UsePlayersSheetReturn, "openPlayerSheet"> & {
-    table: TanstackTable<Player>;
-    numColumns: number;
-  };
+type PlayersTableProps = {
+  table: TanstackTable<Player>;
+  numColumns: number;
+  deletePlayer: UsePlayersReturn["deletePlayer"];
+  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
+};
 
 export function PlayersTable({
   table,

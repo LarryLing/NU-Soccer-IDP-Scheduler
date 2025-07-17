@@ -29,7 +29,9 @@ export default function CalendarTrainingBlockPopover({
           }}
         >
           {assignedPlayerNames.length === 0 ? (
-            <i className="text-sm text-muted-foreground">No players assigned</i>
+            <i className="text-sm text-muted-foreground text-nowrap truncate">
+              No players assigned
+            </i>
           ) : (
             <p className="text-sm text-nowrap truncate">{assignedPlayerNames.join(", ")}</p>
           )}

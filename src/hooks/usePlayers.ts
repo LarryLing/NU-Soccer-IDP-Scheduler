@@ -12,7 +12,7 @@ export const usePlayers = (): UsePlayersReturn => {
     const { error } = await supabase.from("players").insert(player);
     if (error) {
       console.error("Error adding player", error);
-      return;
+      throw error;
     }
   }, []);
 
@@ -20,6 +20,7 @@ export const usePlayers = (): UsePlayersReturn => {
     const { error } = await supabase.from("players").update(player).eq("id", player.id);
     if (error) {
       console.error("Error updating player", error);
+      throw error;
     }
   }, []);
 
@@ -33,14 +34,18 @@ export const usePlayers = (): UsePlayersReturn => {
   useEffect(() => {
     const fetchPlayers = async () => {
       if (!user) return;
+
       const { data: players, error } = await supabase
         .from("players")
         .select("*")
         .eq("user_id", user.id)
         .order("number", { ascending: true });
+
       if (error) console.error("Error fetching players");
+
       setPlayers(players || []);
     };
+
     fetchPlayers();
   }, [user]);
 

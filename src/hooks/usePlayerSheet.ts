@@ -4,7 +4,7 @@ import {
   parseTime,
   formatTime,
   transformAvailabilities,
-  hasOverlaps,
+  findOverlap,
   formatTimeWithPeriod,
 } from "@/lib/utils.ts";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,17 +53,20 @@ export const usePlayerSheet = (
       if (playerId) {
         const player = players.find((player) => player.id === playerId);
         if (!player) return;
+
         reset({
           name: player.name,
           number: player.number,
           position: player.position,
           availabilities: player.availabilities as Availability[],
         });
+
         setPlayerMetadata(player);
       } else {
         reset(DEFAULT_PLAYER);
         setPlayerMetadata(null);
       }
+
       setError(null);
       setIsPlayerSheetOpen(true);
     },
@@ -74,6 +77,7 @@ export const usePlayerSheet = (
     (day: Days) => {
       const dayFields = fields.filter((field) => field.day === day);
       const lastField = dayFields[dayFields.length - 1];
+
       if (!lastField) {
         append({
           day,
@@ -82,9 +86,11 @@ export const usePlayerSheet = (
         });
         return;
       }
+
       const endInt = parseTime(lastField.end);
       const nextStartInt = Math.min(endInt + 60, 1439);
       const nextEndInt = Math.min(endInt + 120, 1439);
+
       append({
         day,
         start: formatTime(nextStartInt),
@@ -99,7 +105,7 @@ export const usePlayerSheet = (
 
     const transformedAvailabilities = transformAvailabilities(data.availabilities);
 
-    const overlap = hasOverlaps(transformedAvailabilities);
+    const overlap = findOverlap(transformedAvailabilities);
     if (overlap) {
       const formattedPreviousStartInt = formatTimeWithPeriod(overlap.previous.start_int);
       const formattedPreviousEndInt = formatTimeWithPeriod(overlap.previous.end_int);
@@ -111,23 +117,27 @@ export const usePlayerSheet = (
       return;
     }
 
-    if (!playerMetadata) {
-      await insertPlayer({
-        ...data,
-        id: crypto.randomUUID(),
-        user_id: user.id,
-        training_block_id: null,
-        availabilities: transformedAvailabilities,
-      });
-    } else {
-      await updatePlayer({
-        ...playerMetadata,
-        ...data,
-        availabilities: transformedAvailabilities,
-      });
-    }
+    try {
+      if (!playerMetadata) {
+        await insertPlayer({
+          ...data,
+          id: crypto.randomUUID(),
+          user_id: user.id,
+          training_block_id: null,
+          availabilities: transformedAvailabilities,
+        });
+      } else {
+        await updatePlayer({
+          ...playerMetadata,
+          ...data,
+          availabilities: transformedAvailabilities,
+        });
+      }
 
-    setIsPlayerSheetOpen(false);
+      setIsPlayerSheetOpen(false);
+    } catch {
+      setError("Something went wrong when adding/updating the player. Please try again.");
+    }
   };
 
   return {
