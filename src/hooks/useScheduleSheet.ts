@@ -97,10 +97,15 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
       const createdTrainingBlocks = await createTrainingBlocks(
         user.id,
         transformedAvailabilities,
-        30,
+        data.duration,
       );
 
-      await assignPlayers(players, createdTrainingBlocks);
+      const unassignedPlayers = await assignPlayers(
+        players,
+        createdTrainingBlocks,
+        data.maximumPlayerCount,
+      );
+      console.log(unassignedPlayers);
 
       setIsScheduleSheetOpen(false);
     } catch {

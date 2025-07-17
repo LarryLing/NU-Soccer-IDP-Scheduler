@@ -12,6 +12,8 @@ export const POSITIONS = ["Goalkeeper", "Defender", "Midfielder", "Forward"] as 
 
 export const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as const;
 
+export const DURATIONS = ["15", "30", "45", "60"] as const;
+
 export const TIMES = {
   "8 AM": 480,
   "9 AM": 540,

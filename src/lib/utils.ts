@@ -46,12 +46,12 @@ export const transformAvailabilities = (availabilities: AvailabilitySheetForm[])
 };
 
 export const findOverlap = (availabilities: Availability[]) => {
-  for (const day in DAYS) {
+  for (const day of DAYS) {
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
-    for (let j = 1; j < dayAvailabilities.length; j++) {
-      const previous = dayAvailabilities[j - 1];
-      const current = dayAvailabilities[j];
+    for (let i = 1; i < dayAvailabilities.length; i++) {
+      const previous = dayAvailabilities[i - 1];
+      const current = dayAvailabilities[i];
 
       if (!previous || !current) continue;
 
@@ -79,11 +79,9 @@ export const createTrainingBlocks = async (
   for (const day of DAYS) {
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
-    for (let j = 0; j < dayAvailabilities.length; j++) {
-      let currentInt = dayAvailabilities[j]?.start_int;
-      const endInt = dayAvailabilities[j]?.end_int;
-
-      if (currentInt === undefined || endInt === undefined) continue;
+    for (let i = 0; i < dayAvailabilities.length; i++) {
+      let currentInt = dayAvailabilities[i]?.start_int ?? 0;
+      const endInt = dayAvailabilities[i]?.end_int ?? 0;
 
       while (currentInt < endInt) {
         const createdTrainingBlock: TrainingBlock = {
@@ -122,7 +120,7 @@ export const createTrainingBlocks = async (
   return createdTrainingBlocks;
 };
 
-export const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: TrainingBlock) => {
+const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: TrainingBlock) => {
   return (player.availabilities as Availability[]).some((availability) => {
     return (
       availability.day === trainingBlock.day &&
@@ -132,80 +130,98 @@ export const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock:
   });
 };
 
-export const getTrainingBlocksForPlayer = (player: Player, trainingBlocks: TrainingBlock[]) => {
-  return trainingBlocks.filter((trainingBlock) =>
-    isPlayerAvailableForTrainingBlock(player, trainingBlock),
+const getTrainingBlockIdsForPlayer = (player: Player, trainingBlocks: TrainingBlock[]) => {
+  return trainingBlocks
+    .filter((trainingBlock) => isPlayerAvailableForTrainingBlock(player, trainingBlock))
+    .map((trainingBlock) => trainingBlock.id);
+};
+
+const getAssignedTrainingBlockId = (
+  assignedPlayersMap: Map<TrainingBlock["id"], Player["id"][]>,
+  trainingBlockIds: TrainingBlock["id"][],
+): TrainingBlock["id"] => {
+  const trainingBlockIdOptions = [];
+
+  const trainingBlockIdsWithNoAssignedPlayers = trainingBlockIds.filter(
+    (trainingBlockId) => (assignedPlayersMap.get(trainingBlockId) ?? []).length === 0,
   );
-};
+  let randomIndex = Math.floor(Math.random() * trainingBlockIdsWithNoAssignedPlayers.length);
+  trainingBlockIdOptions.push(trainingBlockIdsWithNoAssignedPlayers[randomIndex] ?? "");
 
-export const getTrainingBlockDemand = (
-  players: Player[],
-  assignedPlayerIds: Set<Player["id"]>,
-  trainingBlock: TrainingBlock,
-) => {
-  return players.filter(
-    (player) =>
-      !assignedPlayerIds.has(player.id) && isPlayerAvailableForTrainingBlock(player, trainingBlock),
-  ).length;
-};
+  const trainingBlockIdsWithAssignedPlayers = trainingBlockIds.filter(
+    (trainingBlockId) => (assignedPlayersMap.get(trainingBlockId) ?? []).length !== 0,
+  );
 
-export const assignPlayers = async (players: Player[], trainingBlocks: TrainingBlock[]) => {
-  const unassignedPlayers = [...players];
-
-  const availableTrainingBlocksMap = new Map<Player["id"], TrainingBlock[]>();
-  players.forEach((player) => {
-    availableTrainingBlocksMap.set(player.id, getTrainingBlocksForPlayer(player, trainingBlocks));
+  trainingBlockIdsWithAssignedPlayers.forEach((trainingBlockIdWithAssignedPlayers) => {
+    const numAssignedPlayers = (assignedPlayersMap.get(trainingBlockIdWithAssignedPlayers) ?? [])
+      .length;
+    for (let i = 0; i < numAssignedPlayers * 2; i++) {
+      trainingBlockIdOptions.push(trainingBlockIdWithAssignedPlayers);
+    }
   });
 
-  const playersWithNoAssignments = [];
-  const assignedPlayerIds = new Set<Player["id"]>();
-  const assignPlayerPromises = [];
-  while (unassignedPlayers.length > 0) {
-    unassignedPlayers.sort((a, b) => {
-      const aAvailableTrainingBlocks = availableTrainingBlocksMap.get(a.id);
-      const bAvailableTrainingBlocks = availableTrainingBlocksMap.get(b.id);
+  randomIndex = Math.floor(Math.random() * trainingBlockIdOptions.length);
+  return trainingBlockIdOptions[randomIndex] ?? "";
+};
 
-      if (!aAvailableTrainingBlocks || !bAvailableTrainingBlocks) return -1;
+export const assignPlayers = async (
+  players: Player[],
+  trainingBlocks: TrainingBlock[],
+  maximumPlayerCount: number,
+) => {
+  const assignedPlayersMap = new Map<TrainingBlock["id"], Player["id"][]>();
+  trainingBlocks.forEach((trainingBlock) => {
+    assignedPlayersMap.set(trainingBlock.id, []);
+  });
 
-      return aAvailableTrainingBlocks.length - bAvailableTrainingBlocks.length;
-    });
-
-    const player = unassignedPlayers[0];
-    if (!player) continue;
-
-    const availableTrainingBlocks = availableTrainingBlocksMap.get(player.id);
-    if (!availableTrainingBlocks) continue;
-
-    if (availableTrainingBlocks.length === 0) {
-      playersWithNoAssignments.push(player);
-      unassignedPlayers.splice(0, 1);
-      console.log(`No training block found for ${player.name}`);
-      continue;
-    }
-
-    const bestTrainingBlock = trainingBlocks.reduce((best, current) => {
-      const currentDemand = getTrainingBlockDemand(players, assignedPlayerIds, current);
-      const bestDemand = getTrainingBlockDemand(players, assignedPlayerIds, best);
-      return currentDemand > bestDemand ? current : best;
-    });
-
-    console.log(
-      `Assigning ${player.name} to ${bestTrainingBlock.day} ${bestTrainingBlock.start} ${bestTrainingBlock.end}`,
+  const availableTrainingBlockIdsMap = new Map<Player["id"], TrainingBlock["id"][]>();
+  players.forEach((player) => {
+    availableTrainingBlockIdsMap.set(
+      player.id,
+      getTrainingBlockIdsForPlayer(player, trainingBlocks),
     );
+  });
+
+  const assignPlayerPromises = [];
+
+  const unassignedPlayers = [...players].filter(
+    (unassignedPlayer) => (availableTrainingBlockIdsMap.get(unassignedPlayer.id) ?? []).length > 0,
+  );
+
+  while (unassignedPlayers.length > 0) {
+    const randomPlayerIndex = Math.floor(Math.random() * unassignedPlayers.length);
+    const player = unassignedPlayers[randomPlayerIndex];
+    if (!player) break;
+
+    const availableTrainingBlocksIds = availableTrainingBlockIdsMap.get(player.id) ?? [];
+
+    const filteredAvailableTrainingBlockIds = availableTrainingBlocksIds.filter(
+      (availableTrainingBlockId) => {
+        const assignedPlayers = assignedPlayersMap.get(availableTrainingBlockId) ?? [];
+        return assignedPlayers.length < maximumPlayerCount;
+      },
+    );
+    if (filteredAvailableTrainingBlockIds.length === 0) continue;
+
+    const assignedTrainingBlockId = getAssignedTrainingBlockId(
+      assignedPlayersMap,
+      filteredAvailableTrainingBlockIds,
+    );
+
     assignPlayerPromises.push(
       supabase
         .from("players")
-        .update({ training_block_id: bestTrainingBlock.id })
+        .update({ training_block_id: assignedTrainingBlockId })
         .eq("id", player.id),
     );
 
-    assignedPlayerIds.add(player.id);
-    unassignedPlayers.splice(0, 1);
+    unassignedPlayers.splice(randomPlayerIndex, 1);
+    assignedPlayersMap.get(assignedTrainingBlockId)?.push(player.id);
   }
 
   await Promise.all(assignPlayerPromises);
 
-  return playersWithNoAssignments;
+  return unassignedPlayers;
 };
 
 export const getDayAbbreviation = (day: Days) => {
