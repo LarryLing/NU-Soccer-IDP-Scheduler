@@ -76,7 +76,7 @@ export const createTrainingBlocks = async (
   const createdTrainingBlocks: TrainingBlock[] = [];
   const createTrainingBlockPromises = [];
 
-  for (const day in DAYS) {
+  for (const day of DAYS) {
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
     for (let j = 0; j < dayAvailabilities.length; j++) {
@@ -95,10 +95,13 @@ export const createTrainingBlocks = async (
           start_int: currentInt,
           end_int: currentInt + trainingBlockDuration,
         };
+
         createdTrainingBlocks.push(createdTrainingBlock);
+
         createTrainingBlockPromises.push(
           supabase.from("training_blocks").insert(createdTrainingBlock),
         );
+
         currentInt += trainingBlockDuration;
       }
     }
@@ -110,7 +113,7 @@ export const createTrainingBlocks = async (
     .eq("user_id", userId);
 
   if (deleteError) {
-    console.log("Error creating schedule", deleteError);
+    console.error("Error creating schedule", deleteError);
     throw deleteError;
   }
 
@@ -119,10 +122,90 @@ export const createTrainingBlocks = async (
   return createdTrainingBlocks;
 };
 
+export const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: TrainingBlock) => {
+  return (player.availabilities as Availability[]).some((availability) => {
+    return (
+      availability.day === trainingBlock.day &&
+      availability.start_int <= trainingBlock.start_int &&
+      availability.end_int >= trainingBlock.end_int
+    );
+  });
+};
+
+export const getTrainingBlocksForPlayer = (player: Player, trainingBlocks: TrainingBlock[]) => {
+  return trainingBlocks.filter((trainingBlock) =>
+    isPlayerAvailableForTrainingBlock(player, trainingBlock),
+  );
+};
+
+export const getTrainingBlockDemand = (
+  players: Player[],
+  assignedPlayerIds: Set<Player["id"]>,
+  trainingBlock: TrainingBlock,
+) => {
+  return players.filter(
+    (player) =>
+      !assignedPlayerIds.has(player.id) && isPlayerAvailableForTrainingBlock(player, trainingBlock),
+  ).length;
+};
+
 export const assignPlayers = async (players: Player[], trainingBlocks: TrainingBlock[]) => {
-  console.log(players);
-  console.log(trainingBlocks);
-  throw new Error("Not implemented");
+  const unassignedPlayers = [...players];
+
+  const availableTrainingBlocksMap = new Map<Player["id"], TrainingBlock[]>();
+  players.forEach((player) => {
+    availableTrainingBlocksMap.set(player.id, getTrainingBlocksForPlayer(player, trainingBlocks));
+  });
+
+  const playersWithNoAssignments = [];
+  const assignedPlayerIds = new Set<Player["id"]>();
+  const assignPlayerPromises = [];
+  while (unassignedPlayers.length > 0) {
+    unassignedPlayers.sort((a, b) => {
+      const aAvailableTrainingBlocks = availableTrainingBlocksMap.get(a.id);
+      const bAvailableTrainingBlocks = availableTrainingBlocksMap.get(b.id);
+
+      if (!aAvailableTrainingBlocks || !bAvailableTrainingBlocks) return -1;
+
+      return aAvailableTrainingBlocks.length - bAvailableTrainingBlocks.length;
+    });
+
+    const player = unassignedPlayers[0];
+    if (!player) continue;
+
+    const availableTrainingBlocks = availableTrainingBlocksMap.get(player.id);
+    if (!availableTrainingBlocks) continue;
+
+    if (availableTrainingBlocks.length === 0) {
+      playersWithNoAssignments.push(player);
+      unassignedPlayers.splice(0, 1);
+      console.log(`No training block found for ${player.name}`);
+      continue;
+    }
+
+    const bestTrainingBlock = trainingBlocks.reduce((best, current) => {
+      const currentDemand = getTrainingBlockDemand(players, assignedPlayerIds, current);
+      const bestDemand = getTrainingBlockDemand(players, assignedPlayerIds, best);
+      return currentDemand > bestDemand ? current : best;
+    });
+
+    console.log(
+      `Assigning ${player.name} to ${bestTrainingBlock.day} ${bestTrainingBlock.start} ${bestTrainingBlock.end}`,
+    );
+    assignPlayerPromises.push(
+      supabase
+        .from("players")
+        .update({ training_block_id: bestTrainingBlock.id })
+        .eq("id", player.id),
+    );
+
+    assignedPlayerIds.add(player.id);
+    unassignedPlayers.splice(0, 1);
+  }
+
+  await Promise.all(assignPlayerPromises);
+
+  return playersWithNoAssignments;
 };
 
 export const getDayAbbreviation = (day: Days) => {
