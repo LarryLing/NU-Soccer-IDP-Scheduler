@@ -66,11 +66,11 @@ export type UsePlayersSheetReturn = {
 export type UseScheduleSheetReturn = {
   isScheduleSheetOpen: boolean;
   setIsScheduleSheetOpen: (isScheduleSheetOpen: boolean) => void;
+  isCreatingSchedule: boolean;
   error: string | null;
   setError: (error: string | null) => void;
   trainingBlocks: TrainingBlock[];
   unassignedPlayerNames: Player["name"][];
-  isLoading: boolean;
   form: UseFormReturn<ScheduleSheetForm>;
   fieldArray: UseFieldArrayReturn<ScheduleSheetForm, "fieldAvailabilities", "id">;
   openScheduleSheet: () => void;

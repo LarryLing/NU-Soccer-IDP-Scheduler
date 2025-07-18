@@ -20,9 +20,9 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   const { user } = useAuth();
 
   const [isScheduleSheetOpen, setIsScheduleSheetOpen] = useState<boolean>(false);
-  const [unassignedPlayerNames, setUnassignedPlayerNames] = useState<Player["name"][]>([]);
+  const [isCreatingSchedule, setIsCreatingSchedule] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [unassignedPlayerNames, setUnassignedPlayerNames] = useState<Player["name"][]>([]);
 
   const { trainingBlocks, setTrainingBlocks } = useTrainingBlocks();
 
@@ -83,7 +83,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
     }
 
     try {
-      setIsLoading(true);
+      setIsCreatingSchedule(true);
 
       const transformedAvailabilities = transformAvailabilities(data.fieldAvailabilities);
 
@@ -113,25 +113,24 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         data.maximumPlayerCount,
       );
 
-      console.log(unassignedPlayerNames);
       setUnassignedPlayerNames(unassignedPlayerNames);
 
       setIsScheduleSheetOpen(false);
     } catch {
       setError("Something went wrong when creating the schedule. Please try again.");
     } finally {
-      setIsLoading(false);
+      setIsCreatingSchedule(false);
     }
   };
 
   return {
     isScheduleSheetOpen,
     setIsScheduleSheetOpen,
+    isCreatingSchedule,
     error,
     setError,
     trainingBlocks,
     unassignedPlayerNames,
-    isLoading,
     form,
     fieldArray,
     openScheduleSheet,

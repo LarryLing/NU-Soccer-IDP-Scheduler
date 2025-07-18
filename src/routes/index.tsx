@@ -29,7 +29,8 @@ function Index() {
   const { openPlayerSheet } = playerSheetReturn;
 
   const scheduleSheetReturn = useScheduleSheet(players);
-  const { openScheduleSheet, trainingBlocks, unassignedPlayerNames } = scheduleSheetReturn;
+  const { isCreatingSchedule, trainingBlocks, unassignedPlayerNames, openScheduleSheet } =
+    scheduleSheetReturn;
 
   const table = usePlayersTable(players, columns);
 
@@ -61,7 +62,12 @@ function Index() {
             openPlayerSheet={openPlayerSheet}
           />
         )}
-        {display === "schedule" && <Calendar players={players} trainingBlocks={trainingBlocks} />}
+        {display === "schedule" &&
+          (isCreatingSchedule ? (
+            <p className="text-sm text-center w-full">Creating schedule...</p>
+          ) : (
+            <Calendar players={players} trainingBlocks={trainingBlocks} />
+          ))}
       </section>
       {display === "players" && <PlayerSheet {...playerSheetReturn} />}
       {display === "schedule" && <ScheduleSheet {...scheduleSheetReturn} />}
