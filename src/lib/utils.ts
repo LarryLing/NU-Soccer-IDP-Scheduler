@@ -194,6 +194,7 @@ export const assignPlayers = async (
     if (!player) break;
 
     const availableTrainingBlocksIds = availableTrainingBlockIdsMap.get(player.id) ?? [];
+    if (availableTrainingBlocksIds.length === 0) break;
 
     const filteredAvailableTrainingBlockIds = availableTrainingBlocksIds.filter(
       (availableTrainingBlockId) => {
@@ -201,7 +202,6 @@ export const assignPlayers = async (
         return assignedPlayers.length < maximumPlayerCount;
       },
     );
-    if (filteredAvailableTrainingBlockIds.length === 0) continue;
 
     const assignedTrainingBlockId = getAssignedTrainingBlockId(
       assignedPlayersMap,
@@ -221,7 +221,7 @@ export const assignPlayers = async (
 
   await Promise.all(assignPlayerPromises);
 
-  return unassignedPlayers;
+  return unassignedPlayers.map((unassignedPlayer) => unassignedPlayer.name);
 };
 
 export const getDayAbbreviation = (day: Days) => {

@@ -1,9 +1,9 @@
 import { useAuth } from "@/hooks/useAuth";
-import type { Days, TrainingBlock } from "@/lib/types";
+import type { TrainingBlock } from "@/lib/types";
 import supabase from "@/services/supabase";
 import { useState, useEffect } from "react";
 
-export const useTrainingBlocks = (day: Days) => {
+export const useTrainingBlocks = () => {
   const { user } = useAuth();
 
   const [trainingBlocks, setTrainingBlocks] = useState<TrainingBlock[]>([]);
@@ -15,11 +15,10 @@ export const useTrainingBlocks = (day: Days) => {
       const { data, error } = await supabase
         .from("training_blocks")
         .select("*")
-        .eq("user_id", user.id)
-        .eq("day", day);
+        .eq("user_id", user.id);
 
       if (error || !data) {
-        console.error(`Error fetching training blocks for ${day}`, error);
+        console.error(`Error fetching training blocks`, error);
         return;
       }
 
@@ -29,5 +28,5 @@ export const useTrainingBlocks = (day: Days) => {
     fetchTrainingBlocks();
   }, []);
 
-  return { trainingBlocks };
+  return { trainingBlocks, setTrainingBlocks };
 };

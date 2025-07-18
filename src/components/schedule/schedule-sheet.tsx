@@ -58,39 +58,6 @@ export default function ScheduleSheet({
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6 px-4 mb-4">
-              <FormField
-                control={control}
-                name="duration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Duration</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min={15}
-                        max={60}
-                        step={15}
-                        defaultValue={30}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="maximumPlayerCount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Maximum Player Count</FormLabel>
-                    <FormControl>
-                      <Input type="number" defaultValue={4} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               {DAYS.map((day) => {
                 const dayFields = fields
                   .map((field, idx) => ({ ...field, originalIndex: idx }))
@@ -106,6 +73,32 @@ export default function ScheduleSheet({
                   />
                 );
               })}
+              <FormField
+                control={control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Duration</FormLabel>
+                    <FormControl>
+                      <Input type="number" min={15} max={60} step={15} disabled {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="maximumPlayerCount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Maximum Player Count</FormLabel>
+                    <FormControl>
+                      <Input type="number" disabled {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               {error && <ErrorAlert message={error} />}
             </div>
             <SheetFooter>

@@ -29,7 +29,7 @@ function Index() {
   const { openPlayerSheet } = playerSheetReturn;
 
   const scheduleSheetReturn = useScheduleSheet(players);
-  const { openScheduleSheet } = scheduleSheetReturn;
+  const { openScheduleSheet, trainingBlocks } = scheduleSheetReturn;
 
   const table = usePlayersTable(players, columns);
 
@@ -60,7 +60,7 @@ function Index() {
             openPlayerSheet={openPlayerSheet}
           />
         )}
-        {display === "schedule" && <Calendar players={players} />}
+        {display === "schedule" && <Calendar players={players} trainingBlocks={trainingBlocks} />}
       </section>
       {display === "players" && <PlayerSheet {...playerSheetReturn} />}
       {display === "schedule" && <ScheduleSheet {...scheduleSheetReturn} />}

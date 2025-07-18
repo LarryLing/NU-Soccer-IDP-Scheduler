@@ -13,19 +13,23 @@ import {
 } from "@/lib/utils.ts";
 import { parseTime } from "@/lib/utils.ts";
 import { useAuth } from "./useAuth.ts";
+import { DEFAULT_SCHEDULE } from "@/lib/constants.ts";
+import { useTrainingBlocks } from "./useTrainingBlocks.ts";
 
 export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   const { user } = useAuth();
 
   const [isScheduleSheetOpen, setIsScheduleSheetOpen] = useState<boolean>(false);
-  const [isSchedulingPlayers, setIsSchedulingPlayers] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { trainingBlocks, setTrainingBlocks } = useTrainingBlocks();
 
   const form = useForm<ScheduleSheetForm>({
     resolver: zodResolver(ScheduleFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
+    defaultValues: DEFAULT_SCHEDULE,
   });
 
   const { control } = form;
@@ -100,12 +104,9 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         data.duration,
       );
 
-      const unassignedPlayers = await assignPlayers(
-        players,
-        createdTrainingBlocks,
-        data.maximumPlayerCount,
-      );
-      console.log(unassignedPlayers);
+      setTrainingBlocks(createdTrainingBlocks);
+
+      await assignPlayers(players, createdTrainingBlocks, data.maximumPlayerCount);
 
       setIsScheduleSheetOpen(false);
     } catch {
@@ -118,10 +119,9 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   return {
     isScheduleSheetOpen,
     setIsScheduleSheetOpen,
-    isSchedulingPlayers,
-    setIsSchedulingPlayers,
     error,
     setError,
+    trainingBlocks,
     isLoading,
     form,
     fieldArray,
