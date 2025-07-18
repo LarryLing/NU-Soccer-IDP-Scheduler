@@ -182,19 +182,21 @@ export const assignPlayers = async (
     );
   });
 
+  const allPlayers = [...players];
+  const unassignedPlayerNames = [];
   const assignPlayerPromises = [];
 
-  const unassignedPlayers = [...players].filter(
-    (unassignedPlayer) => (availableTrainingBlockIdsMap.get(unassignedPlayer.id) ?? []).length > 0,
-  );
-
-  while (unassignedPlayers.length > 0) {
-    const randomPlayerIndex = Math.floor(Math.random() * unassignedPlayers.length);
-    const player = unassignedPlayers[randomPlayerIndex];
+  while (allPlayers.length > 0) {
+    const randomPlayerIndex = Math.floor(Math.random() * allPlayers.length);
+    const player = allPlayers[randomPlayerIndex];
     if (!player) break;
 
     const availableTrainingBlocksIds = availableTrainingBlockIdsMap.get(player.id) ?? [];
-    if (availableTrainingBlocksIds.length === 0) break;
+    if (availableTrainingBlocksIds.length === 0) {
+      allPlayers.splice(randomPlayerIndex, 1);
+      unassignedPlayerNames.push(player.name);
+      continue;
+    }
 
     const filteredAvailableTrainingBlockIds = availableTrainingBlocksIds.filter(
       (availableTrainingBlockId) => {
@@ -215,13 +217,13 @@ export const assignPlayers = async (
         .eq("id", player.id),
     );
 
-    unassignedPlayers.splice(randomPlayerIndex, 1);
+    allPlayers.splice(randomPlayerIndex, 1);
     assignedPlayersMap.get(assignedTrainingBlockId)?.push(player.id);
   }
 
   await Promise.all(assignPlayerPromises);
 
-  return unassignedPlayers.map((unassignedPlayer) => unassignedPlayer.name);
+  return unassignedPlayerNames;
 };
 
 export const getDayAbbreviation = (day: Days) => {

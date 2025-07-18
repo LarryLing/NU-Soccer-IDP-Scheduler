@@ -20,6 +20,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   const { user } = useAuth();
 
   const [isScheduleSheetOpen, setIsScheduleSheetOpen] = useState<boolean>(false);
+  const [unassignedPlayerNames, setUnassignedPlayerNames] = useState<Player["name"][]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -106,7 +107,14 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
 
       setTrainingBlocks(createdTrainingBlocks);
 
-      await assignPlayers(players, createdTrainingBlocks, data.maximumPlayerCount);
+      const unassignedPlayerNames = await assignPlayers(
+        players,
+        createdTrainingBlocks,
+        data.maximumPlayerCount,
+      );
+
+      console.log(unassignedPlayerNames);
+      setUnassignedPlayerNames(unassignedPlayerNames);
 
       setIsScheduleSheetOpen(false);
     } catch {
@@ -122,6 +130,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
     error,
     setError,
     trainingBlocks,
+    unassignedPlayerNames,
     isLoading,
     form,
     fieldArray,

@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
 import { DAYS } from "@/lib/constants";
-import AvailabilityHoverCard from "./availability-hover-card";
+import AvailabilityPopover from "./availability-popover";
 
 export const columns: ColumnDef<Player>[] = [
   {
@@ -79,9 +79,11 @@ export const columns: ColumnDef<Player>[] = [
     header: "Availabilities",
     cell: ({ row }) => {
       const availabilities: Availability[] = row.getValue("availabilities");
-      return DAYS.map((day) => (
-        <AvailabilityHoverCard key={day} day={day} availabilities={availabilities} />
-      ));
+      return DAYS.map((day) => {
+        const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
+        if (dayAvailabilities.length === 0) return null;
+        return <AvailabilityPopover key={day} day={day} dayAvailabilities={dayAvailabilities} />;
+      });
     },
   },
 ];

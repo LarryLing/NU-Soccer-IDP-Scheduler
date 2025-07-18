@@ -29,7 +29,7 @@ function Index() {
   const { openPlayerSheet } = playerSheetReturn;
 
   const scheduleSheetReturn = useScheduleSheet(players);
-  const { openScheduleSheet, trainingBlocks } = scheduleSheetReturn;
+  const { openScheduleSheet, trainingBlocks, unassignedPlayerNames } = scheduleSheetReturn;
 
   const table = usePlayersTable(players, columns);
 
@@ -49,6 +49,7 @@ function Index() {
           deletePlayer={deletePlayer}
           openPlayerSheet={openPlayerSheet}
           openScheduleSheet={openScheduleSheet}
+          unassignedPlayerNames={unassignedPlayerNames}
         />
       </section>
       <section className="sm:px-8 px-4 pb-4">
