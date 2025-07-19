@@ -109,11 +109,8 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         allTrainingBlocks,
       );
 
-      console.log(usedTrainingBlocks);
-      console.log(playerAssignmentsMap);
-
-      await saveAssignedPlayers(playerAssignmentsMap);
       await saveUsedTrainingBlocks(user.id, usedTrainingBlocks);
+      await saveAssignedPlayers(playerAssignmentsMap);
 
       setUnassignedPlayerNames(unassignedPlayerNames);
       setIsScheduleSheetOpen(false);

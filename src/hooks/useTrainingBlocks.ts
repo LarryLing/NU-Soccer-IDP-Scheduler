@@ -29,44 +29,5 @@ export const useTrainingBlocks = (day: Days) => {
     fetchTrainingBlocks();
   }, []);
 
-  useEffect(() => {
-    async function setSupabaseAuth() {
-      await supabase.realtime.setAuth();
-    }
-
-    if (!user) return;
-
-    setSupabaseAuth();
-
-    const trainingBlocksChannel = supabase.channel(`training_blocks_${day}:${user.id}`);
-
-    trainingBlocksChannel
-      .on(
-        "broadcast",
-        {
-          event: "INSERT",
-        },
-        (message) => {
-          setTrainingBlocks((prev) => [...prev, message.payload as TrainingBlock]);
-        },
-      )
-      .on(
-        "broadcast",
-        {
-          event: "DELETE",
-        },
-        (message) => {
-          setTrainingBlocks((prev) =>
-            prev.filter((trainingBlock) => trainingBlock.id !== message.payload.id),
-          );
-        },
-      )
-      .subscribe();
-
-    return () => {
-      trainingBlocksChannel.unsubscribe();
-    };
-  }, [user]);
-
   return { trainingBlocks };
 };
