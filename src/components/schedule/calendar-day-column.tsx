@@ -1,17 +1,19 @@
-import type { Days, Player, TrainingBlock } from "@/lib/types";
+import type { Days, Player } from "@/lib/types";
 import { TIMES } from "@/lib/constants";
 import CalendarCell from "./calendar-cell";
 import { getDayAbbreviation } from "@/lib/utils";
 import { memo, useMemo, type JSX } from "react";
 import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
+import { useTrainingBlocks } from "@/hooks/useTrainingBlocks";
 
 type CalendarDayColumnProps = {
   day: Days;
   players: Player[];
-  trainingBlocks: TrainingBlock[];
 };
 
-const CalendarDayColumn = ({ day, players, trainingBlocks }: CalendarDayColumnProps) => {
+const CalendarDayColumn = ({ day, players }: CalendarDayColumnProps) => {
+  const { trainingBlocks } = useTrainingBlocks(day);
+
   const dayAbbreviation = getDayAbbreviation(day);
 
   const timesEntries = Object.entries(TIMES);
@@ -22,12 +24,10 @@ const CalendarDayColumn = ({ day, players, trainingBlocks }: CalendarDayColumnPr
       const nextEntry = timesEntries[index + 1];
       if (!nextEntry) return;
 
-      const filteredTrainingBlocks = trainingBlocks
-        .filter((trainingBlock) => trainingBlock.day === day)
-        .filter(
-          (trainingBlock) =>
-            trainingBlock.start_int >= currentEntry[1] && trainingBlock.start_int < nextEntry[1],
-        );
+      const filteredTrainingBlocks = trainingBlocks.filter(
+        (trainingBlock) =>
+          trainingBlock.start_int >= currentEntry[1] && trainingBlock.start_int < nextEntry[1],
+      );
 
       const children: JSX.Element[] = filteredTrainingBlocks.map((filteredTrainingBlock) => {
         const assignedPlayerNames = players

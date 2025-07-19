@@ -69,7 +69,6 @@ export type UseScheduleSheetReturn = {
   isCreatingSchedule: boolean;
   error: string | null;
   setError: (error: string | null) => void;
-  trainingBlocks: TrainingBlock[];
   unassignedPlayerNames: Player["name"][];
   form: UseFormReturn<ScheduleSheetForm>;
   fieldArray: UseFieldArrayReturn<ScheduleSheetForm, "fieldAvailabilities", "id">;

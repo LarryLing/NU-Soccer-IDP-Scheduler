@@ -1,9 +1,9 @@
 import { useAuth } from "@/hooks/useAuth";
-import type { TrainingBlock } from "@/lib/types";
+import type { Days, TrainingBlock } from "@/lib/types";
 import supabase from "@/services/supabase";
 import { useState, useEffect } from "react";
 
-export const useTrainingBlocks = () => {
+export const useTrainingBlocks = (day: Days) => {
   const { user } = useAuth();
 
   const [trainingBlocks, setTrainingBlocks] = useState<TrainingBlock[]>([]);
@@ -12,21 +12,61 @@ export const useTrainingBlocks = () => {
     const fetchTrainingBlocks = async () => {
       if (!user) return;
 
-      const { data, error } = await supabase
+      const { data: trainingBlocks, error } = await supabase
         .from("training_blocks")
         .select("*")
-        .eq("user_id", user.id);
+        .eq("user_id", user.id)
+        .eq("day", day);
 
-      if (error || !data) {
+      if (error || !trainingBlocks) {
         console.error(`Error fetching training blocks`, error);
         return;
       }
 
-      setTrainingBlocks(data);
+      setTrainingBlocks(trainingBlocks);
     };
 
     fetchTrainingBlocks();
   }, []);
 
-  return { trainingBlocks, setTrainingBlocks };
+  useEffect(() => {
+    async function setSupabaseAuth() {
+      await supabase.realtime.setAuth();
+    }
+
+    if (!user) return;
+
+    setSupabaseAuth();
+
+    const trainingBlocksChannel = supabase.channel(`training_blocks_${day}:${user.id}`);
+
+    trainingBlocksChannel
+      .on(
+        "broadcast",
+        {
+          event: "INSERT",
+        },
+        (message) => {
+          setTrainingBlocks((prev) => [...prev, message.payload as TrainingBlock]);
+        },
+      )
+      .on(
+        "broadcast",
+        {
+          event: "DELETE",
+        },
+        (message) => {
+          setTrainingBlocks((prev) =>
+            prev.filter((trainingBlock) => trainingBlock.id !== message.payload.id),
+          );
+        },
+      )
+      .subscribe();
+
+    return () => {
+      trainingBlocksChannel.unsubscribe();
+    };
+  }, [user]);
+
+  return { trainingBlocks };
 };

@@ -41,9 +41,12 @@ export const usePlayers = (): UsePlayersReturn => {
         .eq("user_id", user.id)
         .order("number", { ascending: true });
 
-      if (error) console.error("Error fetching players");
+      if (error || !players) {
+        console.error("Error fetching players");
+        return;
+      }
 
-      setPlayers(players || []);
+      setPlayers(players);
     };
 
     fetchPlayers();

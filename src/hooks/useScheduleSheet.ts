@@ -7,14 +7,15 @@ import {
   formatTime,
   formatTimeWithPeriod,
   findOverlap,
-  createTrainingBlocks,
   transformAvailabilities,
   assignPlayers,
+  createAllTrainingBlocks,
+  saveUsedTrainingBlocks,
+  saveAssignedPlayers,
 } from "@/lib/utils.ts";
 import { parseTime } from "@/lib/utils.ts";
 import { useAuth } from "./useAuth.ts";
 import { DEFAULT_SCHEDULE } from "@/lib/constants.ts";
-import { useTrainingBlocks } from "./useTrainingBlocks.ts";
 
 export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   const { user } = useAuth();
@@ -23,8 +24,6 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   const [isCreatingSchedule, setIsCreatingSchedule] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [unassignedPlayerNames, setUnassignedPlayerNames] = useState<Player["name"][]>([]);
-
-  const { trainingBlocks, setTrainingBlocks } = useTrainingBlocks();
 
   const form = useForm<ScheduleSheetForm>({
     resolver: zodResolver(ScheduleFormSchema),
@@ -99,22 +98,24 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         return;
       }
 
-      const createdTrainingBlocks = await createTrainingBlocks(
+      const allTrainingBlocks = createAllTrainingBlocks(
         user.id,
         transformedAvailabilities,
         data.duration,
       );
 
-      setTrainingBlocks(createdTrainingBlocks);
-
-      const unassignedPlayerNames = await assignPlayers(
+      const { unassignedPlayerNames, playerAssignmentsMap, usedTrainingBlocks } = assignPlayers(
         players,
-        createdTrainingBlocks,
-        data.maximumPlayerCount,
+        allTrainingBlocks,
       );
 
-      setUnassignedPlayerNames(unassignedPlayerNames);
+      console.log(usedTrainingBlocks);
+      console.log(playerAssignmentsMap);
 
+      await saveAssignedPlayers(playerAssignmentsMap);
+      await saveUsedTrainingBlocks(user.id, usedTrainingBlocks);
+
+      setUnassignedPlayerNames(unassignedPlayerNames);
       setIsScheduleSheetOpen(false);
     } catch {
       setError("Something went wrong when creating the schedule. Please try again.");
@@ -129,7 +130,6 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
     isCreatingSchedule,
     error,
     setError,
-    trainingBlocks,
     unassignedPlayerNames,
     form,
     fieldArray,

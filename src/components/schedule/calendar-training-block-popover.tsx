@@ -22,9 +22,10 @@ export default function CalendarTrainingBlockPopover({
     <Popover>
       <PopoverTrigger asChild>
         <div
-          className={`absolute top-[${topPercentage}%] border overflow-hidden flex items-center px-3`}
+          className={`absolute border overflow-hidden flex items-center px-3`}
           style={{
             width: `calc(100% - 2px)`,
+            top: `${topPercentage}%`,
             height: `calc(${heightPercentage}% - 2px)`,
           }}
         >
