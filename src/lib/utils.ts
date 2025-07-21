@@ -143,11 +143,11 @@ const calculateCombinedScore = (
   trainingBlockAssignedPlayerCounts: Record<string, number>,
   maximumPlayerCount: number,
   uniformityWeight: number = 0.2,
-  targetAdherenceWeight: number = 0.8,
+  targetAdherenceWeight: number = 1,
   debug = false,
 ) => {
   const counts = Object.values(trainingBlockAssignedPlayerCounts).filter((count) => count > 0);
-  const targetPlayerCount = (maximumPlayerCount + 1) / 2;
+  const targetPlayerCount = maximumPlayerCount / 2;
 
   const cv = calculateCoefficientOfVariation(counts);
   const mad = calculateMeanAbsoluteDeviation(counts, targetPlayerCount);
@@ -209,18 +209,15 @@ export const assignPlayers = (
     );
   });
 
-  const allPlayers = [...players];
-  while (allPlayers.length > 0) {
-    const randomPlayerIndex = Math.floor(Math.random() * allPlayers.length);
+  const sortedPlayers = [...players].sort((a, b) => {
+    const aBlocks = availableTrainingBlockIdsMap.get(a.id)?.length || 0;
+    const bBlocks = availableTrainingBlockIdsMap.get(b.id)?.length || 0;
+    return aBlocks - bBlocks;
+  });
 
-    const player = allPlayers[randomPlayerIndex];
-    if (!player) break;
-
+  for (const player of sortedPlayers) {
     const availableBlockIds = availableTrainingBlockIdsMap.get(player.id) || [];
-    if (availableBlockIds.length === 0) {
-      allPlayers.splice(randomPlayerIndex, 1);
-      continue;
-    }
+    if (availableBlockIds.length === 0) continue;
 
     let bestBlockIds: TrainingBlock["id"][] = [];
     let bestScore = -Infinity;
@@ -247,7 +244,6 @@ export const assignPlayers = (
 
       playerAssignmentsMap.set(player.id, bestBlockId);
       trainingBlockAssignedPlayerCounts[bestBlockId]!++;
-      allPlayers.splice(randomPlayerIndex, 1);
     }
   }
 
