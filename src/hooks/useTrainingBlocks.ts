@@ -27,7 +27,7 @@ export const useTrainingBlocks = (day: Days) => {
     };
 
     fetchTrainingBlocks();
-  }, []);
+  }, [user, day]);
 
   return { trainingBlocks };
 };

@@ -107,6 +107,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
       const { unassignedPlayerNames, playerAssignmentsMap, usedTrainingBlocks } = assignPlayers(
         players,
         allTrainingBlocks,
+        data.maximumPlayerCount,
       );
 
       await saveUsedTrainingBlocks(user.id, usedTrainingBlocks);

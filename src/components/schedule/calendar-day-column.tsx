@@ -16,9 +16,9 @@ const CalendarDayColumn = ({ day, players }: CalendarDayColumnProps) => {
 
   const dayAbbreviation = getDayAbbreviation(day);
 
-  const timesEntries = Object.entries(TIMES);
-
   const cells = useMemo(() => {
+    const timesEntries = Object.entries(TIMES);
+
     return timesEntries.map((currentEntry, index) => {
       if (index === timesEntries.length - 1) return null;
       const nextEntry = timesEntries[index + 1];

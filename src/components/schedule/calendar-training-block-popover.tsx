@@ -2,6 +2,7 @@ import type { Player, TrainingBlock } from "@/lib/types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar, Clock } from "lucide-react";
 import { formatTimeWithPeriod } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 type CalendarTrainingBlockPopoverProps = {
   currentCellStartInt: number;
@@ -21,7 +22,8 @@ export default function CalendarTrainingBlockPopover({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <div
+        <Button
+          variant="outline"
           className={`absolute border overflow-hidden flex items-center px-3`}
           style={{
             width: `calc(100% - 2px)`,
@@ -29,14 +31,8 @@ export default function CalendarTrainingBlockPopover({
             height: `calc(${heightPercentage}% - 2px)`,
           }}
         >
-          {assignedPlayerNames.length === 0 ? (
-            <i className="text-sm text-muted-foreground text-nowrap truncate">
-              No players assigned
-            </i>
-          ) : (
-            <p className="text-sm text-nowrap truncate">{assignedPlayerNames.join(", ")}</p>
-          )}
-        </div>
+          <p className="text-sm text-nowrap truncate">{assignedPlayerNames.join(", ")}</p>
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="space-y-2">
         <div className="space-y-2">
@@ -48,11 +44,7 @@ export default function CalendarTrainingBlockPopover({
             {formatTimeWithPeriod(start_int)} - {formatTimeWithPeriod(end_int)}
           </p>
         </div>
-        {assignedPlayerNames.length === 0 ? (
-          <i className="text-sm text-muted-foreground">No players assigned</i>
-        ) : (
-          <p className="text-sm">{assignedPlayerNames.join(", ")}</p>
-        )}
+        <p className="text-sm">{assignedPlayerNames.join(", ")}</p>
       </PopoverContent>
     </Popover>
   );

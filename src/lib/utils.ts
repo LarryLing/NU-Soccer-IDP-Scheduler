@@ -118,124 +118,143 @@ const getTrainingBlockIdsForPlayer = (player: Player, trainingBlocks: TrainingBl
     .map((trainingBlock) => trainingBlock.id);
 };
 
-const calculateBalanceScore = (trainingBlockAssignedPlayerCounts: Record<string, number>) => {
-  const counts = Object.values(trainingBlockAssignedPlayerCounts);
+const calculateCoefficientOfVariation = (counts: number[]) => {
   if (counts.length === 0) return 0;
 
   const mean = counts.reduce((sum, count) => sum + count, 0) / counts.length;
+  if (mean === 0) return 0;
+
   const variance =
     counts.reduce((sum, count) => sum + Math.pow(count - mean, 2), 0) / counts.length;
+  const standardDeviation = Math.sqrt(variance);
 
-  return Math.sqrt(variance);
+  return standardDeviation / mean;
 };
 
-const calculateEfficiencyScore = (trainingBlockAssignedPlayerCounts: Record<string, number>) => {
-  const counts = Object.values(trainingBlockAssignedPlayerCounts);
+const calculateMeanAbsoluteDeviation = (counts: number[], targetPlayerCount: number) => {
   if (counts.length === 0) return 0;
 
-  const totalPlayers = counts.reduce((sum, count) => sum + count, 0);
-  const usedBlocks = counts.filter((count) => count > 0).length;
-
-  if (usedBlocks === 0) return 0;
-
-  // Count blocks with only 1 player (inefficient)
-  const singlePlayerBlocks = counts.filter((count) => count === 1).length;
-
-  // Calculate efficiency penalty
-  // Higher penalty for more single-player blocks
-  const singlePlayerPenalty = singlePlayerBlocks * 10;
-
-  // Calculate block utilization (prefer fewer blocks with more players)
-  const avgPlayersPerUsedBlock = totalPlayers / usedBlocks;
-  const utilizationPenalty = usedBlocks / Math.max(avgPlayersPerUsedBlock, 1);
-
-  return singlePlayerPenalty + utilizationPenalty;
+  return (
+    counts.reduce((sum, count) => sum + Math.abs(count - targetPlayerCount), 0) / counts.length
+  );
 };
 
 const calculateCombinedScore = (
   trainingBlockAssignedPlayerCounts: Record<string, number>,
-  currentBlockCount: number,
-  balanceWeight: number = 1.0,
-  efficiencyWeight: number = 0.5,
-  currentCountWeight: number = 1000,
+  maximumPlayerCount: number,
+  uniformityWeight: number = 0.2,
+  targetAdherenceWeight: number = 0.8,
+  debug = false,
 ) => {
-  const balanceScore = calculateBalanceScore(trainingBlockAssignedPlayerCounts);
-  const efficiencyScore = calculateEfficiencyScore(trainingBlockAssignedPlayerCounts);
+  const counts = Object.values(trainingBlockAssignedPlayerCounts).filter((count) => count > 0);
+  const targetPlayerCount = (maximumPlayerCount + 1) / 2;
 
-  // Prefer blocks with lower current count (primary factor)
-  // Add balance and efficiency as secondary factors
-  return (
-    currentBlockCount * currentCountWeight +
-    balanceScore * balanceWeight +
-    efficiencyScore * efficiencyWeight
-  );
+  const cv = calculateCoefficientOfVariation(counts);
+  const mad = calculateMeanAbsoluteDeviation(counts, targetPlayerCount);
+
+  const uniformityScore = 1 / (1 + cv);
+  const targetAdherenceScore = 1 / (1 + mad / targetPlayerCount);
+
+  const uniformityContribution = uniformityWeight * uniformityScore;
+  const targetAdherenceContribution = targetAdherenceWeight * targetAdherenceScore;
+
+  const totalScore = uniformityContribution + targetAdherenceContribution;
+
+  if (debug) {
+    console.log(`
+      === Score Breakdown ===
+      Assigned Player Counts: ${Object.entries(trainingBlockAssignedPlayerCounts)}
+      Counts: [${counts.join(", ")}]
+      Target: ${targetPlayerCount}
+
+      Raw Metrics:
+      CV: ${cv.toFixed(4)}
+      MAD: ${mad.toFixed(4)}
+
+      Component Scores:
+      Uniformity: ${uniformityScore.toFixed(4)} (range: 0-1)
+      Target Adherence: ${targetAdherenceScore.toFixed(4)} (range: 0-1)
+
+      Weighted Contributions:
+      Uniformity: ${uniformityWeight} * ${uniformityScore.toFixed(4)} = ${uniformityContribution.toFixed(4)}
+      Target: ${targetAdherenceWeight} * ${targetAdherenceScore.toFixed(4)} = ${targetAdherenceContribution.toFixed(4)}
+
+      # Total Score: ${totalScore.toFixed(4)}
+    `);
+  }
+
+  return totalScore;
 };
 
-export const assignPlayers = (players: Player[], trainingBlocks: TrainingBlock[]) => {
+export const assignPlayers = (
+  players: Player[],
+  trainingBlocks: TrainingBlock[],
+  maximumPlayerCount: number,
+) => {
   const playerAssignmentsMap = new Map<Player["id"], TrainingBlock["id"] | null>();
   players.forEach((player) => {
     playerAssignmentsMap.set(player.id, null);
   });
 
-  // Initialize block counts
   const trainingBlockAssignedPlayerCounts: Record<TrainingBlock["id"], number> = {};
   trainingBlocks.forEach((block) => {
     trainingBlockAssignedPlayerCounts[block.id] = 0;
   });
 
-  // Create a map of player to available blocks for efficiency
-  const playerToAvailableBlockIds = new Map<Player["id"], TrainingBlock["id"][]>();
+  const availableTrainingBlockIdsMap = new Map<Player["id"], TrainingBlock["id"][]>();
   players.forEach((player) => {
-    playerToAvailableBlockIds.set(player.id, getTrainingBlockIdsForPlayer(player, trainingBlocks));
+    availableTrainingBlockIdsMap.set(
+      player.id,
+      getTrainingBlockIdsForPlayer(player, trainingBlocks),
+    );
   });
 
-  // Sort players by number of available blocks (ascending)
-  // This ensures players with fewer options get priority
-  const sortedPlayers = [...players].sort((a, b) => {
-    const aBlocks = playerToAvailableBlockIds.get(a.id)?.length || 0;
-    const bBlocks = playerToAvailableBlockIds.get(b.id)?.length || 0;
-    return aBlocks - bBlocks;
-  });
+  const allPlayers = [...players];
+  while (allPlayers.length > 0) {
+    const randomPlayerIndex = Math.floor(Math.random() * allPlayers.length);
 
-  // Assign players to blocks
-  for (const player of sortedPlayers) {
-    const availableBlockIds = playerToAvailableBlockIds.get(player.id) || [];
-    if (availableBlockIds.length === 0) continue;
+    const player = allPlayers[randomPlayerIndex];
+    if (!player) break;
 
-    // Find the best block for this player
-    // Prefer blocks with fewer players to maintain balance
-    let bestBlockId: TrainingBlock["id"] | null = null;
-    let bestScore = Infinity;
+    const availableBlockIds = availableTrainingBlockIdsMap.get(player.id) || [];
+    if (availableBlockIds.length === 0) {
+      allPlayers.splice(randomPlayerIndex, 1);
+      continue;
+    }
+
+    let bestBlockIds: TrainingBlock["id"][] = [];
+    let bestScore = -Infinity;
 
     for (const blockId of availableBlockIds) {
-      const currentCount = trainingBlockAssignedPlayerCounts[blockId] || 0;
-
-      // Create a temporary assignment to test the balance
       const tempCounts = { ...trainingBlockAssignedPlayerCounts };
-      tempCounts[blockId] = currentCount + 1;
+      tempCounts[blockId]!++;
 
-      const score = calculateCombinedScore(tempCounts, currentCount);
+      const score = calculateCombinedScore(tempCounts, maximumPlayerCount);
 
-      if (score < bestScore) {
+      if (bestScore < score) {
         bestScore = score;
-        bestBlockId = blockId;
+        bestBlockIds = [blockId];
+      } else if (bestScore === score) {
+        bestBlockIds.push(blockId);
       }
     }
 
-    // Assign the player to the best block
-    if (bestBlockId) {
-      console.log(`placing ${player.id} in ${bestBlockId}`);
+    if (bestBlockIds.length > 0) {
+      const randomBlockIndex = Math.floor(Math.random() * bestBlockIds.length);
+
+      const bestBlockId = bestBlockIds[randomBlockIndex];
+      if (!bestBlockId) continue;
+
       playerAssignmentsMap.set(player.id, bestBlockId);
       trainingBlockAssignedPlayerCounts[bestBlockId]!++;
+      allPlayers.splice(randomPlayerIndex, 1);
     }
   }
 
-  // Find unassigned players
   const unassignedPlayerNames = players
     .filter((player) => playerAssignmentsMap.get(player.id) === null)
     .map((player) => player.name);
 
-  // Find used training blocks
   const usedTrainingBlocks = trainingBlocks.filter(
     (trainingBlock) => trainingBlockAssignedPlayerCounts[trainingBlock.id] || 0 > 0,
   );
