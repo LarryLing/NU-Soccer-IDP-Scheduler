@@ -1,29 +1,29 @@
-import type { Days, PlayerSheetForm, UsePlayersSheetReturn } from "@/lib/types";
+import type { Days, ScheduleSheetForm, UseScheduleSheetReturn } from "@/lib/types";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { PlusIcon } from "lucide-react";
 import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
-import AvailabilityTimeSlot from "./availability-time-slot";
+import FieldAvailabilityTimeSlot from "./field-availability-time-slot";
 
 type AvailabilityDayProps = {
   day: Days;
-  dayFields: (FieldArrayWithId<PlayerSheetForm, "availabilities", "id"> & {
+  dayFields: (FieldArrayWithId<ScheduleSheetForm, "fieldAvailabilities", "id"> & {
     originalIndex: number;
   })[];
-  addAvailability: UsePlayersSheetReturn["addAvailability"];
+  addFieldAvailability: UseScheduleSheetReturn["addFieldAvailability"];
   remove: UseFieldArrayRemove;
-  control: Control<PlayerSheetForm>;
+  control: Control<ScheduleSheetForm>;
 };
 
-export default function AvailabilityDay({
+export default function FieldAvailabilityDay({
   day,
   dayFields,
-  addAvailability,
+  addFieldAvailability,
   remove,
   control,
 }: AvailabilityDayProps) {
-  const handleAddAvailability = () => {
-    addAvailability(day);
+  const handleAddFieldAvailability = () => {
+    addFieldAvailability(day);
   };
 
   return (
@@ -31,10 +31,10 @@ export default function AvailabilityDay({
       <Label>{day}</Label>
       <div className="flex flex-col justify-center gap-2 text-sm border py-2 px-3 min-h-[54px]">
         {dayFields.length === 0 ? (
-          <i className="text-sm text-muted-foreground">No availabilities</i>
+          <i className="text-sm text-muted-foreground">No field availabilities</i>
         ) : (
           dayFields.map((field) => (
-            <AvailabilityTimeSlot
+            <FieldAvailabilityTimeSlot
               key={field.id}
               originalIndex={field.originalIndex}
               remove={remove}
@@ -43,9 +43,9 @@ export default function AvailabilityDay({
           ))
         )}
       </div>
-      <Button type="button" variant="outline" size="sm" onClick={handleAddAvailability}>
+      <Button type="button" variant="outline" size="sm" onClick={handleAddFieldAvailability}>
         <PlusIcon />
-        Add Availability
+        Add Field Availability
       </Button>
     </div>
   );

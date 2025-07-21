@@ -6,7 +6,9 @@ import type {
   Player,
   UsePlayersReturn,
   UsePlayersSheetReturn,
+  UseScheduleSheetReturn,
 } from "@/lib/types";
+import UnassignedPlayersPopover from "../schedule/unassigned-players-popover";
 
 type ActionBarProps = {
   display: "players" | "schedule";
@@ -15,6 +17,8 @@ type ActionBarProps = {
   table: Table<Player>;
   deletePlayer: UsePlayersReturn["deletePlayer"];
   openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
+  openScheduleSheet: UseScheduleSheetReturn["openScheduleSheet"];
+  unassignedPlayerNames: UseScheduleSheetReturn["unassignedPlayerNames"];
 };
 
 export default function ActionBar({
@@ -24,15 +28,15 @@ export default function ActionBar({
   table,
   deletePlayer,
   openPlayerSheet,
+  openScheduleSheet,
+  unassignedPlayerNames,
 }: ActionBarProps) {
   const handleDeletePlayers = async () => {
     const selectedPlayerIds = table
       .getFilteredSelectedRowModel()
       .rows.map((row) => row.original.id);
 
-    const removePlayersPromise = selectedPlayerIds.map((playerId) =>
-      deletePlayer(playerId),
-    );
+    const removePlayersPromise = selectedPlayerIds.map((playerId) => deletePlayer(playerId));
 
     await Promise.all(removePlayersPromise);
     table.resetRowSelection();
@@ -58,10 +62,15 @@ export default function ActionBar({
           </Button>
         ))}
       {display === "schedule" && (
-        <Button>
-          <CalendarIcon />
-          Create Schedule
-        </Button>
+        <div className="flex items-center space-x-3">
+          <Button onClick={openScheduleSheet}>
+            <CalendarIcon />
+            Create Schedule
+          </Button>
+          {unassignedPlayerNames.length > 0 && (
+            <UnassignedPlayersPopover unassignedPlayerNames={unassignedPlayerNames} />
+          )}
+        </div>
       )}
       <Tabs
         defaultValue={display}

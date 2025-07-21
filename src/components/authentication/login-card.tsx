@@ -59,9 +59,7 @@ export default function LoginCard() {
     <Card className="w-[400px]">
       <CardHeader>
         <CardTitle>Login</CardTitle>
-        <CardDescription>
-          Enter your email and password below to login.
-        </CardDescription>
+        <CardDescription>Enter your email and password below to login.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -88,17 +86,11 @@ export default function LoginCard() {
                   <div className="flex items-center justify-between">
                     <FormLabel>Password</FormLabel>
                     <Link to="/forgot-password">
-                      <p className="text-sm text-primary hover:underline">
-                        Forgot Password?
-                      </p>
+                      <p className="text-sm text-primary hover:underline">Forgot Password?</p>
                     </Link>
                   </div>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your password"
-                      {...field}
-                    />
+                    <Input type="password" placeholder="Enter your password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -110,11 +102,7 @@ export default function LoginCard() {
               Login
             </Button>
             <Link to="/signup">
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={isSubmitting || isValidating}
-              >
+              <Button type="button" variant="secondary" disabled={isSubmitting || isValidating}>
                 Sign Up
               </Button>
             </Link>

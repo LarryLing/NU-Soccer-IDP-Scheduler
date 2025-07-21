@@ -3,15 +3,19 @@ import { Input } from "../ui/input";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { memo } from "react";
 import type { Control, UseFieldArrayRemove } from "react-hook-form";
-import type { PlayerSheetForm } from "@/lib/types";
+import type { ScheduleSheetForm } from "@/lib/types";
 
 type AvailabilityTimeSlotProps = {
   originalIndex: number;
   remove: UseFieldArrayRemove;
-  control: Control<PlayerSheetForm>;
+  control: Control<ScheduleSheetForm>;
 };
 
-const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTimeSlotProps) => {
+const AvailabilityTimeSlot = memo(function FieldAvailabilityTimeSlot({
+  originalIndex,
+  remove,
+  control,
+}: AvailabilityTimeSlotProps) {
   const handleRemove = () => {
     remove(originalIndex);
   };
@@ -20,7 +24,7 @@ const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTi
     <div className="flex items-center gap-2">
       <FormField
         control={control}
-        name={`availabilities.${originalIndex}.start` as const}
+        name={`fieldAvailabilities.${originalIndex}.start` as const}
         render={({ field }) => (
           <FormItem>
             <FormControl>
@@ -33,7 +37,7 @@ const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTi
       <span className="text-sm">-</span>
       <FormField
         control={control}
-        name={`availabilities.${originalIndex}.end` as const}
+        name={`fieldAvailabilities.${originalIndex}.end` as const}
         render={({ field }) => (
           <FormItem>
             <FormControl>
@@ -48,6 +52,6 @@ const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTi
       </Button>
     </div>
   );
-};
+});
 
-export default memo(AvailabilityTimeSlot);
+export default AvailabilityTimeSlot;

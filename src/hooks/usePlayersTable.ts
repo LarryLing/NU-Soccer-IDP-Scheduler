@@ -10,10 +10,7 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 
-export const usePlayersTable = (
-  players: Player[],
-  columns: ColumnDef<Player>[],
-) => {
+export const usePlayersTable = (players: Player[], columns: ColumnDef<Player>[]) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});

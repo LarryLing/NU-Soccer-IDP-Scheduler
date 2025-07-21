@@ -12,25 +12,20 @@ export const usePlayers = (): UsePlayersReturn => {
     const { error } = await supabase.from("players").insert(player);
     if (error) {
       console.error("Error adding player", error);
-      return;
+      throw error;
     }
   }, []);
 
   const updatePlayer = useCallback(async (player: Player) => {
-    const { error } = await supabase
-      .from("players")
-      .update(player)
-      .eq("id", player.id);
+    const { error } = await supabase.from("players").update(player).eq("id", player.id);
     if (error) {
       console.error("Error updating player", error);
+      throw error;
     }
   }, []);
 
   const deletePlayer = useCallback(async (playerId: string) => {
-    const { error } = await supabase
-      .from("players")
-      .delete()
-      .eq("id", playerId);
+    const { error } = await supabase.from("players").delete().eq("id", playerId);
     if (error) {
       console.error("Error deleting player", error);
     }
@@ -39,14 +34,21 @@ export const usePlayers = (): UsePlayersReturn => {
   useEffect(() => {
     const fetchPlayers = async () => {
       if (!user) return;
+
       const { data: players, error } = await supabase
         .from("players")
         .select("*")
         .eq("user_id", user.id)
         .order("number", { ascending: true });
-      if (error) console.error("Error fetching players");
-      setPlayers(players || []);
+
+      if (error || !players) {
+        console.error("Error fetching players");
+        return;
+      }
+
+      setPlayers(players);
     };
+
     fetchPlayers();
   }, [user]);
 
@@ -79,9 +81,7 @@ export const usePlayers = (): UsePlayersReturn => {
         (message) => {
           setPlayers((prev) =>
             prev.map((player) =>
-              player.id === message.payload.id
-                ? (message.payload as Player)
-                : player,
+              player.id === message.payload.id ? (message.payload as Player) : player,
             ),
           );
         },
@@ -92,9 +92,7 @@ export const usePlayers = (): UsePlayersReturn => {
           event: "DELETE",
         },
         (message) => {
-          setPlayers((prev) =>
-            prev.filter((player) => player.id !== message.payload.id),
-          );
+          setPlayers((prev) => prev.filter((player) => player.id !== message.payload.id));
         },
       )
       .subscribe();
