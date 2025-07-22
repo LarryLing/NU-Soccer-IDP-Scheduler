@@ -1,13 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type {
-  Availability,
-  AvailabilitySheetForm,
-  Days,
-  Player,
-  TrainingBlock,
-  UserData,
-} from "./types";
+import type { Availability, AvailabilitySheetForm, Days, Player, TrainingBlock } from "./types";
 import { DAYS } from "./constants";
 import supabase from "@/services/supabase";
 
@@ -69,7 +62,6 @@ export const findOverlap = (availabilities: Availability[]) => {
 };
 
 export const createAllTrainingBlocks = (
-  userId: UserData["id"],
   availabilities: Availability[],
   trainingBlockDuration: number,
 ) => {
@@ -84,7 +76,6 @@ export const createAllTrainingBlocks = (
       while (currentInt < endInt) {
         const createdTrainingBlock: TrainingBlock = {
           id: crypto.randomUUID(),
-          user_id: userId,
           day: day as Days,
           start: formatTime(currentInt),
           end: formatTime(currentInt + trainingBlockDuration),
@@ -262,14 +253,8 @@ export const assignPlayers = (
   };
 };
 
-export const saveUsedTrainingBlocks = async (
-  userId: UserData["id"],
-  trainingBlocks: TrainingBlock[],
-) => {
-  const { error: deleteError } = await supabase
-    .from("training_blocks")
-    .delete()
-    .eq("user_id", userId);
+export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) => {
+  const { error: deleteError } = await supabase.from("training_blocks").delete();
 
   if (deleteError) {
     console.error("Error creating schedule", deleteError);

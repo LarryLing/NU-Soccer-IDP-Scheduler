@@ -14,12 +14,9 @@ import {
   saveAssignedPlayers,
 } from "@/lib/utils.ts";
 import { parseTime } from "@/lib/utils.ts";
-import { useAuth } from "./useAuth.ts";
 import { DEFAULT_SCHEDULE } from "@/lib/constants.ts";
 
 export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
-  const { user } = useAuth();
-
   const [isScheduleSheetOpen, setIsScheduleSheetOpen] = useState<boolean>(false);
   const [isCreatingSchedule, setIsCreatingSchedule] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -74,8 +71,6 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   );
 
   const onSubmit: SubmitHandler<ScheduleSheetForm> = async (data) => {
-    if (!user) return;
-
     if (data.fieldAvailabilities.length === 0) {
       setIsScheduleSheetOpen(false);
       return;
@@ -98,11 +93,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         return;
       }
 
-      const allTrainingBlocks = createAllTrainingBlocks(
-        user.id,
-        transformedAvailabilities,
-        data.duration,
-      );
+      const allTrainingBlocks = createAllTrainingBlocks(transformedAvailabilities, data.duration);
 
       const { unassignedPlayerNames, playerAssignmentsMap, usedTrainingBlocks } = assignPlayers(
         players,
@@ -110,7 +101,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         data.maximumPlayerCount,
       );
 
-      await saveUsedTrainingBlocks(user.id, usedTrainingBlocks);
+      await saveUsedTrainingBlocks(usedTrainingBlocks);
       await saveAssignedPlayers(playerAssignmentsMap);
 
       setUnassignedPlayerNames(unassignedPlayerNames);

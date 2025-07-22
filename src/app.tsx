@@ -9,19 +9,9 @@ import { usePlayers } from "@/hooks/usePlayers";
 import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 import { usePlayersTable } from "@/hooks/usePlayersTable";
 import { useScheduleSheet } from "@/hooks/useScheduleSheet";
-import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = createFileRoute("/")({
-  beforeLoad: ({ context }) => {
-    if (!context.auth.user) {
-      throw redirect({ to: "/login" });
-    }
-  },
-  component: Index,
-});
-
-function Index() {
+export function App() {
   const playersReturn = usePlayers();
   const { players, insertPlayer, updatePlayer, deletePlayer } = playersReturn;
 

@@ -42,7 +42,6 @@ export type Database = {
           number: number
           position: Database["public"]["Enums"]["positions"]
           training_block_id: string | null
-          user_id: string
         }
         Insert: {
           availabilities?: Json
@@ -51,7 +50,6 @@ export type Database = {
           number?: number
           position?: Database["public"]["Enums"]["positions"]
           training_block_id?: string | null
-          user_id?: string
         }
         Update: {
           availabilities?: Json
@@ -60,7 +58,6 @@ export type Database = {
           number?: number
           position?: Database["public"]["Enums"]["positions"]
           training_block_id?: string | null
-          user_id?: string
         }
         Relationships: [
           {
@@ -80,7 +77,6 @@ export type Database = {
           id: string
           start: string
           start_int: number
-          user_id: string
         }
         Insert: {
           day?: Database["public"]["Enums"]["days"]
@@ -89,7 +85,6 @@ export type Database = {
           id?: string
           start?: string
           start_int?: number
-          user_id?: string
         }
         Update: {
           day?: Database["public"]["Enums"]["days"]
@@ -98,7 +93,6 @@ export type Database = {
           id?: string
           start?: string
           start_int?: number
-          user_id?: string
         }
         Relationships: []
       }

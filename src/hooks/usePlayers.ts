@@ -1,11 +1,8 @@
 import type { Player, UsePlayersReturn } from "@/lib/types";
 import supabase from "@/services/supabase.ts";
 import { useState, useCallback, useEffect } from "react";
-import { useAuth } from "./useAuth.ts";
 
 export const usePlayers = (): UsePlayersReturn => {
-  const { user } = useAuth();
-
   const [players, setPlayers] = useState<Player[]>([]);
 
   const insertPlayer = useCallback(async (player: Player) => {
@@ -33,12 +30,9 @@ export const usePlayers = (): UsePlayersReturn => {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      if (!user) return;
-
       const { data: players, error } = await supabase
         .from("players")
         .select("*")
-        .eq("user_id", user.id)
         .order("number", { ascending: true });
 
       if (error || !players) {
@@ -50,18 +44,16 @@ export const usePlayers = (): UsePlayersReturn => {
     };
 
     fetchPlayers();
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     async function setSupabaseAuth() {
       await supabase.realtime.setAuth();
     }
 
-    if (!user) return;
-
     setSupabaseAuth();
 
-    const playersChannel = supabase.channel(`players:${user.id}`);
+    const playersChannel = supabase.channel(`players`);
 
     playersChannel
       .on(
@@ -100,7 +92,7 @@ export const usePlayers = (): UsePlayersReturn => {
     return () => {
       playersChannel.unsubscribe();
     };
-  }, [user]);
+  }, []);
 
   return { players, insertPlayer, updatePlayer, deletePlayer };
 };

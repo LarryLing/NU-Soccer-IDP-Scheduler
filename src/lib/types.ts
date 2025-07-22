@@ -11,14 +11,9 @@ import type {
 } from "./schemas";
 import type z from "zod";
 
-export type UserData = {
-  id: string;
-  email: string;
-};
-
 export type Player = Database["public"]["Tables"]["players"]["Row"];
 
-export type PlayerMetadata = Pick<Player, "id" | "user_id" | "training_block_id">;
+export type PlayerMetadata = Pick<Player, "id" | "training_block_id">;
 
 export type TrainingBlock = Database["public"]["Tables"]["training_blocks"]["Row"];
 
@@ -35,13 +30,6 @@ export type ResetPasswordForm = z.infer<typeof ResetPasswordFormSchema>;
 export type PlayerSheetForm = z.infer<typeof PlayerFormSchema>;
 export type ScheduleSheetForm = z.infer<typeof ScheduleFormSchema>;
 export type AvailabilitySheetForm = z.infer<typeof AvailabilitySchema>;
-
-export type TrainingBlockDialogConfig = {
-  day: Days;
-  start: TrainingBlock["start"];
-  end: TrainingBlock["end"];
-  assignedPlayerNames: Player["name"][];
-};
 
 export type UsePlayersReturn = {
   players: Player[];
@@ -75,14 +63,4 @@ export type UseScheduleSheetReturn = {
   openScheduleSheet: () => void;
   addFieldAvailability: (day: Days) => void;
   onSubmit: SubmitHandler<ScheduleSheetForm>;
-};
-
-export type AuthContextType = {
-  user: UserData | null;
-  isLoading: boolean;
-  signup: (email: string, password: string) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  requestPasswordReset: (email: string) => Promise<void>;
-  resetPassword: (password: string) => Promise<void>;
 };
