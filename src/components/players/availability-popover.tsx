@@ -1,10 +1,10 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "../ui/badge";
 import { formatTimeWithPeriod } from "@/lib/utils";
-import type { Days, Availability } from "@/lib/types";
+import type { Day, Availability } from "@/lib/types";
 
 type AvailabilityPopoverProps = {
-  day: Days;
+  day: Day;
   dayAvailabilities: Availability[];
 };
 

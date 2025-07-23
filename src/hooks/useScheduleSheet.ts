@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import type { Days, Player, ScheduleSheetForm, UseScheduleSheetReturn } from "../lib/types.ts";
+import type { Day, Player, ScheduleSheetForm, UseScheduleSheetReturn } from "../lib/types.ts";
 import { ScheduleFormSchema } from "@/lib/schemas.ts";
 import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,7 +44,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   }, [setError]);
 
   const addFieldAvailability = useCallback(
-    (day: Days) => {
+    (day: Day) => {
       const dayFields = fields.filter((field) => field.day === day);
       const lastField = dayFields[dayFields.length - 1];
 

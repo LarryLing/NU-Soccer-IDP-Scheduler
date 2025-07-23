@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Availability, AvailabilitySheetForm, Days, Player, TrainingBlock } from "./types";
+import type { Availability, AvailabilitySheetForm, Day, Player, TrainingBlock } from "./types";
 import { DAYS } from "./constants";
 import supabase from "@/services/supabase";
 
@@ -76,7 +76,7 @@ export const createAllTrainingBlocks = (
       while (currentInt < endInt) {
         const createdTrainingBlock: TrainingBlock = {
           id: crypto.randomUUID(),
-          day: day as Days,
+          day: day as Day,
           start: formatTime(currentInt),
           end: formatTime(currentInt + trainingBlockDuration),
           start_int: currentInt,
@@ -282,7 +282,7 @@ export const saveAssignedPlayers = async (
   await Promise.all(assignPlayerPromises);
 };
 
-export const getDayAbbreviation = (day: Days) => {
+export const getDayAbbreviation = (day: Day) => {
   switch (day) {
     case "Monday":
       return "Mo";

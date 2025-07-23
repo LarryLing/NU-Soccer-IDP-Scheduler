@@ -1,5 +1,6 @@
 import type { SubmitHandler, UseFieldArrayReturn, UseFormReturn } from "react-hook-form";
-import type { Database } from "../../database.types";
+import type { Database } from "database.types";
+
 import type {
   ScheduleFormSchema,
   ForgotPasswordFormSchema,
@@ -19,9 +20,7 @@ export type TrainingBlock = Database["public"]["Tables"]["training_blocks"]["Row
 
 export type Availability = Pick<TrainingBlock, "day" | "start" | "start_int" | "end" | "end_int">;
 
-export type Days = Database["public"]["Enums"]["days"];
-
-export type Positions = Database["public"]["Enums"]["positions"];
+export type Day = Database["public"]["Enums"]["days"];
 
 export type LoginForm = z.infer<typeof LoginFormSchema>;
 export type SignupForm = z.infer<typeof SignupFormSchema>;
@@ -47,7 +46,7 @@ export type UsePlayersSheetReturn = {
   form: UseFormReturn<PlayerSheetForm>;
   fieldArray: UseFieldArrayReturn<PlayerSheetForm, "availabilities", "id">;
   openPlayerSheet: (playerId: string | null) => void;
-  addAvailability: (day: Days) => void;
+  addAvailability: (day: Day) => void;
   onSubmit: SubmitHandler<PlayerSheetForm>;
 };
 
@@ -61,6 +60,6 @@ export type UseScheduleSheetReturn = {
   form: UseFormReturn<ScheduleSheetForm>;
   fieldArray: UseFieldArrayReturn<ScheduleSheetForm, "fieldAvailabilities", "id">;
   openScheduleSheet: () => void;
-  addFieldAvailability: (day: Days) => void;
+  addFieldAvailability: (day: Day) => void;
   onSubmit: SubmitHandler<ScheduleSheetForm>;
 };

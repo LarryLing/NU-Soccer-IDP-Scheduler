@@ -1,8 +1,8 @@
-import type { Days, TrainingBlock } from "@/lib/types";
+import type { Day, TrainingBlock } from "@/lib/types";
 import supabase from "@/services/supabase";
 import { useState, useEffect } from "react";
 
-export const useTrainingBlocks = (day: Days) => {
+export const useTrainingBlocks = (day: Day) => {
   const [trainingBlocks, setTrainingBlocks] = useState<TrainingBlock[]>([]);
 
   useEffect(() => {

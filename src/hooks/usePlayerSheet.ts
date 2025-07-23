@@ -12,7 +12,7 @@ import { useState, useCallback } from "react";
 import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import type {
   Availability,
-  Days,
+  Day,
   Player,
   PlayerMetadata,
   PlayerSheetForm,
@@ -71,7 +71,7 @@ export const usePlayerSheet = (
   );
 
   const addAvailability = useCallback(
-    (day: Days) => {
+    (day: Day) => {
       const dayFields = fields.filter((field) => field.day === day);
       const lastField = dayFields[dayFields.length - 1];
 

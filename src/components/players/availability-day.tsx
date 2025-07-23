@@ -1,4 +1,4 @@
-import type { Days, PlayerSheetForm, UsePlayersSheetReturn } from "@/lib/types";
+import type { Day, PlayerSheetForm, UsePlayersSheetReturn } from "@/lib/types";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { PlusIcon } from "lucide-react";
@@ -6,7 +6,7 @@ import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-
 import AvailabilityTimeSlot from "./availability-time-slot";
 
 type AvailabilityDayProps = {
-  day: Days;
+  day: Day;
   dayFields: (FieldArrayWithId<PlayerSheetForm, "availabilities", "id"> & {
     originalIndex: number;
   })[];
