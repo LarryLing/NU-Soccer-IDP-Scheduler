@@ -38,7 +38,7 @@ pnpm install
 
 ### Setting Up Environment Variables
 
-Create a `.env` file and insert the following variables
+Create a `.env` file and insert the following variables (copy the generated `ANON_KEY` from the self-hosted Supabase setup)
 ```sh
 VITE_SUPABASE_URL=http://localhost:8000
 VITE_SUPABASE_ANON_KEY=<YOUR_GENERATED_ANON_KEY>
@@ -50,10 +50,6 @@ Run the following script to start the application locally
 ```sh
 pnpm run dev
 ```
-
-## Demo
-
-demo video
 
 ## License
 
