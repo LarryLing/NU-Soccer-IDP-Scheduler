@@ -254,7 +254,10 @@ export const assignPlayers = (
 };
 
 export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) => {
-  const { error: deleteError } = await supabase.from("training_blocks").delete();
+  const { error: deleteError } = await supabase
+    .from("training_blocks")
+    .delete()
+    .neq("id", crypto.randomUUID());
 
   if (deleteError) {
     console.error("Error creating schedule", deleteError);
