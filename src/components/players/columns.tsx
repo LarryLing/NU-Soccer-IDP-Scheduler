@@ -8,14 +8,18 @@ import { DAYS } from "@/lib/constants";
 import AvailabilityPopover from "./availability-popover";
 import ActionDropdownMenu from "./action-dropdown-menu";
 
-export default function getColumns(deletePlayer: UsePlayersReturn["deletePlayer"], openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"]): ColumnDef<Player>[] {
+export default function getColumns(
+  deletePlayer: UsePlayersReturn["deletePlayer"],
+  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"],
+): ColumnDef<Player>[] {
   return [
     {
       accessorKey: "select",
       header: ({ table }) => (
         <Checkbox
           checked={
-            table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -83,7 +87,9 @@ export default function getColumns(deletePlayer: UsePlayersReturn["deletePlayer"
       cell: ({ row }) => {
         const availabilities: Availability[] = row.getValue("availabilities");
         return DAYS.map((day) => {
-          const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
+          const dayAvailabilities = availabilities.filter(
+            (availability) => availability.day === day,
+          );
           if (dayAvailabilities.length === 0) return null;
           return <AvailabilityPopover key={day} day={day} dayAvailabilities={dayAvailabilities} />;
         });
@@ -92,7 +98,11 @@ export default function getColumns(deletePlayer: UsePlayersReturn["deletePlayer"
     {
       id: "actions",
       cell: ({ row }) => (
-        <ActionDropdownMenu id={row.original.id} deletePlayer={deletePlayer} openPlayerSheet={openPlayerSheet}/>
+        <ActionDropdownMenu
+          id={row.original.id}
+          deletePlayer={deletePlayer}
+          openPlayerSheet={openPlayerSheet}
+        />
       ),
     },
   ];

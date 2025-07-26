@@ -8,10 +8,7 @@ type PlayersTableProps = {
   numColumns: number;
 };
 
-export function PlayersTable({
-  table,
-  numColumns,
-}: PlayersTableProps) {
+export function PlayersTable({ table, numColumns }: PlayersTableProps) {
   return (
     <div className="border">
       <Table>

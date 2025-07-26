@@ -13,7 +13,7 @@ type ActionDropdownMenuProps = {
   id: Player["id"];
   deletePlayer: UsePlayersReturn["deletePlayer"];
   openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
-}
+};
 
 export const ActionDropdownMenu = ({
   id,

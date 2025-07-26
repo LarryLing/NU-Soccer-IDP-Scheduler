@@ -43,13 +43,8 @@ export function App() {
           unassignedPlayerNames={unassignedPlayerNames}
         />
       </section>
-      <section className="sm:px-8 px-4 pb-4">
-        {display === "players" && (
-          <PlayersTable
-            table={table}
-            numColumns={columns.length}
-          />
-        )}
+      <section className="sm:px-8 px-4 sm:pb-8 pb-4">
+        {display === "players" && <PlayersTable table={table} numColumns={columns.length} />}
         {display === "schedule" &&
           (isCreatingSchedule ? (
             <p className="text-sm text-center w-full">Creating schedule...</p>
