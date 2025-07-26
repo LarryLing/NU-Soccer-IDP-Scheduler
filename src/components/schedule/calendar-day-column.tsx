@@ -1,4 +1,4 @@
-import type { Days, Player } from "@/lib/types";
+import type { Day, Player } from "@/lib/types";
 import { TIMES } from "@/lib/constants";
 import CalendarCell from "./calendar-cell";
 import { getDayAbbreviation } from "@/lib/utils";
@@ -7,7 +7,7 @@ import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
 import { useTrainingBlocks } from "@/hooks/useTrainingBlocks";
 
 type CalendarDayColumnProps = {
-  day: Days;
+  day: Day;
   players: Player[];
 };
 

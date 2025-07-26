@@ -1,15 +1,12 @@
 import type { Player, UsePlayersReturn } from "@/lib/types";
 import supabase from "@/services/supabase.ts";
 import { useState, useCallback, useEffect } from "react";
-import { useAuth } from "./useAuth.ts";
 
 export const usePlayers = (): UsePlayersReturn => {
-  const { user } = useAuth();
-
   const [players, setPlayers] = useState<Player[]>([]);
 
   const insertPlayer = useCallback(async (player: Player) => {
-    const { error } = await supabase.from("players").insert(player);
+    const { error } = await supabase.from("players").insert(player).select();
     if (error) {
       console.error("Error adding player", error);
       throw error;
@@ -19,7 +16,6 @@ export const usePlayers = (): UsePlayersReturn => {
   const updatePlayer = useCallback(async (player: Player) => {
     const { error } = await supabase.from("players").update(player).eq("id", player.id);
     if (error) {
-      console.error("Error updating player", error);
       throw error;
     }
   }, []);
@@ -33,12 +29,9 @@ export const usePlayers = (): UsePlayersReturn => {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      if (!user) return;
-
       const { data: players, error } = await supabase
         .from("players")
         .select("*")
-        .eq("user_id", user.id)
         .order("number", { ascending: true });
 
       if (error || !players) {
@@ -50,57 +43,47 @@ export const usePlayers = (): UsePlayersReturn => {
     };
 
     fetchPlayers();
-  }, [user]);
+  }, []);
 
   useEffect(() => {
-    async function setSupabaseAuth() {
-      await supabase.realtime.setAuth();
-    }
-
-    if (!user) return;
-
-    setSupabaseAuth();
-
-    const playersChannel = supabase.channel(`players:${user.id}`);
-
-    playersChannel
+    const playersChannel = supabase
+      .channel("players")
       .on(
-        "broadcast",
+        "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
+          schema: "public",
+          table: "players",
         },
-        (message) => {
-          setPlayers((prev) => [...prev, message.payload as Player]);
-        },
-      )
-      .on(
-        "broadcast",
-        {
-          event: "UPDATE",
-        },
-        (message) => {
-          setPlayers((prev) =>
-            prev.map((player) =>
-              player.id === message.payload.id ? (message.payload as Player) : player,
-            ),
-          );
-        },
-      )
-      .on(
-        "broadcast",
-        {
-          event: "DELETE",
-        },
-        (message) => {
-          setPlayers((prev) => prev.filter((player) => player.id !== message.payload.id));
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            setPlayers((prev) => [...prev, payload.new as Player]);
+          } else if (payload.eventType === "UPDATE") {
+            setPlayers((prev) =>
+              prev.map((player) =>
+                player.id === payload.new.id ? (payload.new as Player) : player,
+              ),
+            );
+          } else if (payload.eventType === "DELETE") {
+            setPlayers((prev) => prev.filter((player) => player.id !== payload.old.id));
+          }
         },
       )
       .subscribe();
 
+    const heartbeat = setInterval(() => {
+      playersChannel.send({
+        type: "broadcast",
+        event: "heartbeat",
+        payload: { timestamp: Date.now() },
+      });
+    }, 90000);
+
     return () => {
+      clearInterval(heartbeat);
       playersChannel.unsubscribe();
     };
-  }, [user]);
+  }, []);
 
   return { players, insertPlayer, updatePlayer, deletePlayer };
 };

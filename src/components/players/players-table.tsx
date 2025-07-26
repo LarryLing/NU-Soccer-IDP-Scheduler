@@ -1,22 +1,14 @@
-import type { Player, UsePlayersReturn, UsePlayersSheetReturn } from "@/lib/types";
+import type { Player } from "@/lib/types";
 import { flexRender } from "@tanstack/react-table";
 import type { Table as TanstackTable } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { ActionContextMenu } from "./action-context-menu";
 
 type PlayersTableProps = {
   table: TanstackTable<Player>;
   numColumns: number;
-  deletePlayer: UsePlayersReturn["deletePlayer"];
-  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
 };
 
-export function PlayersTable({
-  table,
-  numColumns,
-  deletePlayer,
-  openPlayerSheet,
-}: PlayersTableProps) {
+export function PlayersTable({ table, numColumns }: PlayersTableProps) {
   return (
     <div className="border">
       <Table>
@@ -38,20 +30,13 @@ export function PlayersTable({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <ActionContextMenu
-                key={row.id}
-                id={row.original.id}
-                deletePlayer={deletePlayer}
-                openPlayerSheet={openPlayerSheet}
-              >
-                <TableRow data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </ActionContextMenu>
+              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
             ))
           ) : (
             <TableRow>

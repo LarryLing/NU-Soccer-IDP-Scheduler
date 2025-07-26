@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import type { Days, Player, ScheduleSheetForm, UseScheduleSheetReturn } from "../lib/types.ts";
+import type { Day, Player, ScheduleSheetForm, UseScheduleSheetReturn } from "../lib/types.ts";
 import { ScheduleFormSchema } from "@/lib/schemas.ts";
 import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,12 +14,9 @@ import {
   saveAssignedPlayers,
 } from "@/lib/utils.ts";
 import { parseTime } from "@/lib/utils.ts";
-import { useAuth } from "./useAuth.ts";
 import { DEFAULT_SCHEDULE } from "@/lib/constants.ts";
 
 export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
-  const { user } = useAuth();
-
   const [isScheduleSheetOpen, setIsScheduleSheetOpen] = useState<boolean>(false);
   const [isCreatingSchedule, setIsCreatingSchedule] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +44,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   }, [setError]);
 
   const addFieldAvailability = useCallback(
-    (day: Days) => {
+    (day: Day) => {
       const dayFields = fields.filter((field) => field.day === day);
       const lastField = dayFields[dayFields.length - 1];
 
@@ -74,8 +71,6 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   );
 
   const onSubmit: SubmitHandler<ScheduleSheetForm> = async (data) => {
-    if (!user) return;
-
     if (data.fieldAvailabilities.length === 0) {
       setIsScheduleSheetOpen(false);
       return;
@@ -98,11 +93,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         return;
       }
 
-      const allTrainingBlocks = createAllTrainingBlocks(
-        user.id,
-        transformedAvailabilities,
-        data.duration,
-      );
+      const allTrainingBlocks = createAllTrainingBlocks(transformedAvailabilities, data.duration);
 
       const { unassignedPlayerNames, playerAssignmentsMap, usedTrainingBlocks } = assignPlayers(
         players,
@@ -110,7 +101,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
         data.maximumPlayerCount,
       );
 
-      await saveUsedTrainingBlocks(user.id, usedTrainingBlocks);
+      await saveUsedTrainingBlocks(usedTrainingBlocks);
       await saveAssignedPlayers(playerAssignmentsMap);
 
       setUnassignedPlayerNames(unassignedPlayerNames);

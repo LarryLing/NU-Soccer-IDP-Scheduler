@@ -12,22 +12,19 @@ import { useState, useCallback } from "react";
 import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import type {
   Availability,
-  Days,
+  Day,
   Player,
   PlayerMetadata,
   PlayerSheetForm,
   UsePlayersReturn,
   UsePlayersSheetReturn,
 } from "../lib/types.ts";
-import { useAuth } from "./useAuth";
 
 export const usePlayerSheet = (
   players: Player[],
   insertPlayer: UsePlayersReturn["insertPlayer"],
   updatePlayer: UsePlayersReturn["updatePlayer"],
 ): UsePlayersSheetReturn => {
-  const { user } = useAuth();
-
   const [playerMetadata, setPlayerMetadata] = useState<PlayerMetadata | null>(null);
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +71,7 @@ export const usePlayerSheet = (
   );
 
   const addAvailability = useCallback(
-    (day: Days) => {
+    (day: Day) => {
       const dayFields = fields.filter((field) => field.day === day);
       const lastField = dayFields[dayFields.length - 1];
 
@@ -101,8 +98,6 @@ export const usePlayerSheet = (
   );
 
   const onSubmit: SubmitHandler<PlayerSheetForm> = async (data) => {
-    if (!user) return;
-
     const transformedAvailabilities = transformAvailabilities(data.availabilities);
 
     const overlap = findOverlap(transformedAvailabilities);
@@ -122,7 +117,6 @@ export const usePlayerSheet = (
         await insertPlayer({
           ...data,
           id: crypto.randomUUID(),
-          user_id: user.id,
           training_block_id: null,
           availabilities: transformedAvailabilities,
         });

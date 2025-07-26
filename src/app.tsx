@@ -1,6 +1,6 @@
 import ActionBar from "@/components/misc/action-bar";
 import Navbar from "@/components/misc/navbar";
-import { columns } from "@/components/players/columns";
+import getColumns from "@/components/players/columns";
 import PlayerSheet from "@/components/players/player-sheet";
 import { PlayersTable } from "@/components/players/players-table";
 import ScheduleSheet from "@/components/schedule/schedule-sheet";
@@ -9,19 +9,9 @@ import { usePlayers } from "@/hooks/usePlayers";
 import { usePlayerSheet } from "@/hooks/usePlayerSheet";
 import { usePlayersTable } from "@/hooks/usePlayersTable";
 import { useScheduleSheet } from "@/hooks/useScheduleSheet";
-import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = createFileRoute("/")({
-  beforeLoad: ({ context }) => {
-    if (!context.auth.user) {
-      throw redirect({ to: "/login" });
-    }
-  },
-  component: Index,
-});
-
-function Index() {
+export function App() {
   const playersReturn = usePlayers();
   const { players, insertPlayer, updatePlayer, deletePlayer } = playersReturn;
 
@@ -31,6 +21,7 @@ function Index() {
   const scheduleSheetReturn = useScheduleSheet(players);
   const { isCreatingSchedule, unassignedPlayerNames, openScheduleSheet } = scheduleSheetReturn;
 
+  const columns = getColumns(deletePlayer, openPlayerSheet);
   const table = usePlayersTable(players, columns);
 
   const [display, setDisplay] = useState<"players" | "schedule">("players");
@@ -52,15 +43,8 @@ function Index() {
           unassignedPlayerNames={unassignedPlayerNames}
         />
       </section>
-      <section className="sm:px-8 px-4 pb-4">
-        {display === "players" && (
-          <PlayersTable
-            table={table}
-            numColumns={columns.length}
-            deletePlayer={deletePlayer}
-            openPlayerSheet={openPlayerSheet}
-          />
-        )}
+      <section className="sm:px-8 px-4 sm:pb-8 pb-4">
+        {display === "players" && <PlayersTable table={table} numColumns={columns.length} />}
         {display === "schedule" &&
           (isCreatingSchedule ? (
             <p className="text-sm text-center w-full">Creating schedule...</p>
