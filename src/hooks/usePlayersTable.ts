@@ -11,7 +11,10 @@ import {
 import { useState } from "react";
 
 export const usePlayersTable = (players: Player[], columns: ColumnDef<Player>[]) => {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([{
+    id: "number",
+    desc: false
+  }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
 

@@ -1,6 +1,6 @@
 import ActionBar from "@/components/misc/action-bar";
 import Navbar from "@/components/misc/navbar";
-import { columns } from "@/components/players/columns";
+import getColumns from "@/components/players/columns";
 import PlayerSheet from "@/components/players/player-sheet";
 import { PlayersTable } from "@/components/players/players-table";
 import ScheduleSheet from "@/components/schedule/schedule-sheet";
@@ -21,6 +21,7 @@ export function App() {
   const scheduleSheetReturn = useScheduleSheet(players);
   const { isCreatingSchedule, unassignedPlayerNames, openScheduleSheet } = scheduleSheetReturn;
 
+  const columns = getColumns(deletePlayer, openPlayerSheet);
   const table = usePlayersTable(players, columns);
 
   const [display, setDisplay] = useState<"players" | "schedule">("players");
@@ -47,8 +48,6 @@ export function App() {
           <PlayersTable
             table={table}
             numColumns={columns.length}
-            deletePlayer={deletePlayer}
-            openPlayerSheet={openPlayerSheet}
           />
         )}
         {display === "schedule" &&
