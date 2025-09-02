@@ -1,8 +1,11 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Availability, AvailabilitySheetForm, Day, Player, TrainingBlock } from "./types";
-import { DAYS } from "./constants";
-import supabase from "@/services/supabase";
+import { DAYS } from "@/constants/days";
+import type { AvailabilityFormType } from "@/schemas/availability.schema";
+import type { Availability } from "@/types/availability.type";
+import type { Day } from "@/constants/days";
+import type { Player } from "@/types/player.type";
+import type { TrainingBlock } from "@/types/training-block.type";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -26,7 +29,7 @@ export const formatTimeWithPeriod = (time: number) => {
   return `${hours > 12 ? hours - 12 : hours}:${minutes.toString().padStart(2, "0")}${hours >= 12 ? "PM" : "AM"}`;
 };
 
-export const transformAvailabilities = (availabilities: AvailabilitySheetForm[]) => {
+export const transformAvailabilities = (availabilities: AvailabilityFormType[]) => {
   return availabilities
     .map((availability) => {
       return {
@@ -61,10 +64,7 @@ export const findOverlap = (availabilities: Availability[]) => {
   return null;
 };
 
-export const createAllTrainingBlocks = (
-  availabilities: Availability[],
-  trainingBlockDuration: number,
-) => {
+export const createAllTrainingBlocks = (availabilities: Availability[], trainingBlockDuration: number) => {
   const createdTrainingBlocks: TrainingBlock[] = [];
   for (const day of DAYS) {
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
@@ -115,8 +115,7 @@ const calculateCoefficientOfVariation = (counts: number[]) => {
   const mean = counts.reduce((sum, count) => sum + count, 0) / counts.length;
   if (mean === 0) return 0;
 
-  const variance =
-    counts.reduce((sum, count) => sum + Math.pow(count - mean, 2), 0) / counts.length;
+  const variance = counts.reduce((sum, count) => sum + Math.pow(count - mean, 2), 0) / counts.length;
   const standardDeviation = Math.sqrt(variance);
 
   return standardDeviation / mean;
@@ -125,9 +124,7 @@ const calculateCoefficientOfVariation = (counts: number[]) => {
 const calculateMeanAbsoluteDeviation = (counts: number[], targetPlayerCount: number) => {
   if (counts.length === 0) return 0;
 
-  return (
-    counts.reduce((sum, count) => sum + Math.abs(count - targetPlayerCount), 0) / counts.length
-  );
+  return counts.reduce((sum, count) => sum + Math.abs(count - targetPlayerCount), 0) / counts.length;
 };
 
 const calculateCombinedScore = (
@@ -135,7 +132,7 @@ const calculateCombinedScore = (
   maximumPlayerCount: number,
   uniformityWeight: number = 0.2,
   targetAdherenceWeight: number = 1,
-  debug = false,
+  debug = false
 ) => {
   const counts = Object.values(trainingBlockAssignedPlayerCounts).filter((count) => count > 0);
   const targetPlayerCount = maximumPlayerCount / 2;
@@ -177,11 +174,7 @@ const calculateCombinedScore = (
   return totalScore;
 };
 
-export const assignPlayers = (
-  players: Player[],
-  trainingBlocks: TrainingBlock[],
-  maximumPlayerCount: number,
-) => {
+export const assignPlayers = (players: Player[], trainingBlocks: TrainingBlock[], maximumPlayerCount: number) => {
   const playerAssignmentsMap = new Map<Player["id"], TrainingBlock["id"] | null>();
   players.forEach((player) => {
     playerAssignmentsMap.set(player.id, null);
@@ -194,10 +187,7 @@ export const assignPlayers = (
 
   const availableTrainingBlockIdsMap = new Map<Player["id"], TrainingBlock["id"][]>();
   players.forEach((player) => {
-    availableTrainingBlockIdsMap.set(
-      player.id,
-      getTrainingBlockIdsForPlayer(player, trainingBlocks),
-    );
+    availableTrainingBlockIdsMap.set(player.id, getTrainingBlockIdsForPlayer(player, trainingBlocks));
   });
 
   const sortedPlayers = [...players].sort((a, b) => {
@@ -243,7 +233,7 @@ export const assignPlayers = (
     .map((player) => player.name);
 
   const usedTrainingBlocks = trainingBlocks.filter(
-    (trainingBlock) => trainingBlockAssignedPlayerCounts[trainingBlock.id] || 0 > 0,
+    (trainingBlock) => trainingBlockAssignedPlayerCounts[trainingBlock.id] || 0 > 0
   );
 
   return {
@@ -254,10 +244,7 @@ export const assignPlayers = (
 };
 
 export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) => {
-  const { error: deleteError } = await supabase
-    .from("training_blocks")
-    .delete()
-    .neq("id", crypto.randomUUID());
+  const { error: deleteError } = await supabase.from("training_blocks").delete().neq("id", crypto.randomUUID());
 
   if (deleteError) {
     console.error("Error creating schedule", deleteError);
@@ -265,20 +252,18 @@ export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) =>
   }
 
   const createTrainingBlockPromises = trainingBlocks.map((trainingBlock) =>
-    supabase.from("training_blocks").insert(trainingBlock),
+    supabase.from("training_blocks").insert(trainingBlock)
   );
 
   await Promise.all(createTrainingBlockPromises);
 };
 
-export const saveAssignedPlayers = async (
-  playerAssignmentsMap: Map<Player["id"], TrainingBlock["id"] | null>,
-) => {
+export const saveAssignedPlayers = async (playerAssignmentsMap: Map<Player["id"], TrainingBlock["id"] | null>) => {
   const assignPlayerPromises = [];
   for (const [playerId, trainingBlockId] of playerAssignmentsMap) {
     if (trainingBlockId === null) continue;
     assignPlayerPromises.push(
-      supabase.from("players").update({ training_block_id: trainingBlockId }).eq("id", playerId),
+      supabase.from("players").update({ training_block_id: trainingBlockId }).eq("id", playerId)
     );
   }
 

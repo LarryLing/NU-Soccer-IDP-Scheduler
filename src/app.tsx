@@ -1,36 +1,19 @@
 import ActionBar from "@/components/misc/action-bar";
-import Navbar from "@/components/misc/navbar";
-import getColumns from "@/components/players/columns";
-import PlayerSheet from "@/components/players/player-sheet";
-import { PlayersTable } from "@/components/players/players-table";
-import ScheduleSheet from "@/components/schedule/schedule-sheet";
-import Calendar from "@/components/schedule/calendar";
-import { usePlayers } from "@/hooks/usePlayers";
-import { usePlayerSheet } from "@/hooks/usePlayerSheet";
-import { usePlayersTable } from "@/hooks/usePlayersTable";
-import { useScheduleSheet } from "@/hooks/useScheduleSheet";
+import { Calendar } from "lucide-react";
 import { useState } from "react";
+import PlayerSheet from "./features/players/components/player-form/player-sheet";
+import { PlayersTable } from "./features/players/components/players-table/players-table";
+import ScheduleSheet from "./features/schedule/components/field-availability-form/schedule-sheet";
+import { useScheduleSheet } from "./features/schedule/hooks/useScheduleSheet";
 
 export function App() {
-  const playersReturn = usePlayers();
-  const { players, insertPlayer, updatePlayer, deletePlayer } = playersReturn;
-
-  const playerSheetReturn = usePlayerSheet(players, insertPlayer, updatePlayer);
-  const { openPlayerSheet } = playerSheetReturn;
-
   const scheduleSheetReturn = useScheduleSheet(players);
   const { isCreatingSchedule, unassignedPlayerNames, openScheduleSheet } = scheduleSheetReturn;
 
-  const columns = getColumns(deletePlayer, openPlayerSheet);
-  const table = usePlayersTable(players, columns);
-
   const [display, setDisplay] = useState<"players" | "schedule">("players");
-
-  const selectedPlayerIds = table.getFilteredSelectedRowModel().rows.map((row) => row.original.id);
 
   return (
     <div className="flex flex-col h-screen gap-y-4">
-      <Navbar />
       <section className="sm:px-8 px-4">
         <ActionBar
           display={display}

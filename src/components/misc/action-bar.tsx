@@ -2,13 +2,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "../ui/button";
 import { CalendarIcon, PlusIcon, TrashIcon } from "lucide-react";
 import type { Table } from "@tanstack/react-table";
-import type {
-  Player,
-  UsePlayersReturn,
-  UsePlayersSheetReturn,
-  UseScheduleSheetReturn,
-} from "@/lib/types";
-import UnassignedPlayersPopover from "../schedule/unassigned-players-popover";
+import type { Player } from "@/lib/types";
+import type { UsePlayersReturn } from "@/features/players/hooks/usePlayers";
+import type { UsePlayersSheetReturn } from "@/features/players/hooks/usePlayerSheet";
+import type { UseScheduleSheetReturn } from "@/features/schedule/hooks/useScheduleSheet";
+import UnassignedPlayersPopover from "@/features/schedule/components/unassigned-players-popover";
 
 type ActionBarProps = {
   display: "players" | "schedule";
@@ -32,9 +30,7 @@ export default function ActionBar({
   unassignedPlayerNames,
 }: ActionBarProps) {
   const handleDeletePlayers = async () => {
-    const selectedPlayerIds = table
-      .getFilteredSelectedRowModel()
-      .rows.map((row) => row.original.id);
+    const selectedPlayerIds = table.getFilteredSelectedRowModel().rows.map((row) => row.original.id);
 
     const removePlayersPromise = selectedPlayerIds.map((playerId) => deletePlayer(playerId));
 
@@ -72,10 +68,7 @@ export default function ActionBar({
           )}
         </div>
       )}
-      <Tabs
-        defaultValue={display}
-        onValueChange={(value) => setDisplay(value as "players" | "schedule")}
-      >
+      <Tabs defaultValue={display} onValueChange={(value) => setDisplay(value as "players" | "schedule")}>
         <TabsList>
           <TabsTrigger value="players">Players</TabsTrigger>
           <TabsTrigger value="schedule">Schedule</TabsTrigger>
