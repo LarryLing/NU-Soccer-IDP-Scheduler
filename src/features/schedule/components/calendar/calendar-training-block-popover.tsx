@@ -1,21 +1,22 @@
-import type { Player, TrainingBlock } from "@/lib/types";
+import type { Player } from "@/types/player.type";
+import type { TrainingBlock } from "@/types/training-block.type";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar, Clock } from "lucide-react";
-import { formatTimeWithPeriod } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { formatTimeWithPeriod } from "@/lib/utils";
 
 type CalendarTrainingBlockPopoverProps = {
   currentCellStartInt: number;
   assignedPlayerNames: Player["name"][];
 } & Pick<TrainingBlock, "day" | "start_int" | "end_int">;
 
-export default function CalendarTrainingBlockPopover({
+const CalendarTrainingBlockPopover = ({
   currentCellStartInt,
   assignedPlayerNames,
   day,
   start_int,
   end_int,
-}: CalendarTrainingBlockPopoverProps) {
+}: CalendarTrainingBlockPopoverProps) => {
   const topPercentage = ((start_int - currentCellStartInt) / 60) * 100;
   const heightPercentage = ((end_int - start_int) / 60) * 100;
 
@@ -48,4 +49,6 @@ export default function CalendarTrainingBlockPopover({
       </PopoverContent>
     </Popover>
   );
-}
+};
+
+export default CalendarTrainingBlockPopover;

@@ -1,24 +1,23 @@
 import type { Day } from "@/constants/days";
 import type { Player } from "@/types/player.type";
-import { TIMES } from "@/lib/constants";
+import { CALENDAR_TIMES } from "@/constants/calendar-times";
 import CalendarCell from "./calendar-cell";
 import { getDayAbbreviation } from "@/lib/utils";
 import { memo, useMemo, type JSX } from "react";
 import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
-import { useTrainingBlocks } from "@/features/schedule/hooks/useTrainingBlocks";
+import type { TrainingBlock } from "@/types/training-block.type";
 
 type CalendarDayColumnProps = {
   day: Day;
   players: Player[];
+  trainingBlocks: TrainingBlock[];
 };
 
-const CalendarDayColumn = ({ day, players }: CalendarDayColumnProps) => {
-  const { trainingBlocks } = useTrainingBlocks(day);
-
+const CalendarDayColumn = ({ day, players, trainingBlocks }: CalendarDayColumnProps) => {
   const dayAbbreviation = getDayAbbreviation(day);
 
   const cells = useMemo(() => {
-    const timesEntries = Object.entries(TIMES);
+    const timesEntries = Object.entries(CALENDAR_TIMES);
 
     return timesEntries.map((currentEntry, index) => {
       if (index === timesEntries.length - 1) return null;

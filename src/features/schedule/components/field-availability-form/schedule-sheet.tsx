@@ -10,31 +10,23 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import type { UseScheduleSheetReturn } from "@/features/schedule/hooks/useScheduleSheet";
-import ErrorAlert from "@/components/misc/error-alert";
 import { DAYS } from "@/constants/days";
 import FieldAvailabilityDay from "./field-availability-day";
 import { Input } from "@/components/ui/input";
 
 type ScheduleSheetProps = Pick<
   UseScheduleSheetReturn,
-  | "isScheduleSheetOpen"
-  | "setIsScheduleSheetOpen"
-  | "error"
-  | "form"
-  | "fieldArray"
-  | "addFieldAvailability"
-  | "onSubmit"
+  "isScheduleSheetOpen" | "setIsScheduleSheetOpen" | "form" | "fieldArray" | "addFieldAvailability" | "onSubmit"
 >;
 
-export default function ScheduleSheet({
+const ScheduleSheet = ({
   isScheduleSheetOpen,
   setIsScheduleSheetOpen,
-  error,
   form,
   fieldArray: { fields, remove },
   addFieldAvailability,
   onSubmit,
-}: ScheduleSheetProps) {
+}: ScheduleSheetProps) => {
   const {
     control,
     handleSubmit,
@@ -92,7 +84,6 @@ export default function ScheduleSheet({
                   </FormItem>
                 )}
               />
-              {error && <ErrorAlert message={error} />}
             </div>
             <SheetFooter>
               <Button type="submit" disabled={isSubmitting || isValidating}>
@@ -109,4 +100,6 @@ export default function ScheduleSheet({
       </SheetContent>
     </Sheet>
   );
-}
+};
+
+export default ScheduleSheet;

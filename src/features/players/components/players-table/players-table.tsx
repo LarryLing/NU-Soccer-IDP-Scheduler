@@ -1,14 +1,14 @@
-import type { Player } from "@/lib/types";
 import { flexRender } from "@tanstack/react-table";
 import type { Table as TanstackTable } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { Player } from "@/types/player.type";
 
 type PlayersTableProps = {
   table: TanstackTable<Player>;
   numColumns: number;
 };
 
-export function PlayersTable({ table, numColumns }: PlayersTableProps) {
+const PlayersTable = ({ table, numColumns }: PlayersTableProps) => {
   return (
     <div className="border">
       <Table>
@@ -45,4 +45,6 @@ export function PlayersTable({ table, numColumns }: PlayersTableProps) {
       </Table>
     </div>
   );
-}
+};
+
+export default PlayersTable;

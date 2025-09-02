@@ -244,30 +244,36 @@ export const assignPlayers = (players: Player[], trainingBlocks: TrainingBlock[]
 };
 
 export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) => {
-  const { error: deleteError } = await supabase.from("training_blocks").delete().neq("id", crypto.randomUUID());
+  console.log("trainingBlocks", trainingBlocks);
+  throw new Error("saveUsedTrainingBlocks is not implemented");
 
-  if (deleteError) {
-    console.error("Error creating schedule", deleteError);
-    throw deleteError;
-  }
+  // const { error: deleteError } = await supabase.from("training_blocks").delete().neq("id", crypto.randomUUID());
 
-  const createTrainingBlockPromises = trainingBlocks.map((trainingBlock) =>
-    supabase.from("training_blocks").insert(trainingBlock)
-  );
+  // if (deleteError) {
+  //   console.error("Error creating schedule", deleteError);
+  //   throw deleteError;
+  // }
 
-  await Promise.all(createTrainingBlockPromises);
+  // const createTrainingBlockPromises = trainingBlocks.map((trainingBlock) =>
+  //   supabase.from("training_blocks").insert(trainingBlock)
+  // );
+
+  // await Promise.all(createTrainingBlockPromises);
 };
 
 export const saveAssignedPlayers = async (playerAssignmentsMap: Map<Player["id"], TrainingBlock["id"] | null>) => {
-  const assignPlayerPromises = [];
-  for (const [playerId, trainingBlockId] of playerAssignmentsMap) {
-    if (trainingBlockId === null) continue;
-    assignPlayerPromises.push(
-      supabase.from("players").update({ training_block_id: trainingBlockId }).eq("id", playerId)
-    );
-  }
+  console.log("playerAssignmentsMap", playerAssignmentsMap);
+  throw new Error("saveAssignedPlayers is not implemented");
 
-  await Promise.all(assignPlayerPromises);
+  // const assignPlayerPromises = [];
+  // for (const [playerId, trainingBlockId] of playerAssignmentsMap) {
+  //   if (trainingBlockId === null) continue;
+  //   assignPlayerPromises.push(
+  //     supabase.from("players").update({ training_block_id: trainingBlockId }).eq("id", playerId)
+  //   );
+  // }
+
+  // await Promise.all(assignPlayerPromises);
 };
 
 export const getDayAbbreviation = (day: Day) => {

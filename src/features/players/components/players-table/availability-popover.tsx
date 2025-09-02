@@ -1,14 +1,15 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { formatTimeWithPeriod } from "@/lib/utils";
-import type { Day, Availability } from "@/lib/types";
+import type { Day } from "@/constants/days";
+import type { Availability } from "@/types/availability.type";
 
 type AvailabilityPopoverProps = {
   day: Day;
   dayAvailabilities: Availability[];
 };
 
-export default function AvailabilityPopover({ day, dayAvailabilities }: AvailabilityPopoverProps) {
+const AvailabilityPopover = ({ day, dayAvailabilities }: AvailabilityPopoverProps) => {
   const formattedDayAvailabilities = dayAvailabilities.map(
     (dayAvailability) =>
       `${formatTimeWithPeriod(dayAvailability.start_int)} - ${formatTimeWithPeriod(dayAvailability.end_int)}`
@@ -38,4 +39,6 @@ export default function AvailabilityPopover({ day, dayAvailabilities }: Availabi
       </PopoverContent>
     </Popover>
   );
-}
+};
+
+export default AvailabilityPopover;

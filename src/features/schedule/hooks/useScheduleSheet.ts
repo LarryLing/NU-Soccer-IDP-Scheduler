@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
-import type { Day, Player, ScheduleSheetForm } from "../../../lib/types.ts";
-import { ScheduleFormSchema } from "@/lib/schemas.ts";
+import type { Day } from "@/constants/days";
+import type { Player } from "@/types/player.type";
+import { ScheduleFormSchema, type ScheduleFormType } from "../schemas/schedule.schema";
 import {
   useFieldArray,
   useForm,
@@ -20,7 +21,7 @@ import {
   saveAssignedPlayers,
 } from "@/lib/utils.ts";
 import { parseTime } from "@/lib/utils.ts";
-import { DEFAULT_SCHEDULE } from "@/lib/constants.ts";
+import { DEFAULT_SCHEDULE } from "../constants/schedule-form";
 
 export type UseScheduleSheetReturn = {
   isScheduleSheetOpen: boolean;
@@ -29,11 +30,11 @@ export type UseScheduleSheetReturn = {
   error: string | null;
   setError: (error: string | null) => void;
   unassignedPlayerNames: Player["name"][];
-  form: UseFormReturn<ScheduleSheetForm>;
-  fieldArray: UseFieldArrayReturn<ScheduleSheetForm, "fieldAvailabilities", "id">;
+  form: UseFormReturn<ScheduleFormType>;
+  fieldArray: UseFieldArrayReturn<ScheduleFormType, "fieldAvailabilities", "id">;
   openScheduleSheet: () => void;
   addFieldAvailability: (day: Day) => void;
-  onSubmit: SubmitHandler<ScheduleSheetForm>;
+  onSubmit: SubmitHandler<ScheduleFormType>;
 };
 
 export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
@@ -42,7 +43,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
   const [error, setError] = useState<string | null>(null);
   const [unassignedPlayerNames, setUnassignedPlayerNames] = useState<Player["name"][]>([]);
 
-  const form = useForm<ScheduleSheetForm>({
+  const form = useForm<ScheduleFormType>({
     resolver: zodResolver(ScheduleFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -90,7 +91,7 @@ export const useScheduleSheet = (players: Player[]): UseScheduleSheetReturn => {
     [fields, append]
   );
 
-  const onSubmit: SubmitHandler<ScheduleSheetForm> = async (data) => {
+  const onSubmit: SubmitHandler<ScheduleFormType> = async (data) => {
     if (data.fieldAvailabilities.length === 0) {
       setIsScheduleSheetOpen(false);
       return;

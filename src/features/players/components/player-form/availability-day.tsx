@@ -1,4 +1,3 @@
-import type { UsePlayersSheetReturn } from "../../hooks/usePlayerSheet";
 import type { PlayerFormType } from "../../schemas/player.schema";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -6,18 +5,19 @@ import { PlusIcon } from "lucide-react";
 import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
 import AvailabilityTimeSlot from "./availability-time-slot";
 import type { Day } from "@/constants/days";
+import type { UsePlayerFormReturn } from "../../hooks/use-player-form";
 
 type AvailabilityDayProps = {
   day: Day;
   dayFields: (FieldArrayWithId<PlayerFormType, "availabilities", "id"> & {
     originalIndex: number;
   })[];
-  addAvailability: UsePlayersSheetReturn["addAvailability"];
+  addAvailability: UsePlayerFormReturn["addAvailability"];
   remove: UseFieldArrayRemove;
   control: Control<PlayerFormType>;
 };
 
-export default function AvailabilityDay({ day, dayFields, addAvailability, remove, control }: AvailabilityDayProps) {
+const AvailabilityDay = ({ day, dayFields, addAvailability, remove, control }: AvailabilityDayProps) => {
   const handleAddAvailability = () => {
     addAvailability(day);
   };
@@ -45,4 +45,6 @@ export default function AvailabilityDay({ day, dayFields, addAvailability, remov
       </Button>
     </div>
   );
-}
+};
+
+export default AvailabilityDay;

@@ -1,7 +1,7 @@
-import { TIMES } from "@/lib/constants";
+import { CALENDAR_TIMES } from "@/constants/calendar-times";
 
-export default function CalendarTimesColumn() {
-  const timesKeys = Object.keys(TIMES);
+const CalendarTimesColumn = () => {
+  const timesKeys = Object.keys(CALENDAR_TIMES);
 
   return (
     <div className="flex flex-col h-full pr-2">
@@ -12,4 +12,6 @@ export default function CalendarTimesColumn() {
       ))}
     </div>
   );
-}
+};
+
+export default CalendarTimesColumn;

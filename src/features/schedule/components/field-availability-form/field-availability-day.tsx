@@ -17,13 +17,7 @@ type AvailabilityDayProps = {
   control: Control<ScheduleFormType>;
 };
 
-export default function FieldAvailabilityDay({
-  day,
-  dayFields,
-  addFieldAvailability,
-  remove,
-  control,
-}: AvailabilityDayProps) {
+const FieldAvailabilityDay = ({ day, dayFields, addFieldAvailability, remove, control }: AvailabilityDayProps) => {
   const handleAddFieldAvailability = () => {
     addFieldAvailability(day);
   };
@@ -51,4 +45,6 @@ export default function FieldAvailabilityDay({
       </Button>
     </div>
   );
-}
+};
+
+export default FieldAvailabilityDay;

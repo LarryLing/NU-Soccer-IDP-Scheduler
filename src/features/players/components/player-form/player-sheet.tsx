@@ -1,49 +1,10 @@
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DAYS, POSITIONS } from "@/lib/constants";
-import type { UsePlayersSheetReturn } from "../../hooks/usePlayerSheet";
-import AvailabilityDay from "./availability-day";
-import ErrorAlert from "@/components/misc/error-alert";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import type { UsePlayersSheetReturn } from "../../hooks/use-player-sheet";
+import PlayerForm from "./player-form";
 
-type PlayerSheetProps = Pick<
-  UsePlayersSheetReturn,
-  | "form"
-  | "playerMetadata"
-  | "isPlayerSheetOpen"
-  | "setIsPlayerSheetOpen"
-  | "error"
-  | "fieldArray"
-  | "addAvailability"
-  | "onSubmit"
->;
+type PlayerSheetProps = Pick<UsePlayersSheetReturn, "playerMetadata" | "isPlayerSheetOpen" | "setIsPlayerSheetOpen">;
 
-export default function PlayerSheet({
-  form,
-  playerMetadata,
-  isPlayerSheetOpen,
-  setIsPlayerSheetOpen,
-  error,
-  fieldArray: { fields, remove },
-  addAvailability,
-  onSubmit,
-}: PlayerSheetProps) {
-  const {
-    handleSubmit,
-    control,
-    formState: { isSubmitting, isValidating },
-  } = form;
-
+const PlayerSheet = ({ playerMetadata, isPlayerSheetOpen, setIsPlayerSheetOpen }: PlayerSheetProps) => {
   return (
     <Sheet open={isPlayerSheetOpen} onOpenChange={setIsPlayerSheetOpen}>
       <SheetContent className="overflow-y-scroll">
@@ -53,89 +14,10 @@ export default function PlayerSheet({
             {playerMetadata ? "Edit the selected player." : "Add a new player to the table."}
           </SheetDescription>
         </SheetHeader>
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="space-y-6 px-4 mb-4">
-              <FormField
-                control={control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter player name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="number"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Number</FormLabel>
-                    <FormControl>
-                      <Input type="number" min={0} max={99} step={1} placeholder="Enter player number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="position"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Position</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select a position" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="w-full">
-                        {POSITIONS.map((position) => (
-                          <SelectItem key={position} value={position}>
-                            {position}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {DAYS.map((day) => {
-                const dayFields = fields
-                  .map((field, idx) => ({ ...field, originalIndex: idx }))
-                  .filter((field) => field.day === day);
-                return (
-                  <AvailabilityDay
-                    key={day}
-                    day={day}
-                    dayFields={dayFields}
-                    addAvailability={addAvailability}
-                    remove={remove}
-                    control={control}
-                  />
-                );
-              })}
-              {error && <ErrorAlert message={error} />}
-            </div>
-            <SheetFooter>
-              <Button type="submit" disabled={isSubmitting || isValidating}>
-                {playerMetadata ? "Save Player" : "Add Player"}
-              </Button>
-              <SheetClose asChild>
-                <Button type="button" variant="outline" disabled={isSubmitting || isValidating}>
-                  Close
-                </Button>
-              </SheetClose>
-            </SheetFooter>
-          </form>
-        </Form>
+        <PlayerForm />
       </SheetContent>
     </Sheet>
   );
-}
+};
+
+export default PlayerSheet;

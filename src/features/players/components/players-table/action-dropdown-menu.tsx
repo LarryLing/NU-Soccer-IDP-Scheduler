@@ -8,8 +8,8 @@ import { Ellipsis, PencilIcon, TrashIcon } from "lucide-react";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import type { Player } from "../../../../types/player.type";
-import type { UsePlayersReturn } from "../../hooks/usePlayers";
-import type { UsePlayersSheetReturn } from "../../hooks/usePlayerSheet";
+import type { UsePlayersReturn } from "../../hooks/use-players";
+import type { UsePlayersSheetReturn } from "../../hooks/use-player-sheet";
 
 type ActionDropdownMenuProps = {
   id: Player["id"];

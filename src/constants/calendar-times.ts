@@ -1,4 +1,4 @@
-export const TIMES = {
+export const CALENDAR_TIMES = {
   "8 AM": 480,
   "9 AM": 540,
   "10 AM": 600,
@@ -9,4 +9,4 @@ export const TIMES = {
   "3 PM": 900,
   "4 PM": 960,
   "5 PM": 1020,
-};
+} as const;

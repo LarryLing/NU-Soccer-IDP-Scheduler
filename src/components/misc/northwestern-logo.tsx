@@ -1,6 +1,6 @@
 import type { SVGProps } from "react";
 
-export default function NorthwesternLogo(props: SVGProps<SVGSVGElement>) {
+const NorthwesternLogo = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg width={44} height={69} viewBox="0 0 44 69" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
@@ -11,4 +11,6 @@ export default function NorthwesternLogo(props: SVGProps<SVGSVGElement>) {
       />
     </svg>
   );
-}
+};
+
+export default NorthwesternLogo;

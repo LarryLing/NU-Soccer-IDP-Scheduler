@@ -7,7 +7,7 @@ type UnassignedPlayersPopoverProps = {
   unassignedPlayerNames: Player["name"][];
 };
 
-export default function UnassignedPlayersPopover({ unassignedPlayerNames }: UnassignedPlayersPopoverProps) {
+const UnassignedPlayersPopover = ({ unassignedPlayerNames }: UnassignedPlayersPopoverProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -21,4 +21,6 @@ export default function UnassignedPlayersPopover({ unassignedPlayerNames }: Unas
       </PopoverContent>
     </Popover>
   );
-}
+};
+
+export default UnassignedPlayersPopover;

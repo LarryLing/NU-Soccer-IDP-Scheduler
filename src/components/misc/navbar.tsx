@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import NorthwesternLogo from "./northwestern-logo";
 
-export default function Navbar() {
+const Navbar = () => {
   return (
     <nav className="w-full h-16 flex justify-between items-center sm:px-8 px-4 py-4 border-b">
       <div className="flex items-center gap-3">
@@ -18,4 +18,6 @@ export default function Navbar() {
       </div>
     </nav>
   );
-}
+};
+
+export default Navbar;

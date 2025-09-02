@@ -1,9 +1,11 @@
 import getColumns from "@/features/players/components/players-table/columns";
 import PlayersActionBar from "@/features/players/components/players-action-bar";
-import { usePlayers } from "@/features/players/hooks/usePlayers";
-import { usePlayerSheet } from "@/features/players/hooks/usePlayerSheet";
-import { usePlayersTable } from "@/features/players/hooks/usePlayersTable";
+import { usePlayers } from "@/features/players/hooks/use-players";
+import { usePlayerSheet } from "@/features/players/hooks/use-player-sheet";
+import { usePlayersTable } from "@/features/players/hooks/use-players-table";
 import { createFileRoute } from "@tanstack/react-router";
+import PlayerSheet from "@/features/players/components/player-form/player-sheet";
+import PlayersTable from "@/features/players/components/players-table/players-table";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -11,9 +13,9 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const playersReturn = usePlayers();
-  const { players, createPlayer, updatePlayer, deletePlayer } = playersReturn;
+  const { players, deletePlayer } = playersReturn;
 
-  const playerSheetReturn = usePlayerSheet(players, createPlayer, updatePlayer);
+  const playerSheetReturn = usePlayerSheet(players);
   const { openPlayerSheet } = playerSheetReturn;
 
   const columns = getColumns(deletePlayer, openPlayerSheet);
@@ -29,6 +31,8 @@ function Index() {
         deletePlayer={deletePlayer}
         openPlayerSheet={openPlayerSheet}
       />
+      <PlayersTable table={table} numColumns={columns.length} />
+      <PlayerSheet {...playerSheetReturn} />
     </>
   );
 }
