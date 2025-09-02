@@ -1,18 +1,18 @@
 import type { Day } from "@/constants/days";
-import type { UseScheduleSheetReturn } from "@/features/schedule/hooks/useScheduleSheet";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
 import FieldAvailabilityTimeSlot from "./field-availability-time-slot";
 import type { ScheduleFormType } from "../../schemas/schedule.schema";
+import type { UseScheduleFormReturn } from "../../hooks/use-schedule-form";
 
 type AvailabilityDayProps = {
   day: Day;
   dayFields: (FieldArrayWithId<ScheduleFormType, "fieldAvailabilities", "id"> & {
     originalIndex: number;
   })[];
-  addFieldAvailability: UseScheduleSheetReturn["addFieldAvailability"];
+  addFieldAvailability: UseScheduleFormReturn["addFieldAvailability"];
   remove: UseFieldArrayRemove;
   control: Control<ScheduleFormType>;
 };

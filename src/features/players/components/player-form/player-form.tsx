@@ -16,6 +16,7 @@ const PlayerForm = () => {
     handleSubmit,
     formState: { isSubmitting, isValidating },
   } = form;
+
   const { fields, remove } = fieldArray;
 
   return (

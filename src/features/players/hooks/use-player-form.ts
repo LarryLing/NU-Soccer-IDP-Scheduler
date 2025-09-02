@@ -6,11 +6,11 @@ import {
   type UseFieldArrayReturn,
   type UseFormReturn,
 } from "react-hook-form";
-import { DEFAULT_PLAYER } from "../constants/player-form";
 import { type PlayerFormType, PlayerFormSchema } from "../schemas/player.schema";
 import { transformAvailabilities, findOverlap, formatTimeWithPeriod, formatTime, parseTime } from "@/lib/utils";
 import type { Day } from "@/constants/days";
 import { toast } from "sonner";
+import { GOALKEEPER } from "@/constants/positions";
 
 export type UsePlayerFormReturn = {
   form: UseFormReturn<PlayerFormType>;
@@ -24,11 +24,18 @@ export const usePlayerForm = (): UsePlayerFormReturn => {
     resolver: zodResolver(PlayerFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    defaultValues: DEFAULT_PLAYER,
+    defaultValues: {
+      name: "",
+      number: 0,
+      position: GOALKEEPER,
+      availabilities: [],
+    },
   });
 
+  const { control } = form;
+
   const fieldArray = useFieldArray({
-    control: form.control,
+    control,
     name: "availabilities",
   });
 
