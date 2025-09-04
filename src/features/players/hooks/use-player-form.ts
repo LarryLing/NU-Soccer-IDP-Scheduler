@@ -6,15 +6,18 @@ import {
   type UseFieldArrayReturn,
   type UseFormReturn,
 } from "react-hook-form";
-import { type PlayerFormType, PlayerFormSchema } from "../schemas/player-form.schema";
-import type { Day } from "@/constants/days";
 import { toast } from "sonner";
-import type { Player } from "@/types/player.type";
-import usePlayersStore from "./use-players-store";
+
+import type { Day } from "@/constants/days";
 import { GOALKEEPER } from "@/features/players/constants/positions";
-import type { UsePlayerSheetReturn } from "./use-player-sheet";
-import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 import { findOverlapInAvailabilities, transformAndSortAvailabilities } from "@/lib/availability";
+import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
+import type { Player } from "@/types/player.type";
+
+import { type PlayerFormType, PlayerFormSchema } from "../schemas/player-form.schema";
+
+import type { UsePlayerSheetReturn } from "./use-player-sheet";
+import usePlayersStore from "./use-players-store";
 
 export type UsePlayerFormReturn = {
   form: UseFormReturn<PlayerFormType>;

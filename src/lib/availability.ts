@@ -1,6 +1,7 @@
 import { DAYS } from "@/constants/days";
 import type { AvailabilityFormType } from "@/schemas/availability.schema";
 import type { Availability } from "@/types/availability.type";
+
 import { calculateMinutesFromTimeString } from "./time";
 
 export const transformAndSortAvailabilities = (availabilities: AvailabilityFormType[]) => {

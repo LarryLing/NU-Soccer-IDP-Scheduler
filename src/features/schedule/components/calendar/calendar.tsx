@@ -1,6 +1,7 @@
 import { DAYS } from "@/constants/days";
-import CalendarTimesColumn from "./calendar-times-column";
+
 import CalendarDayColumn from "./calendar-day-column";
+import CalendarTimesColumn from "./calendar-times-column";
 
 const Calendar = () => {
   return (

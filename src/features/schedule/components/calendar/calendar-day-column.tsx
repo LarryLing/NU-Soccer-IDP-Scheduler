@@ -1,10 +1,13 @@
+import { memo, useMemo, type JSX } from "react";
+
 import type { Day } from "@/constants/days";
 import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
-import CalendarCell from "./calendar-cell";
-import { memo, useMemo, type JSX } from "react";
-import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
 import { getDayAbbreviation } from "@/lib/time";
+
 import useTrainingBlocksStore from "../../hooks/use-training-blocks-store";
+
+import CalendarCell from "./calendar-cell";
+import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
 
 type CalendarDayColumnProps = {
   day: Day;
@@ -39,7 +42,7 @@ const CalendarDayColumn = ({ day }: CalendarDayColumnProps) => {
 
       return <CalendarCell key={`${day}.${currentEntry[0]}.${nextEntry[0]}`}>{children}</CalendarCell>;
     });
-  }, [trainingBlocks]);
+  }, [day, trainingBlocks]);
 
   const dayAbbreviation = getDayAbbreviation(day);
 

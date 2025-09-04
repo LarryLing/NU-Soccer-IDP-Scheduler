@@ -1,5 +1,6 @@
 import { flexRender } from "@tanstack/react-table";
 import type { Table as TanstackTable } from "@tanstack/react-table";
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Player } from "@/types/player.type";
 

@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { POSITIONS } from "@/features/players/constants/positions";
 import { AvailabilitySchema } from "@/schemas/availability.schema";
-import { z } from "zod";
 
 export const PlayerFormSchema = z.object({
   name: z

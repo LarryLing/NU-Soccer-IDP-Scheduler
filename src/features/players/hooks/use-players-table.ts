@@ -1,4 +1,3 @@
-import type { Player } from "@/types/player.type";
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -10,6 +9,9 @@ import {
   type Table,
 } from "@tanstack/react-table";
 import { useState } from "react";
+
+import type { Player } from "@/types/player.type";
+
 import usePlayersStore from "./use-players-store";
 
 export type UsePlayersTableReturn = {

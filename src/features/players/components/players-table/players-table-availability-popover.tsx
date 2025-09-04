@@ -1,8 +1,8 @@
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Day } from "@/constants/days";
-import type { Availability } from "@/types/availability.type";
 import { getTimeStringWithMeridian } from "@/lib/time";
+import type { Availability } from "@/types/availability.type";
 
 type PlayersTableAvailabilityPopoverProps = {
   day: Day;

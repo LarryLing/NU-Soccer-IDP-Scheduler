@@ -1,4 +1,5 @@
 import type { Position } from "@/features/players/constants/positions";
+
 import type { Availability } from "./availability.type";
 
 export type Player = {

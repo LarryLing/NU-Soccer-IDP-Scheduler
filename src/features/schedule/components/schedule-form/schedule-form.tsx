@@ -1,11 +1,13 @@
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { DAYS } from "@/constants/days";
-import ScheduleFormAvailabilityFieldArray from "./schedule-form-availability-field-array";
 import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SheetFooter, SheetClose } from "@/components/ui/sheet";
+import { DAYS } from "@/constants/days";
+
 import { useScheduleForm } from "../../hooks/use-schedule-form";
 import type { UseScheduleSheetReturn } from "../../hooks/use-schedule-sheet";
+
+import ScheduleFormAvailabilityFieldArray from "./schedule-form-availability-field-array";
 
 type ScheduleFormProps = {
   closeScheduleSheet: UseScheduleSheetReturn["closeScheduleSheet"];

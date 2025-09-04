@@ -1,6 +1,7 @@
-import type { TrainingBlock } from "@/types/training-block.type";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+
+import type { TrainingBlock } from "@/types/training-block.type";
 
 export type UseTrainingBlocksReturn = {
   trainingBlocks: TrainingBlock[];

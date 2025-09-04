@@ -1,11 +1,14 @@
-import type { Day } from "@/constants/days";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
-import ScheduleFormAvailabilityField from "./schedule-form-availability-field";
-import type { ScheduleFormType } from "../../schemas/schedule-form.schema";
+
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import type { Day } from "@/constants/days";
+
 import type { UseScheduleFormReturn } from "../../hooks/use-schedule-form";
+import type { ScheduleFormType } from "../../schemas/schedule-form.schema";
+
+import ScheduleFormAvailabilityField from "./schedule-form-availability-field";
 
 type ScheduleFormAvailabilityFieldArrayProps = {
   day: Day;

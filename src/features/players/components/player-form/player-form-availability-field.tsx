@@ -1,7 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import type { Control, UseFieldArrayRemove } from "react-hook-form";
+
+import { Button } from "@/components/ui/button";
+import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
 import type { PlayerFormType } from "../../schemas/player-form.schema";
 
 type PlayerFormAvailabilityFieldProps = {

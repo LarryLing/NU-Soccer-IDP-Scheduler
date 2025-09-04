@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+
 import NorthwesternLogo from "./northwestern-logo";
 
 const Navbar = () => {

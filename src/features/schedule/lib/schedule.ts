@@ -1,12 +1,14 @@
 import { DAYS } from "@/constants/days";
-import type { Availability } from "@/types/availability.type";
 import type { Day } from "@/constants/days";
+import usePlayersStore from "@/features/players/hooks/use-players-store";
+import { getTimeStringWithoutMeridian } from "@/lib/time";
+import type { Availability } from "@/types/availability.type";
 import type { Player } from "@/types/player.type";
 import type { TrainingBlock } from "@/types/training-block.type";
-import { calculateCombinedScore } from "./math";
-import { getTimeStringWithoutMeridian } from "@/lib/time";
-import usePlayersStore from "@/features/players/hooks/use-players-store";
+
 import useTrainingBlocksStore from "../hooks/use-training-blocks-store";
+
+import { calculateCombinedScore } from "./math";
 
 export const generatePossibleTrainingBlocks = (availabilities: Availability[], trainingBlockDuration: number) => {
   const possibleTrainingBlocks: TrainingBlock[] = [];

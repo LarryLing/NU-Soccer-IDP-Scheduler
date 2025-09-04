@@ -1,9 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { PlusIcon, TrashIcon } from "lucide-react";
 import type { Table } from "@tanstack/react-table";
+import { PlusIcon, TrashIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+
 import type { Player } from "../../../types/player.type";
-import usePlayersStore from "../hooks/use-players-store";
 import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
+import usePlayersStore from "../hooks/use-players-store";
 
 type ActionBarProps = {
   selectedPlayerIds: string[];

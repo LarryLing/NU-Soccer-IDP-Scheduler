@@ -1,5 +1,6 @@
-import { calculateMinutesFromTimeString } from "@/lib/time";
 import { z } from "zod";
+
+import { calculateMinutesFromTimeString } from "@/lib/time";
 
 export const AvailabilitySchema = z
   .object({

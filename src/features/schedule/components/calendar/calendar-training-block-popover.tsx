@@ -1,9 +1,10 @@
-import type { TrainingBlock } from "@/types/training-block.type";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar, Clock } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { getTimeStringWithMeridian } from "@/lib/time";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
+import { getTimeStringWithMeridian } from "@/lib/time";
+import type { TrainingBlock } from "@/types/training-block.type";
 
 type CalendarTrainingBlockPopoverProps = {
   currentCellStartInt: number;

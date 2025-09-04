@@ -1,13 +1,15 @@
-import type { Player } from "@/types/player.type";
-import type { Availability } from "@/types/availability.type";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowDownUpIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DAYS } from "@/constants/days";
-import PlayersTableAvailabilityPopover from "../components/players-table/players-table-availability-popover";
+import type { Availability } from "@/types/availability.type";
+import type { Player } from "@/types/player.type";
+
 import PlayersTableActionDropdownMenu from "../components/players-table/players-table-action-dropdown-menu";
+import PlayersTableAvailabilityPopover from "../components/players-table/players-table-availability-popover";
 import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
 
 const getColumns = (openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"]): ColumnDef<Player>[] => {

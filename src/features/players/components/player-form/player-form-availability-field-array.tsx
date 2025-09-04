@@ -1,11 +1,14 @@
-import type { PlayerFormType } from "../../schemas/player-form.schema";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
-import PlayerFormAvailabilityFieldProps from "./player-form-availability-field";
+
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import type { Day } from "@/constants/days";
+
 import type { UsePlayerFormReturn } from "../../hooks/use-player-form";
+import type { PlayerFormType } from "../../schemas/player-form.schema";
+
+import PlayerFormAvailabilityFieldProps from "./player-form-availability-field";
 
 type PlayerFormAvailabilityFieldArrayProps = {
   day: Day;

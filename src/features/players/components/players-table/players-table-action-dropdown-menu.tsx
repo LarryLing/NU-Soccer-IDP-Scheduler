@@ -1,14 +1,16 @@
+import { Ellipsis, PencilIcon, TrashIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis, PencilIcon, TrashIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import usePlayersStore from "../../hooks/use-players-store";
 import type { Player } from "@/types/player.type";
+
 import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
+import usePlayersStore from "../../hooks/use-players-store";
 
 type PlayersTableActionDropdownMenuProps = {
   id: Player["id"];

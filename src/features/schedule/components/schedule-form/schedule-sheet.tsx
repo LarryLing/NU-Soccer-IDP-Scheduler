@@ -1,8 +1,10 @@
+import { CalendarIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { UseScheduleSheetReturn } from "@/features/schedule/hooks/use-schedule-sheet";
+
 import ScheduleForm from "./schedule-form";
-import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
 
 type ScheduleSheetProps = Pick<
   UseScheduleSheetReturn,

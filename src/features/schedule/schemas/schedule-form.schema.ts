@@ -1,5 +1,6 @@
-import { AvailabilitySchema } from "@/schemas/availability.schema";
 import { z } from "zod";
+
+import { AvailabilitySchema } from "@/schemas/availability.schema";
 
 export const ScheduleFormSchema = z.object({
   duration: z.coerce

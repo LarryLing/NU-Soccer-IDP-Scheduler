@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback } from "react";
 import {
   useFieldArray,
   useForm,
@@ -6,19 +7,21 @@ import {
   type UseFieldArrayReturn,
   type UseFormReturn,
 } from "react-hook-form";
-import { type ScheduleFormType, ScheduleFormSchema } from "../schemas/schedule-form.schema";
-import type { Day } from "@/constants/days";
-import { useCallback } from "react";
 import { toast } from "sonner";
-import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
-import type { UseScheduleSheetReturn } from "./use-schedule-sheet";
+
+import type { Day } from "@/constants/days";
 import { findOverlapInAvailabilities, transformAndSortAvailabilities } from "@/lib/availability";
+import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
+
 import {
   assignPlayersToTrainingBlocks,
   generatePossibleTrainingBlocks,
   saveAssignedPlayers,
   saveUsedTrainingBlocks,
 } from "../lib/schedule";
+import { type ScheduleFormType, ScheduleFormSchema } from "../schemas/schedule-form.schema";
+
+import type { UseScheduleSheetReturn } from "./use-schedule-sheet";
 
 export type UseScheduleFormReturn = {
   form: UseFormReturn<ScheduleFormType>;
