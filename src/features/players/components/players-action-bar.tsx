@@ -1,43 +1,34 @@
 import { Button } from "@/components/ui/button";
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 import type { Table } from "@tanstack/react-table";
 import type { Player } from "../../../types/player.type";
-import type { UsePlayersReturn } from "../hooks/use-players";
-import type { UsePlayersSheetReturn } from "../hooks/use-player-sheet";
+import AddPlayerSheet from "./player-form/add-player-sheet";
+import usePlayersStore from "../hooks/use-players-store";
 
 type ActionBarProps = {
   selectedPlayerIds: string[];
   table: Table<Player>;
-  deletePlayer: UsePlayersReturn["deletePlayer"];
-  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
 };
 
-const PlayersActionBar = ({ selectedPlayerIds, table, deletePlayer, openPlayerSheet }: ActionBarProps) => {
-  const handleDeletePlayers = async () => {
-    const selectedPlayerIds = table.getFilteredSelectedRowModel().rows.map((row) => row.original.id);
+const PlayersActionBar = ({ selectedPlayerIds, table }: ActionBarProps) => {
+  const deletePlayer = usePlayersStore((state) => state.deletePlayer);
 
-    const removePlayersPromise = selectedPlayerIds.map((playerId) => deletePlayer(playerId));
-
-    await Promise.all(removePlayersPromise);
+  const handleDeletePlayers = () => {
+    table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original.id)
+      .forEach((playerId) => deletePlayer(playerId));
     table.resetRowSelection();
-  };
-
-  const handleOpenPlayerSheet = () => {
-    openPlayerSheet(null);
   };
 
   return (
     <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-y-2">
-      {selectedPlayerIds.length > 0 ? (
+      <AddPlayerSheet />
+      {selectedPlayerIds.length > 0 && (
         <Button variant="destructive" onClick={handleDeletePlayers}>
           <TrashIcon />
           Remove {selectedPlayerIds.length} Player
           {selectedPlayerIds.length > 1 ? "s" : ""}
-        </Button>
-      ) : (
-        <Button onClick={handleOpenPlayerSheet}>
-          <PlusIcon />
-          Add Player
         </Button>
       )}
     </div>

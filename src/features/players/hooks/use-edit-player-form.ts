@@ -10,25 +10,29 @@ import { type PlayerFormType, PlayerFormSchema } from "../schemas/player.schema"
 import { transformAvailabilities, findOverlap, formatTimeWithPeriod, formatTime, parseTime } from "@/lib/utils";
 import type { Day } from "@/constants/days";
 import { toast } from "sonner";
+import type { Player } from "@/types/player.type";
+import usePlayersStore from "./use-players-store";
 import { GOALKEEPER } from "@/constants/positions";
 
-export type UsePlayerFormReturn = {
+export type UseEditPlayerFormReturn = {
   form: UseFormReturn<PlayerFormType>;
   fieldArray: UseFieldArrayReturn<PlayerFormType, "availabilities", "id">;
   addAvailability: (day: Day) => void;
   onSubmit: SubmitHandler<PlayerFormType>;
 };
 
-export const usePlayerForm = (): UsePlayerFormReturn => {
+export const useEditPlayerForm = (player?: Player): UseEditPlayerFormReturn => {
+  const updatePlayer = usePlayersStore((state) => state.updatePlayer);
+
   const form = useForm<PlayerFormType>({
     resolver: zodResolver(PlayerFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     defaultValues: {
-      name: "",
-      number: 0,
-      position: GOALKEEPER,
-      availabilities: [],
+      name: player?.name ?? "",
+      number: player?.number ?? 0,
+      position: player?.position ?? GOALKEEPER,
+      availabilities: player?.availabilities ?? [],
     },
   });
 
@@ -65,7 +69,9 @@ export const usePlayerForm = (): UsePlayerFormReturn => {
     });
   };
 
-  const onSubmit: SubmitHandler<PlayerFormType> = async (data) => {
+  const onSubmit: SubmitHandler<PlayerFormType> = (data: PlayerFormType) => {
+    if (!player) return;
+
     const transformedAvailabilities = transformAvailabilities(data.availabilities);
 
     const overlap = findOverlap(transformedAvailabilities);
@@ -82,7 +88,14 @@ export const usePlayerForm = (): UsePlayerFormReturn => {
       return;
     }
 
-    toast("Successfully created/updated player");
+    updatePlayer({
+      id: player.id,
+      training_block_id: player.training_block_id,
+      name: data.name,
+      number: data.number,
+      position: data.position,
+      availabilities: transformedAvailabilities,
+    });
   };
 
   return {

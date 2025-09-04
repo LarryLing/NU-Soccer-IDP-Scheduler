@@ -1,19 +1,18 @@
 import type { Player } from "@/types/player.type";
 import type { Availability } from "@/types/availability.type";
-import type { UsePlayersReturn } from "../../hooks/use-players";
-import type { UsePlayersSheetReturn } from "../../hooks/use-player-sheet";
+import type { UseEditPlayerSheetReturn } from "../hooks/use-edit-player-sheet";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowDownUpIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DAYS } from "@/constants/days";
-import AvailabilityPopover from "./availability-popover";
-import ActionDropdownMenu from "./action-dropdown-menu";
+import AvailabilityPopover from "../components/players-table/availability-popover";
+import ActionDropdownMenu from "../components/players-table/action-dropdown-menu";
 
 const getColumns = (
-  deletePlayer: UsePlayersReturn["deletePlayer"],
-  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"]
+  setPlayer: UseEditPlayerSheetReturn["setPlayer"],
+  setIsEditPlayerSheetOpen: UseEditPlayerSheetReturn["setIsEditPlayerSheetOpen"]
 ): ColumnDef<Player>[] => {
   return [
     {
@@ -87,7 +86,11 @@ const getColumns = (
     {
       id: "actions",
       cell: ({ row }) => (
-        <ActionDropdownMenu id={row.original.id} deletePlayer={deletePlayer} openPlayerSheet={openPlayerSheet} />
+        <ActionDropdownMenu
+          id={row.original.id}
+          setPlayer={setPlayer}
+          setIsEditPlayerSheetOpen={setIsEditPlayerSheetOpen}
+        />
       ),
     },
   ];

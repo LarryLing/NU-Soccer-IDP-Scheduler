@@ -5,7 +5,7 @@ import { PlusIcon } from "lucide-react";
 import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
 import AvailabilityTimeSlot from "./availability-time-slot";
 import type { Day } from "@/constants/days";
-import type { UsePlayerFormReturn } from "../../hooks/use-player-form";
+import type { UsePlayerFormReturn } from "../../hooks/use-edit-player-form";
 
 type AvailabilityDayProps = {
   day: Day;

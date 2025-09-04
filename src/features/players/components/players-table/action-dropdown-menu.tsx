@@ -7,23 +7,28 @@ import {
 import { Ellipsis, PencilIcon, TrashIcon } from "lucide-react";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
-import type { Player } from "../../../../types/player.type";
-import type { UsePlayersReturn } from "../../hooks/use-players";
-import type { UsePlayersSheetReturn } from "../../hooks/use-player-sheet";
+import usePlayersStore from "../../hooks/use-players-store";
+import type { Player } from "@/types/player.type";
+import type { UseEditPlayerSheetReturn } from "../../hooks/use-edit-player-sheet";
 
 type ActionDropdownMenuProps = {
   id: Player["id"];
-  deletePlayer: UsePlayersReturn["deletePlayer"];
-  openPlayerSheet: UsePlayersSheetReturn["openPlayerSheet"];
+  setPlayer: UseEditPlayerSheetReturn["setPlayer"];
+  setIsEditPlayerSheetOpen: UseEditPlayerSheetReturn["setIsEditPlayerSheetOpen"];
 };
 
-export const ActionDropdownMenu = ({ id, deletePlayer, openPlayerSheet }: ActionDropdownMenuProps) => {
-  const handleDeletePlayer = async () => {
-    await deletePlayer(id);
+export const ActionDropdownMenu = ({ id, setPlayer, setIsEditPlayerSheetOpen }: ActionDropdownMenuProps) => {
+  const players = usePlayersStore((state) => state.players);
+  const deletePlayer = usePlayersStore((state) => state.deletePlayer);
+
+  const handleDeletePlayer = () => {
+    deletePlayer(id);
   };
 
-  const handleOpenPlayerSheet = () => {
-    openPlayerSheet(id);
+  const handleOpenEditPlayerSheet = () => {
+    const player = players.find((player) => player.id === id);
+    setPlayer(player);
+    setIsEditPlayerSheetOpen(true);
   };
 
   return (
@@ -34,7 +39,7 @@ export const ActionDropdownMenu = ({ id, deletePlayer, openPlayerSheet }: Action
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={handleOpenPlayerSheet}>
+        <DropdownMenuItem onClick={handleOpenEditPlayerSheet}>
           <PencilIcon />
           Edit Player
         </DropdownMenuItem>

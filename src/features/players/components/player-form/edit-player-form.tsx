@@ -6,10 +6,15 @@ import { POSITIONS } from "@/constants/positions";
 import AvailabilityDay from "./availability-day";
 import { SheetClose, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { usePlayerForm } from "../../hooks/use-player-form";
+import { useEditPlayerForm } from "../../hooks/use-edit-player-form";
+import type { Player } from "@/types/player.type";
 
-const PlayerForm = () => {
-  const { form, fieldArray, onSubmit, addAvailability } = usePlayerForm();
+type EditPlayerFormProps = {
+  player?: Player;
+};
+
+const EditPlayerForm = ({ player }: EditPlayerFormProps) => {
+  const { form, fieldArray, onSubmit, addAvailability } = useEditPlayerForm(player);
 
   const {
     control,
@@ -104,4 +109,4 @@ const PlayerForm = () => {
   );
 };
 
-export default PlayerForm;
+export default EditPlayerForm;
