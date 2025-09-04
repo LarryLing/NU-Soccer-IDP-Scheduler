@@ -2,7 +2,7 @@ import { DAYS } from "@/constants/days";
 import CalendarTimesColumn from "./calendar-times-column";
 import CalendarDayColumn from "./calendar-day-column";
 import type { Player } from "@/features/players/types/player.type";
-import type { TrainingBlock } from "@/types/training-block.type";
+import type { TrainingBlock } from "@/features/schedule/types/training-block.type";
 
 type CalendarProps = {
   players: Player[];

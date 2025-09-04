@@ -1,4 +1,4 @@
-import type { TrainingBlock } from "@/types/training-block.type";
+import type { TrainingBlock } from "@/features/schedule/types/training-block.type";
 import { useState } from "react";
 
 export type UseTrainingBlocksReturn = {

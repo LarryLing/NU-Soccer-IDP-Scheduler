@@ -8,19 +8,9 @@ import {
 } from "react-hook-form";
 import { type ScheduleFormType, ScheduleFormSchema } from "../schemas/schedule.schema";
 import type { Day } from "@/constants/days";
-import {
-  parseTime,
-  formatTime,
-  transformAvailabilities,
-  findOverlap,
-  formatTimeWithPeriod,
-  createAllTrainingBlocks,
-  assignPlayers,
-  saveUsedTrainingBlocks,
-  saveAssignedPlayers,
-} from "@/lib/utils";
 import { useCallback } from "react";
 import { toast } from "sonner";
+import { calculateMinutesFromTimeString, getTimeStringWithoutMeridian } from "@/lib/time";
 
 export type UseScheduleFormReturn = {
   form: UseFormReturn<ScheduleFormType>;
@@ -64,14 +54,14 @@ export const useScheduleForm = (): UseScheduleFormReturn => {
         return;
       }
 
-      const endInt = parseTime(lastField.end);
+      const endInt = calculateMinutesFromTimeString(lastField.end);
       const nextStartInt = Math.min(endInt + 60, 1439);
       const nextEndInt = Math.min(endInt + 120, 1439);
 
       append({
         day,
-        start: formatTime(nextStartInt),
-        end: formatTime(nextEndInt),
+        start: getTimeStringWithoutMeridian(nextStartInt),
+        end: getTimeStringWithoutMeridian(nextEndInt),
       });
     },
     [fields, append]
@@ -93,10 +83,10 @@ export const useScheduleForm = (): UseScheduleFormReturn => {
 
     //   const overlap = findOverlap(transformedAvailabilities);
     //   if (overlap) {
-    //     const formattedPreviousStartInt = formatTimeWithPeriod(overlap.previous.start_int);
-    //     const formattedPreviousEndInt = formatTimeWithPeriod(overlap.previous.end_int);
-    //     const formattedCurrentStartInt = formatTimeWithPeriod(overlap.current.start_int);
-    //     const formattedCurrentEndInt = formatTimeWithPeriod(overlap.current.end_int);
+    //     const formattedPreviousStartInt = getTimeStringWithMeridian(overlap.previous.start_int);
+    //     const formattedPreviousEndInt = getTimeStringWithMeridian(overlap.previous.end_int);
+    //     const formattedCurrentStartInt = getTimeStringWithMeridian(overlap.current.start_int);
+    //     const formattedCurrentEndInt = getTimeStringWithMeridian(overlap.current.end_int);
     //     setError(
     //       `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`
     //     );

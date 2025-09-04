@@ -1,18 +1,18 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { formatTimeWithPeriod } from "@/lib/utils";
 import type { Day } from "@/constants/days";
 import type { Availability } from "@/types/availability.type";
+import { getTimeStringWithMeridian } from "@/lib/time";
 
-type PlayerAvailabilityPopoverProps = {
+type PlayersTableAvailabilityPopoverProps = {
   day: Day;
   dayAvailabilities: Availability[];
 };
 
-const PlayerAvailabilityPopover = ({ day, dayAvailabilities }: PlayerAvailabilityPopoverProps) => {
+const PlayersTableAvailabilityPopover = ({ day, dayAvailabilities }: PlayersTableAvailabilityPopoverProps) => {
   const formattedDayAvailabilities = dayAvailabilities.map(
     (dayAvailability) =>
-      `${formatTimeWithPeriod(dayAvailability.start_int)} - ${formatTimeWithPeriod(dayAvailability.end_int)}`
+      `${getTimeStringWithMeridian(dayAvailability.start_int)} - ${getTimeStringWithMeridian(dayAvailability.end_int)}`
   );
 
   if (formattedDayAvailabilities.length === 1) {
@@ -41,4 +41,4 @@ const PlayerAvailabilityPopover = ({ day, dayAvailabilities }: PlayerAvailabilit
   );
 };
 
-export default PlayerAvailabilityPopover;
+export default PlayersTableAvailabilityPopover;

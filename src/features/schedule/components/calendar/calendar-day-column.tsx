@@ -2,10 +2,10 @@ import type { Day } from "@/constants/days";
 import type { Player } from "@/features/players/types/player.type";
 import { CALENDAR_TIMES } from "@/constants/calendar-times";
 import CalendarCell from "./calendar-cell";
-import { getDayAbbreviation } from "@/lib/utils";
 import { memo, useMemo, type JSX } from "react";
 import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
-import type { TrainingBlock } from "@/types/training-block.type";
+import type { TrainingBlock } from "@/features/schedule/types/training-block.type";
+import { getDayAbbreviation } from "@/lib/time";
 
 type CalendarDayColumnProps = {
   day: Day;

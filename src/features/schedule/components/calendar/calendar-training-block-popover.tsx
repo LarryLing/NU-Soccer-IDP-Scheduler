@@ -1,9 +1,9 @@
 import type { Player } from "@/features/players/types/player.type";
-import type { TrainingBlock } from "@/types/training-block.type";
+import type { TrainingBlock } from "@/features/schedule/types/training-block.type";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatTimeWithPeriod } from "@/lib/utils";
+import { getTimeStringWithMeridian } from "@/lib/time";
 
 type CalendarTrainingBlockPopoverProps = {
   currentCellStartInt: number;
@@ -42,7 +42,7 @@ const CalendarTrainingBlockPopover = ({
           </h4>
           <p className="text-muted-foreground text-sm flex items-center gap-1">
             <Clock className="size-4" />
-            {formatTimeWithPeriod(start_int)} - {formatTimeWithPeriod(end_int)}
+            {getTimeStringWithMeridian(start_int)} - {getTimeStringWithMeridian(end_int)}
           </p>
         </div>
         <p className="text-sm">{assignedPlayerNames.join(", ")}</p>

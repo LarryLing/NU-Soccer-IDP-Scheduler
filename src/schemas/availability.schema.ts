@@ -1,5 +1,5 @@
+import { calculateMinutesFromTimeString } from "@/lib/time";
 import { z } from "zod";
-import { parseTime } from "@/lib/utils";
 
 export const AvailabilitySchema = z
   .object({
@@ -13,7 +13,7 @@ export const AvailabilitySchema = z
   })
   .refine(
     (data) => {
-      return parseTime(data.end) > parseTime(data.start);
+      return calculateMinutesFromTimeString(data.end) > calculateMinutesFromTimeString(data.start);
     },
     {
       message: "End time must be after start time.",

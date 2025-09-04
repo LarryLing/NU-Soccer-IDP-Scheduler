@@ -7,13 +7,14 @@ import {
   type UseFormReturn,
 } from "react-hook-form";
 import { type PlayerFormType, PlayerFormSchema } from "../schemas/player.schema";
-import { transformAvailabilities, findOverlap, formatTimeWithPeriod, formatTime, parseTime } from "@/lib/utils";
 import type { Day } from "@/constants/days";
 import { toast } from "sonner";
 import type { Player } from "@/features/players/types/player.type";
 import usePlayersStore from "./use-players-store";
 import { GOALKEEPER } from "@/constants/positions";
 import type { UsePlayerSheetReturn } from "./use-player-sheet";
+import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
+import { findOverlapInAvailabilities, transformAndSortAvailabilities } from "@/lib/availability";
 
 export type UsePlayerFormReturn = {
   form: UseFormReturn<PlayerFormType>;
@@ -60,26 +61,26 @@ export const usePlayerForm = (
       return;
     }
 
-    const endInt = parseTime(lastField.end);
+    const endInt = calculateMinutesFromTimeString(lastField.end);
     const nextStartInt = Math.min(endInt + 60, 1439);
     const nextEndInt = Math.min(endInt + 120, 1439);
 
     append({
       day,
-      start: formatTime(nextStartInt),
-      end: formatTime(nextEndInt),
+      start: getTimeStringWithoutMeridian(nextStartInt),
+      end: getTimeStringWithoutMeridian(nextEndInt),
     });
   };
 
   const onSubmit: SubmitHandler<PlayerFormType> = (data: PlayerFormType) => {
-    const transformedAvailabilities = transformAvailabilities(data.availabilities);
+    const transformedAvailabilities = transformAndSortAvailabilities(data.availabilities);
 
-    const overlap = findOverlap(transformedAvailabilities);
+    const overlap = findOverlapInAvailabilities(transformedAvailabilities);
     if (overlap) {
-      const formattedPreviousStartInt = formatTimeWithPeriod(overlap.previous.start_int);
-      const formattedPreviousEndInt = formatTimeWithPeriod(overlap.previous.end_int);
-      const formattedCurrentStartInt = formatTimeWithPeriod(overlap.current.start_int);
-      const formattedCurrentEndInt = formatTimeWithPeriod(overlap.current.end_int);
+      const formattedPreviousStartInt = getTimeStringWithMeridian(overlap.previous.start_int);
+      const formattedPreviousEndInt = getTimeStringWithMeridian(overlap.previous.end_int);
+      const formattedCurrentStartInt = getTimeStringWithMeridian(overlap.current.start_int);
+      const formattedCurrentEndInt = getTimeStringWithMeridian(overlap.current.end_int);
 
       toast.error(
         `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`

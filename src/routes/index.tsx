@@ -1,4 +1,4 @@
-import getColumns from "@/features/players/utils/get-columns";
+import getColumns from "@/features/players/lib/get-columns";
 import PlayersActionBar from "@/features/players/components/players-action-bar";
 import { usePlayersTable } from "@/features/players/hooks/use-players-table";
 import { createFileRoute } from "@tanstack/react-router";

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DAYS } from "@/constants/days";
-import PlayerAvailabilityPopover from "../components/players-table/player-availability-popover";
+import PlayersTableAvailabilityPopover from "../components/players-table/players-table-availability-popover";
 import PlayersTableActionDropdownMenu from "../components/players-table/players-table-action-dropdown-menu";
 import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
 
@@ -76,7 +76,7 @@ const getColumns = (openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"]): C
         return DAYS.map((day) => {
           const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
           if (dayAvailabilities.length === 0) return null;
-          return <PlayerAvailabilityPopover key={day} day={day} dayAvailabilities={dayAvailabilities} />;
+          return <PlayersTableAvailabilityPopover key={day} day={day} dayAvailabilities={dayAvailabilities} />;
         });
       },
     },
