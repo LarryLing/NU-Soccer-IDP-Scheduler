@@ -1,5 +1,5 @@
 import type { Day } from "@/constants/days";
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/features/players/types/player.type";
 import { CALENDAR_TIMES } from "@/constants/calendar-times";
 import CalendarCell from "./calendar-cell";
 import { getDayAbbreviation } from "@/lib/utils";

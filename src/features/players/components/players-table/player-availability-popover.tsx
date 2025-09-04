@@ -4,12 +4,12 @@ import { formatTimeWithPeriod } from "@/lib/utils";
 import type { Day } from "@/constants/days";
 import type { Availability } from "@/types/availability.type";
 
-type AvailabilityPopoverProps = {
+type PlayerAvailabilityPopoverProps = {
   day: Day;
   dayAvailabilities: Availability[];
 };
 
-const AvailabilityPopover = ({ day, dayAvailabilities }: AvailabilityPopoverProps) => {
+const PlayerAvailabilityPopover = ({ day, dayAvailabilities }: PlayerAvailabilityPopoverProps) => {
   const formattedDayAvailabilities = dayAvailabilities.map(
     (dayAvailability) =>
       `${formatTimeWithPeriod(dayAvailability.start_int)} - ${formatTimeWithPeriod(dayAvailability.end_int)}`
@@ -41,4 +41,4 @@ const AvailabilityPopover = ({ day, dayAvailabilities }: AvailabilityPopoverProp
   );
 };
 
-export default AvailabilityPopover;
+export default PlayerAvailabilityPopover;

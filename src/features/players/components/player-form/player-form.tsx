@@ -3,23 +3,25 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DAYS } from "@/constants/days";
 import { POSITIONS } from "@/constants/positions";
-import AvailabilityDay from "./availability-day";
+import PlayerFormAvailabilityFieldArray from "./player-form-availability-field-array";
 import { SheetClose, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { useEditPlayerForm } from "../../hooks/use-edit-player-form";
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/features/players/types/player.type";
+import { usePlayerForm } from "../../hooks/use-player-form";
+import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
 
-type EditPlayerFormProps = {
+type PlayerFormProps = {
   player?: Player;
+  closePlayerSheet: UsePlayerSheetReturn["closePlayerSheet"];
 };
 
-const EditPlayerForm = ({ player }: EditPlayerFormProps) => {
-  const { form, fieldArray, onSubmit, addAvailability } = useEditPlayerForm(player);
+const PlayerForm = ({ player, closePlayerSheet }: PlayerFormProps) => {
+  const { form, fieldArray, onSubmit, addAvailability } = usePlayerForm(closePlayerSheet, player);
 
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting, isValidating },
+    formState: { isSubmitting },
   } = form;
 
   const { fields, remove } = fieldArray;
@@ -35,7 +37,7 @@ const EditPlayerForm = ({ player }: EditPlayerFormProps) => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter player name" {...field} />
+                  <Input placeholder="Enter player name" {...field} disabled={isSubmitting} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -48,7 +50,15 @@ const EditPlayerForm = ({ player }: EditPlayerFormProps) => {
               <FormItem>
                 <FormLabel>Number</FormLabel>
                 <FormControl>
-                  <Input type="number" min={0} max={99} step={1} placeholder="Enter player number" {...field} />
+                  <Input
+                    type="number"
+                    min={0}
+                    max={99}
+                    step={1}
+                    placeholder="Enter player number"
+                    {...field}
+                    disabled={isSubmitting}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -60,7 +70,7 @@ const EditPlayerForm = ({ player }: EditPlayerFormProps) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Position</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isSubmitting}>
                   <FormControl>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select a position" />
@@ -83,23 +93,24 @@ const EditPlayerForm = ({ player }: EditPlayerFormProps) => {
               .map((field, idx) => ({ ...field, originalIndex: idx }))
               .filter((field) => field.day === day);
             return (
-              <AvailabilityDay
+              <PlayerFormAvailabilityFieldArray
                 key={day}
                 day={day}
                 dayFields={dayFields}
                 addAvailability={addAvailability}
                 remove={remove}
                 control={control}
+                disabled={isSubmitting}
               />
             );
           })}
         </div>
         <SheetFooter>
-          <Button type="submit" disabled={isSubmitting || isValidating}>
+          <Button type="submit" disabled={isSubmitting}>
             Save Player
           </Button>
           <SheetClose asChild>
-            <Button type="button" variant="outline" disabled={isSubmitting || isValidating}>
+            <Button type="button" variant="outline" disabled={isSubmitting}>
               Close
             </Button>
           </SheetClose>
@@ -109,4 +120,4 @@ const EditPlayerForm = ({ player }: EditPlayerFormProps) => {
   );
 };
 
-export default EditPlayerForm;
+export default PlayerForm;

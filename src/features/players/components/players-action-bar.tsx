@@ -1,16 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { TrashIcon } from "lucide-react";
+import { PlusIcon, TrashIcon } from "lucide-react";
 import type { Table } from "@tanstack/react-table";
-import type { Player } from "../../../types/player.type";
-import AddPlayerSheet from "./player-form/add-player-sheet";
+import type { Player } from "../types/player.type";
 import usePlayersStore from "../hooks/use-players-store";
+import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
 
 type ActionBarProps = {
   selectedPlayerIds: string[];
   table: Table<Player>;
+  openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"];
 };
 
-const PlayersActionBar = ({ selectedPlayerIds, table }: ActionBarProps) => {
+const PlayersActionBar = ({ selectedPlayerIds, table, openPlayerSheet }: ActionBarProps) => {
   const deletePlayer = usePlayersStore((state) => state.deletePlayer);
 
   const handleDeletePlayers = () => {
@@ -21,9 +22,16 @@ const PlayersActionBar = ({ selectedPlayerIds, table }: ActionBarProps) => {
     table.resetRowSelection();
   };
 
+  const handleOpenPlayerSheet = () => {
+    openPlayerSheet();
+  };
+
   return (
-    <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-y-2">
-      <AddPlayerSheet />
+    <div className="w-full flex flex-col sm:flex-row justify-start items-start sm:items-center gap-2">
+      <Button onClick={handleOpenPlayerSheet}>
+        <PlusIcon />
+        Add Player
+      </Button>
       {selectedPlayerIds.length > 0 && (
         <Button variant="destructive" onClick={handleDeletePlayers}>
           <TrashIcon />

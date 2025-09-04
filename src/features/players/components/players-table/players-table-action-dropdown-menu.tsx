@@ -5,30 +5,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis, PencilIcon, TrashIcon } from "lucide-react";
-import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import usePlayersStore from "../../hooks/use-players-store";
-import type { Player } from "@/types/player.type";
-import type { UseEditPlayerSheetReturn } from "../../hooks/use-edit-player-sheet";
+import type { Player } from "@/features/players/types/player.type";
+import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
 
-type ActionDropdownMenuProps = {
+type PlayersTableActionDropdownMenuProps = {
   id: Player["id"];
-  setPlayer: UseEditPlayerSheetReturn["setPlayer"];
-  setIsEditPlayerSheetOpen: UseEditPlayerSheetReturn["setIsEditPlayerSheetOpen"];
+  openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"];
 };
 
-export const ActionDropdownMenu = ({ id, setPlayer, setIsEditPlayerSheetOpen }: ActionDropdownMenuProps) => {
-  const players = usePlayersStore((state) => state.players);
-  const deletePlayer = usePlayersStore((state) => state.deletePlayer);
-
+export const PlayersTableActionDropdownMenu = ({ id, openPlayerSheet }: PlayersTableActionDropdownMenuProps) => {
   const handleDeletePlayer = () => {
+    const deletePlayer = usePlayersStore.getState().deletePlayer;
     deletePlayer(id);
   };
 
-  const handleOpenEditPlayerSheet = () => {
-    const player = players.find((player) => player.id === id);
-    setPlayer(player);
-    setIsEditPlayerSheetOpen(true);
+  const handleOpenPlayerSheet = () => {
+    openPlayerSheet(id);
   };
 
   return (
@@ -39,7 +33,7 @@ export const ActionDropdownMenu = ({ id, setPlayer, setIsEditPlayerSheetOpen }: 
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={handleOpenEditPlayerSheet}>
+        <DropdownMenuItem onClick={handleOpenPlayerSheet}>
           <PencilIcon />
           Edit Player
         </DropdownMenuItem>
@@ -52,4 +46,4 @@ export const ActionDropdownMenu = ({ id, setPlayer, setIsEditPlayerSheetOpen }: 
   );
 };
 
-export default memo(ActionDropdownMenu);
+export default PlayersTableActionDropdownMenu;

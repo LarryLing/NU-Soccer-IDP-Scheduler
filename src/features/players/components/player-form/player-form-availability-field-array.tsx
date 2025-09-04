@@ -3,11 +3,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
-import AvailabilityTimeSlot from "./availability-time-slot";
+import PlayerFormAvailabilityFieldProps from "./player-form-availability-field";
 import type { Day } from "@/constants/days";
-import type { UsePlayerFormReturn } from "../../hooks/use-edit-player-form";
+import type { UsePlayerFormReturn } from "../../hooks/use-player-form";
 
-type AvailabilityDayProps = {
+type PlayerFormAvailabilityFieldArrayProps = {
   day: Day;
   dayFields: (FieldArrayWithId<PlayerFormType, "availabilities", "id"> & {
     originalIndex: number;
@@ -15,9 +15,17 @@ type AvailabilityDayProps = {
   addAvailability: UsePlayerFormReturn["addAvailability"];
   remove: UseFieldArrayRemove;
   control: Control<PlayerFormType>;
+  disabled: boolean;
 };
 
-const AvailabilityDay = ({ day, dayFields, addAvailability, remove, control }: AvailabilityDayProps) => {
+const PlayerFormAvailabilityFieldArray = ({
+  day,
+  dayFields,
+  addAvailability,
+  remove,
+  control,
+  disabled,
+}: PlayerFormAvailabilityFieldArrayProps) => {
   const handleAddAvailability = () => {
     addAvailability(day);
   };
@@ -30,16 +38,17 @@ const AvailabilityDay = ({ day, dayFields, addAvailability, remove, control }: A
           <i className="text-sm text-muted-foreground">No availabilities</i>
         ) : (
           dayFields.map((field) => (
-            <AvailabilityTimeSlot
+            <PlayerFormAvailabilityFieldProps
               key={field.id}
               originalIndex={field.originalIndex}
               remove={remove}
               control={control}
+              disabled={disabled}
             />
           ))
         )}
       </div>
-      <Button type="button" variant="outline" size="sm" onClick={handleAddAvailability}>
+      <Button type="button" variant="outline" size="sm" onClick={handleAddAvailability} disabled={disabled}>
         <PlusIcon />
         Add Availability
       </Button>
@@ -47,4 +56,4 @@ const AvailabilityDay = ({ day, dayFields, addAvailability, remove, control }: A
   );
 };
 
-export default AvailabilityDay;
+export default PlayerFormAvailabilityFieldArray;

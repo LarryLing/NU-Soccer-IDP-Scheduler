@@ -1,29 +1,29 @@
 import getColumns from "@/features/players/utils/get-columns";
 import PlayersActionBar from "@/features/players/components/players-action-bar";
-import { useEditPlayerSheet } from "@/features/players/hooks/use-edit-player-sheet";
 import { usePlayersTable } from "@/features/players/hooks/use-players-table";
 import { createFileRoute } from "@tanstack/react-router";
 import PlayersTable from "@/features/players/components/players-table/players-table";
-import EditPlayerSheet from "@/features/players/components/player-form/edit-player-sheet";
+import { usePlayerSheet } from "@/features/players/hooks/use-player-sheet";
+import PlayerSheet from "@/features/players/components/player-form/player-sheet";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
-  const editPlayerSheetReturn = useEditPlayerSheet();
-  const { setPlayer, setIsEditPlayerSheetOpen } = editPlayerSheetReturn;
+  const playerSheetReturn = usePlayerSheet();
+  const { openPlayerSheet } = playerSheetReturn;
 
-  const columns = getColumns(setPlayer, setIsEditPlayerSheetOpen);
+  const columns = getColumns(openPlayerSheet);
   const { table } = usePlayersTable(columns);
 
   const selectedPlayerIds = table.getFilteredSelectedRowModel().rows.map((row) => row.original.id);
 
   return (
     <>
-      <PlayersActionBar selectedPlayerIds={selectedPlayerIds} table={table} />
+      <PlayersActionBar selectedPlayerIds={selectedPlayerIds} table={table} {...playerSheetReturn} />
       <PlayersTable table={table} numColumns={columns.length} />
-      <EditPlayerSheet {...editPlayerSheetReturn} />
+      <PlayerSheet {...playerSheetReturn} />
     </>
   );
 }

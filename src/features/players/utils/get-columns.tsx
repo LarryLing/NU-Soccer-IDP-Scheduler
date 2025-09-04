@@ -1,19 +1,16 @@
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/features/players/types/player.type";
 import type { Availability } from "@/types/availability.type";
-import type { UseEditPlayerSheetReturn } from "../hooks/use-edit-player-sheet";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowDownUpIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DAYS } from "@/constants/days";
-import AvailabilityPopover from "../components/players-table/availability-popover";
-import ActionDropdownMenu from "../components/players-table/action-dropdown-menu";
+import PlayerAvailabilityPopover from "../components/players-table/player-availability-popover";
+import PlayersTableActionDropdownMenu from "../components/players-table/players-table-action-dropdown-menu";
+import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
 
-const getColumns = (
-  setPlayer: UseEditPlayerSheetReturn["setPlayer"],
-  setIsEditPlayerSheetOpen: UseEditPlayerSheetReturn["setIsEditPlayerSheetOpen"]
-): ColumnDef<Player>[] => {
+const getColumns = (openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"]): ColumnDef<Player>[] => {
   return [
     {
       accessorKey: "select",
@@ -79,19 +76,13 @@ const getColumns = (
         return DAYS.map((day) => {
           const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
           if (dayAvailabilities.length === 0) return null;
-          return <AvailabilityPopover key={day} day={day} dayAvailabilities={dayAvailabilities} />;
+          return <PlayerAvailabilityPopover key={day} day={day} dayAvailabilities={dayAvailabilities} />;
         });
       },
     },
     {
       id: "actions",
-      cell: ({ row }) => (
-        <ActionDropdownMenu
-          id={row.original.id}
-          setPlayer={setPlayer}
-          setIsEditPlayerSheetOpen={setIsEditPlayerSheetOpen}
-        />
-      ),
+      cell: ({ row }) => <PlayersTableActionDropdownMenu id={row.original.id} openPlayerSheet={openPlayerSheet} />,
     },
   ];
 };

@@ -1,17 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { memo } from "react";
 import type { Control, UseFieldArrayRemove } from "react-hook-form";
 import type { PlayerFormType } from "../../schemas/player.schema";
 
-type AvailabilityTimeSlotProps = {
+type PlayerFormAvailabilityFieldProps = {
   originalIndex: number;
   remove: UseFieldArrayRemove;
   control: Control<PlayerFormType>;
+  disabled: boolean;
 };
 
-const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTimeSlotProps) => {
+const PlayerFormAvailabilityField = ({
+  originalIndex,
+  remove,
+  control,
+  disabled,
+}: PlayerFormAvailabilityFieldProps) => {
   const handleRemove = () => {
     remove(originalIndex);
   };
@@ -24,7 +29,7 @@ const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTi
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input type="time" {...field} />
+              <Input type="time" {...field} disabled={disabled} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -37,17 +42,17 @@ const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTi
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input type="time" {...field} />
+              <Input type="time" {...field} disabled={disabled} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-      <Button type="button" variant="outline" onClick={handleRemove}>
+      <Button type="button" variant="outline" onClick={handleRemove} disabled={disabled}>
         Remove
       </Button>
     </div>
   );
 };
 
-export default memo(AvailabilityTimeSlot);
+export default PlayerFormAvailabilityField;

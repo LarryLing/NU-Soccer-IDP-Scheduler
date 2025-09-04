@@ -1,4 +1,4 @@
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/features/players/types/player.type";
 import type { TrainingBlock } from "@/types/training-block.type";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar, Clock } from "lucide-react";

@@ -4,7 +4,7 @@ import { DAYS } from "@/constants/days";
 import type { AvailabilityFormType } from "@/schemas/availability.schema";
 import type { Availability } from "@/types/availability.type";
 import type { Day } from "@/constants/days";
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/features/players/types/player.type";
 import type { TrainingBlock } from "@/types/training-block.type";
 
 export function cn(...inputs: ClassValue[]) {
