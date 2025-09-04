@@ -1,13 +1,16 @@
 import UnassignedPlayersPopover from "./unassigned-players-popover";
 import ScheduleSheet from "./schedule-form/schedule-sheet";
 import { useScheduleSheet } from "../hooks/use-schedule-sheet";
+import usePlayersStore from "@/features/players/hooks/use-players-store";
 
-type ScheduleActionBarProps = {
-  unassignedPlayerNames: string[];
-};
+const ScheduleActionBar = () => {
+  const players = usePlayersStore((state) => state.players);
 
-const ScheduleActionBar = ({ unassignedPlayerNames }: ScheduleActionBarProps) => {
   const scheduleSheetReturn = useScheduleSheet();
+
+  const unassignedPlayerNames = players
+    .filter((player) => player.training_block_id === null)
+    .map((player) => player.name);
 
   return (
     <div className="flex items-center space-x-3">

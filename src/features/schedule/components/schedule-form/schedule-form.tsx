@@ -48,7 +48,7 @@ const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
               <FormItem>
                 <FormLabel>Duration</FormLabel>
                 <FormControl>
-                  <Input type="number" min={15} max={60} step={15} disabled {...field} />
+                  <Input type="number" min={15} max={60} step={15} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

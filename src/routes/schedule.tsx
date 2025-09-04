@@ -9,7 +9,7 @@ export const Route = createFileRoute("/schedule")({
 function Schedule() {
   return (
     <>
-      <ScheduleActionBar unassignedPlayerNames={[]} />
+      <ScheduleActionBar />
       <Calendar />
     </>
   );

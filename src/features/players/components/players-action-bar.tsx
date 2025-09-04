@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { PlusIcon, TrashIcon } from "lucide-react";
 import type { Table } from "@tanstack/react-table";
-import type { Player } from "../types/player.type";
+import type { Player } from "../../../types/player.type";
 import usePlayersStore from "../hooks/use-players-store";
 import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
 

@@ -1,5 +1,5 @@
 import type { Day } from "@/constants/days";
-import { CALENDAR_TIMES } from "@/constants/calendar-times";
+import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
 import CalendarCell from "./calendar-cell";
 import { memo, useMemo, type JSX } from "react";
 import CalendarTrainingBlockPopover from "./calendar-training-block-popover";

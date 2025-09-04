@@ -2,11 +2,11 @@ import { Form, FormItem, FormField, FormLabel, FormControl, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DAYS } from "@/constants/days";
-import { POSITIONS } from "@/constants/positions";
+import { POSITIONS } from "@/features/players/constants/positions";
 import PlayerFormAvailabilityFieldArray from "./player-form-availability-field-array";
 import { SheetClose, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import type { Player } from "@/features/players/types/player.type";
+import type { Player } from "@/types/player.type";
 import { usePlayerForm } from "../../hooks/use-player-form";
 import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
 

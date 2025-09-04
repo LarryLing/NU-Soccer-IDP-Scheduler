@@ -1,13 +1,15 @@
 import { DAYS } from "@/constants/days";
 import type { Availability } from "@/types/availability.type";
 import type { Day } from "@/constants/days";
-import type { Player } from "@/features/players/types/player.type";
-import type { TrainingBlock } from "@/features/schedule/types/training-block.type";
+import type { Player } from "@/types/player.type";
+import type { TrainingBlock } from "@/types/training-block.type";
 import { calculateCombinedScore } from "./math";
 import { getTimeStringWithoutMeridian } from "@/lib/time";
+import usePlayersStore from "@/features/players/hooks/use-players-store";
+import useTrainingBlocksStore from "../hooks/use-training-blocks-store";
 
-export const createAllTrainingBlocks = (availabilities: Availability[], trainingBlockDuration: number) => {
-  const createdTrainingBlocks: TrainingBlock[] = [];
+export const generatePossibleTrainingBlocks = (availabilities: Availability[], trainingBlockDuration: number) => {
+  const possibleTrainingBlocks: TrainingBlock[] = [];
   for (const day of DAYS) {
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
@@ -25,14 +27,14 @@ export const createAllTrainingBlocks = (availabilities: Availability[], training
           end_int: currentInt + trainingBlockDuration,
         };
 
-        createdTrainingBlocks.push(createdTrainingBlock);
+        possibleTrainingBlocks.push(createdTrainingBlock);
 
         currentInt += trainingBlockDuration;
       }
     }
   }
 
-  return createdTrainingBlocks;
+  return possibleTrainingBlocks;
 };
 
 const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: TrainingBlock) => {
@@ -51,20 +53,22 @@ const getTrainingBlockIdsForPlayer = (player: Player, trainingBlocks: TrainingBl
     .map((trainingBlock) => trainingBlock.id);
 };
 
-export const assignPlayers = (players: Player[], trainingBlocks: TrainingBlock[], maximumPlayerCount: number) => {
+export const assignPlayersToTrainingBlocks = (possibleTrainingBlocks: TrainingBlock[], maximumPlayerCount: number) => {
+  const players = usePlayersStore.getState().players;
+
   const playerAssignmentsMap = new Map<Player["id"], TrainingBlock["id"] | null>();
   players.forEach((player) => {
     playerAssignmentsMap.set(player.id, null);
   });
 
   const trainingBlockAssignedPlayerCounts: Record<TrainingBlock["id"], number> = {};
-  trainingBlocks.forEach((block) => {
-    trainingBlockAssignedPlayerCounts[block.id] = 0;
+  possibleTrainingBlocks.forEach((possibleTrainingBlock) => {
+    trainingBlockAssignedPlayerCounts[possibleTrainingBlock.id] = 0;
   });
 
   const availableTrainingBlockIdsMap = new Map<Player["id"], TrainingBlock["id"][]>();
   players.forEach((player) => {
-    availableTrainingBlockIdsMap.set(player.id, getTrainingBlockIdsForPlayer(player, trainingBlocks));
+    availableTrainingBlockIdsMap.set(player.id, getTrainingBlockIdsForPlayer(player, possibleTrainingBlocks));
   });
 
   const sortedPlayers = [...players].sort((a, b) => {
@@ -105,50 +109,31 @@ export const assignPlayers = (players: Player[], trainingBlocks: TrainingBlock[]
     }
   }
 
-  const unassignedPlayerNames = players
-    .filter((player) => playerAssignmentsMap.get(player.id) === null)
-    .map((player) => player.name);
-
-  const usedTrainingBlocks = trainingBlocks.filter(
-    (trainingBlock) => trainingBlockAssignedPlayerCounts[trainingBlock.id] || 0 > 0
+  const usedTrainingBlocks = possibleTrainingBlocks.filter(
+    (possibleTrainingBlock) => (trainingBlockAssignedPlayerCounts[possibleTrainingBlock.id] || 0) > 0
   );
 
   return {
-    unassignedPlayerNames,
     playerAssignmentsMap,
     usedTrainingBlocks,
   };
 };
 
 export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) => {
-  console.log("trainingBlocks", trainingBlocks);
-  throw new Error("saveUsedTrainingBlocks is not implemented");
+  const setTrainingBlocks = useTrainingBlocksStore.getState().setTrainingBlocks;
 
-  // const { error: deleteError } = await supabase.from("training_blocks").delete().neq("id", crypto.randomUUID());
-
-  // if (deleteError) {
-  //   console.error("Error creating schedule", deleteError);
-  //   throw deleteError;
-  // }
-
-  // const createTrainingBlockPromises = trainingBlocks.map((trainingBlock) =>
-  //   supabase.from("training_blocks").insert(trainingBlock)
-  // );
-
-  // await Promise.all(createTrainingBlockPromises);
+  setTrainingBlocks(trainingBlocks);
 };
 
 export const saveAssignedPlayers = async (playerAssignmentsMap: Map<Player["id"], TrainingBlock["id"] | null>) => {
-  console.log("playerAssignmentsMap", playerAssignmentsMap);
-  throw new Error("saveAssignedPlayers is not implemented");
+  const players = usePlayersStore.getState().players;
+  const updatePlayer = usePlayersStore.getState().updatePlayer;
 
-  // const assignPlayerPromises = [];
-  // for (const [playerId, trainingBlockId] of playerAssignmentsMap) {
-  //   if (trainingBlockId === null) continue;
-  //   assignPlayerPromises.push(
-  //     supabase.from("players").update({ training_block_id: trainingBlockId }).eq("id", playerId)
-  //   );
-  // }
-
-  // await Promise.all(assignPlayerPromises);
+  players.forEach((player) => {
+    const trainingBlockId = playerAssignmentsMap.get(player.id) || null;
+    updatePlayer({
+      ...player,
+      training_block_id: trainingBlockId,
+    });
+  });
 };

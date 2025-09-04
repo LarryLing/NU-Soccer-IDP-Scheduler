@@ -10,8 +10,15 @@ import { type ScheduleFormType, ScheduleFormSchema } from "../schemas/schedule-f
 import type { Day } from "@/constants/days";
 import { useCallback } from "react";
 import { toast } from "sonner";
-import { calculateMinutesFromTimeString, getTimeStringWithoutMeridian } from "@/lib/time";
+import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 import type { UseScheduleSheetReturn } from "./use-schedule-sheet";
+import { findOverlapInAvailabilities, transformAndSortAvailabilities } from "@/lib/availability";
+import {
+  assignPlayersToTrainingBlocks,
+  generatePossibleTrainingBlocks,
+  saveAssignedPlayers,
+  saveUsedTrainingBlocks,
+} from "../lib/schedule";
 
 export type UseScheduleFormReturn = {
   form: UseFormReturn<ScheduleFormType>;
@@ -71,50 +78,35 @@ export const useScheduleForm = (
   );
 
   const onSubmit: SubmitHandler<ScheduleFormType> = (data: ScheduleFormType) => {
-    console.log(data);
-    toast.error("Not implemented");
+    const transformedAvailabilities = transformAndSortAvailabilities(data.fieldAvailabilities);
+
+    const overlap = findOverlapInAvailabilities(transformedAvailabilities);
+    if (overlap) {
+      const formattedPreviousStartInt = getTimeStringWithMeridian(overlap.previous.start_int);
+      const formattedPreviousEndInt = getTimeStringWithMeridian(overlap.previous.end_int);
+      const formattedCurrentStartInt = getTimeStringWithMeridian(overlap.current.start_int);
+      const formattedCurrentEndInt = getTimeStringWithMeridian(overlap.current.end_int);
+
+      toast.error("Failed to create training schedule", {
+        description: `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`,
+      });
+
+      return;
+    }
+
+    const possibleTrainingBlocks = generatePossibleTrainingBlocks(transformedAvailabilities, data.duration);
+
+    const { playerAssignmentsMap, usedTrainingBlocks } = assignPlayersToTrainingBlocks(
+      possibleTrainingBlocks,
+      data.maximumPlayerCount
+    );
+
+    saveUsedTrainingBlocks(usedTrainingBlocks);
+    saveAssignedPlayers(playerAssignmentsMap);
+
+    toast.success("Successfully created training schedule");
+
     closeScheduleSheet();
-    return;
-    // if (data.fieldAvailabilities.length === 0) {
-    //   setIsScheduleSheetOpen(false);
-    //   return;
-    // }
-
-    // try {
-    //   setIsCreatingSchedule(true);
-
-    //   const transformedAvailabilities = transformAvailabilities(data.fieldAvailabilities);
-
-    //   const overlap = findOverlap(transformedAvailabilities);
-    //   if (overlap) {
-    //     const formattedPreviousStartInt = getTimeStringWithMeridian(overlap.previous.start_int);
-    //     const formattedPreviousEndInt = getTimeStringWithMeridian(overlap.previous.end_int);
-    //     const formattedCurrentStartInt = getTimeStringWithMeridian(overlap.current.start_int);
-    //     const formattedCurrentEndInt = getTimeStringWithMeridian(overlap.current.end_int);
-    //     setError(
-    //       `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`
-    //     );
-    //     return;
-    //   }
-
-    //   const allTrainingBlocks = createAllTrainingBlocks(transformedAvailabilities, data.duration);
-
-    //   const { unassignedPlayerNames, playerAssignmentsMap, usedTrainingBlocks } = assignPlayers(
-    //     players,
-    //     allTrainingBlocks,
-    //     data.maximumPlayerCount
-    //   );
-
-    //   await saveUsedTrainingBlocks(usedTrainingBlocks);
-    //   await saveAssignedPlayers(playerAssignmentsMap);
-
-    //   setUnassignedPlayerNames(unassignedPlayerNames);
-    //   setIsScheduleSheetOpen(false);
-    // } catch {
-    //   setError("Something went wrong when creating the schedule. Please try again.");
-    // } finally {
-    //   setIsCreatingSchedule(false);
-    // }
   };
 
   return {

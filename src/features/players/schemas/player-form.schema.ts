@@ -1,4 +1,4 @@
-import { POSITIONS } from "@/constants/positions";
+import { POSITIONS } from "@/features/players/constants/positions";
 import { AvailabilitySchema } from "@/schemas/availability.schema";
 import { z } from "zod";
 

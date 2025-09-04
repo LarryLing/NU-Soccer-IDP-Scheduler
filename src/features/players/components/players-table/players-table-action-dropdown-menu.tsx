@@ -7,7 +7,7 @@ import {
 import { Ellipsis, PencilIcon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import usePlayersStore from "../../hooks/use-players-store";
-import type { Player } from "@/features/players/types/player.type";
+import type { Player } from "@/types/player.type";
 import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
 
 type PlayersTableActionDropdownMenuProps = {

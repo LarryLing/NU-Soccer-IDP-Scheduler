@@ -9,9 +9,9 @@ import {
 import { type PlayerFormType, PlayerFormSchema } from "../schemas/player-form.schema";
 import type { Day } from "@/constants/days";
 import { toast } from "sonner";
-import type { Player } from "@/features/players/types/player.type";
+import type { Player } from "@/types/player.type";
 import usePlayersStore from "./use-players-store";
-import { GOALKEEPER } from "@/constants/positions";
+import { GOALKEEPER } from "@/features/players/constants/positions";
 import type { UsePlayerSheetReturn } from "./use-player-sheet";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 import { findOverlapInAvailabilities, transformAndSortAvailabilities } from "@/lib/availability";
@@ -82,9 +82,9 @@ export const usePlayerForm = (
       const formattedCurrentStartInt = getTimeStringWithMeridian(overlap.current.start_int);
       const formattedCurrentEndInt = getTimeStringWithMeridian(overlap.current.end_int);
 
-      toast.error(
-        `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`
-      );
+      toast.error("Failed to save player", {
+        description: `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`,
+      });
 
       return;
     }
@@ -108,6 +108,8 @@ export const usePlayerForm = (
         availabilities: transformedAvailabilities,
       });
     }
+
+    toast.success("Successfully saved player");
 
     closePlayerSheet();
   };

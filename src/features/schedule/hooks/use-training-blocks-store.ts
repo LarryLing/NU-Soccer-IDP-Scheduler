@@ -1,25 +1,19 @@
-import type { TrainingBlock } from "@/features/schedule/types/training-block.type";
+import type { TrainingBlock } from "@/types/training-block.type";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 export type UseTrainingBlocksReturn = {
   trainingBlocks: TrainingBlock[];
-  createTrainingBlock: (trainingBlock: TrainingBlock) => void;
-  deleteTrainingBlock: (trainingBlockId: TrainingBlock["id"]) => void;
+  setTrainingBlocks: (trainingBlocks: TrainingBlock[]) => void;
 };
 
 const useTrainingBlocksStore = create<UseTrainingBlocksReturn>()(
   persist(
     (set) => ({
       trainingBlocks: [],
-      createTrainingBlock: (trainingBlock: Omit<TrainingBlock, "id">) => {
-        set((state) => ({
-          trainingBlocks: [...state.trainingBlocks, { id: crypto.randomUUID(), ...trainingBlock }],
-        }));
-      },
-      deleteTrainingBlock: (trainingBlockId: TrainingBlock["id"]) => {
-        set((state) => ({
-          trainingBlocks: state.trainingBlocks.filter((trainingBlock) => trainingBlock.id !== trainingBlockId),
+      setTrainingBlocks: (trainingBlocks: TrainingBlock[]) => {
+        set(() => ({
+          trainingBlocks,
         }));
       },
     }),

@@ -1,5 +1,5 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { Player } from "@/features/players/types/player.type";
+import type { Player } from "@/types/player.type";
 import { CalendarX2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

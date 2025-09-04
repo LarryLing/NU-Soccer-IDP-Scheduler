@@ -1,4 +1,4 @@
-import type { Player } from "@/features/players/types/player.type";
+import type { Player } from "@/types/player.type";
 import type { Availability } from "@/types/availability.type";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowDownUpIcon } from "lucide-react";

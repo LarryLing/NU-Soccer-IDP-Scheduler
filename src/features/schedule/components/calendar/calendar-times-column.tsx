@@ -1,4 +1,4 @@
-import { CALENDAR_TIMES } from "@/constants/calendar-times";
+import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
 
 const CalendarTimesColumn = () => {
   const timesKeys = Object.keys(CALENDAR_TIMES);

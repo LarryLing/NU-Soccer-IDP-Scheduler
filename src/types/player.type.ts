@@ -1,5 +1,5 @@
-import type { Position } from "@/constants/positions";
-import type { Availability } from "../../../types/availability.type";
+import type { Position } from "@/features/players/constants/positions";
+import type { Availability } from "./availability.type";
 
 export type Player = {
   id: string;
