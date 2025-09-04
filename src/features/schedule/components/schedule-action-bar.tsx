@@ -1,19 +1,17 @@
-import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
 import UnassignedPlayersPopover from "./unassigned-players-popover";
+import ScheduleSheet from "./schedule-form/schedule-sheet";
+import { useScheduleSheet } from "../hooks/use-schedule-sheet";
 
 type ScheduleActionBarProps = {
-  openScheduleSheet: () => void;
   unassignedPlayerNames: string[];
 };
 
-const ScheduleActionBar = ({ openScheduleSheet, unassignedPlayerNames }: ScheduleActionBarProps) => {
+const ScheduleActionBar = ({ unassignedPlayerNames }: ScheduleActionBarProps) => {
+  const scheduleSheetReturn = useScheduleSheet();
+
   return (
     <div className="flex items-center space-x-3">
-      <Button onClick={openScheduleSheet}>
-        <CalendarIcon />
-        Create Schedule
-      </Button>
+      <ScheduleSheet {...scheduleSheetReturn} />
       {unassignedPlayerNames.length > 0 && <UnassignedPlayersPopover unassignedPlayerNames={unassignedPlayerNames} />}
     </div>
   );

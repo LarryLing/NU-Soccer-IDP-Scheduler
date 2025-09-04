@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
 import FieldAvailabilityTimeSlot from "./field-availability-time-slot";
-import type { ScheduleFormType } from "../../schemas/schedule.schema";
+import type { ScheduleFormType } from "../../schemas/schedule-form.schema";
 import type { UseScheduleFormReturn } from "../../hooks/use-schedule-form";
 
 type AvailabilityDayProps = {

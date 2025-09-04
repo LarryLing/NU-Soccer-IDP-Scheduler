@@ -1,4 +1,4 @@
-import type { PlayerFormType } from "../../schemas/player.schema";
+import type { PlayerFormType } from "../../schemas/player-form.schema";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";

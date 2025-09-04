@@ -6,7 +6,7 @@ import {
   type UseFieldArrayReturn,
   type UseFormReturn,
 } from "react-hook-form";
-import { type PlayerFormType, PlayerFormSchema } from "../schemas/player.schema";
+import { type PlayerFormType, PlayerFormSchema } from "../schemas/player-form.schema";
 import type { Day } from "@/constants/days";
 import { toast } from "sonner";
 import type { Player } from "@/features/players/types/player.type";

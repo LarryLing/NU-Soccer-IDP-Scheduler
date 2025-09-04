@@ -8,7 +8,7 @@ const RootLayout = () => (
     <Navbar />
     <main className="sm:px-8 px-4 py-4 flex flex-col gap-y-4">
       <Outlet />
-      <Toaster position="bottom-left" />
+      <Toaster position="bottom-left" richColors />
     </main>
     <TanStackRouterDevtools />
   </>

@@ -5,14 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { useScheduleForm } from "../../hooks/use-schedule-form";
+import type { UseScheduleSheetReturn } from "../../hooks/use-schedule-sheet";
 
-const ScheduleForm = () => {
-  const { form, fieldArray, addFieldAvailability, onSubmit } = useScheduleForm();
+type ScheduleFormProps = {
+  closeScheduleSheet: UseScheduleSheetReturn["closeScheduleSheet"];
+};
+
+const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
+  const { form, fieldArray, addFieldAvailability, onSubmit } = useScheduleForm(closeScheduleSheet);
 
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting, isValidating },
+    formState: { isSubmitting },
   } = form;
 
   const { fields, remove } = fieldArray;
@@ -64,11 +69,11 @@ const ScheduleForm = () => {
           />
         </div>
         <SheetFooter>
-          <Button type="submit" disabled={isSubmitting || isValidating}>
+          <Button type="submit" disabled={isSubmitting}>
             Schedule Players
           </Button>
           <SheetClose asChild>
-            <Button type="button" variant="outline" disabled={isSubmitting || isValidating}>
+            <Button type="button" variant="outline" disabled={isSubmitting}>
               Close
             </Button>
           </SheetClose>

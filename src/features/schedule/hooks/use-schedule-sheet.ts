@@ -3,19 +3,19 @@ import { useState, useCallback } from "react";
 export type UseScheduleSheetReturn = {
   isScheduleSheetOpen: boolean;
   setIsScheduleSheetOpen: (isScheduleSheetOpen: boolean) => void;
-  openScheduleSheet: () => void;
+  closeScheduleSheet: () => void;
 };
 
 export const useScheduleSheet = (): UseScheduleSheetReturn => {
   const [isScheduleSheetOpen, setIsScheduleSheetOpen] = useState<boolean>(false);
 
-  const openScheduleSheet = useCallback(() => {
-    setIsScheduleSheetOpen(true);
+  const closeScheduleSheet = useCallback(() => {
+    setIsScheduleSheetOpen(false);
   }, []);
 
   return {
     isScheduleSheetOpen,
     setIsScheduleSheetOpen,
-    openScheduleSheet,
+    closeScheduleSheet,
   };
 };

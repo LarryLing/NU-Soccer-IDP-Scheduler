@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { memo } from "react";
 import type { Control, UseFieldArrayRemove } from "react-hook-form";
-import type { ScheduleFormType } from "../../schemas/schedule.schema";
+import type { ScheduleFormType } from "../../schemas/schedule-form.schema";
 
 type AvailabilityTimeSlotProps = {
   originalIndex: number;

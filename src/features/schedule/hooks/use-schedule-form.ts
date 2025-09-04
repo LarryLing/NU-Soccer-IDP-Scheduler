@@ -6,11 +6,12 @@ import {
   type UseFieldArrayReturn,
   type UseFormReturn,
 } from "react-hook-form";
-import { type ScheduleFormType, ScheduleFormSchema } from "../schemas/schedule.schema";
+import { type ScheduleFormType, ScheduleFormSchema } from "../schemas/schedule-form.schema";
 import type { Day } from "@/constants/days";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { calculateMinutesFromTimeString, getTimeStringWithoutMeridian } from "@/lib/time";
+import type { UseScheduleSheetReturn } from "./use-schedule-sheet";
 
 export type UseScheduleFormReturn = {
   form: UseFormReturn<ScheduleFormType>;
@@ -19,7 +20,9 @@ export type UseScheduleFormReturn = {
   onSubmit: SubmitHandler<ScheduleFormType>;
 };
 
-export const useScheduleForm = (): UseScheduleFormReturn => {
+export const useScheduleForm = (
+  closeScheduleSheet: UseScheduleSheetReturn["closeScheduleSheet"]
+): UseScheduleFormReturn => {
   const form = useForm<ScheduleFormType>({
     resolver: zodResolver(ScheduleFormSchema),
     mode: "onSubmit",
@@ -67,9 +70,10 @@ export const useScheduleForm = (): UseScheduleFormReturn => {
     [fields, append]
   );
 
-  const onSubmit: SubmitHandler<ScheduleFormType> = async (data) => {
+  const onSubmit: SubmitHandler<ScheduleFormType> = (data: ScheduleFormType) => {
     console.log(data);
     toast.error("Not implemented");
+    closeScheduleSheet();
     return;
     // if (data.fieldAvailabilities.length === 0) {
     //   setIsScheduleSheetOpen(false);
