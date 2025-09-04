@@ -1,20 +1,13 @@
 import { DAYS } from "@/constants/days";
 import CalendarTimesColumn from "./calendar-times-column";
 import CalendarDayColumn from "./calendar-day-column";
-import type { Player } from "@/features/players/types/player.type";
-import type { TrainingBlock } from "@/features/schedule/types/training-block.type";
 
-type CalendarProps = {
-  players: Player[];
-  trainingBlocks: TrainingBlock[];
-};
-
-const Calendar = ({ players, trainingBlocks }: CalendarProps) => {
+const Calendar = () => {
   return (
     <div className="grid [grid-template-columns:50px_repeat(5,1fr)] border px-4 pb-4 h-[800px]">
       <CalendarTimesColumn />
       {DAYS.map((day) => (
-        <CalendarDayColumn key={day} day={day} players={players} trainingBlocks={trainingBlocks} />
+        <CalendarDayColumn key={day} day={day} />
       ))}
     </div>
   );

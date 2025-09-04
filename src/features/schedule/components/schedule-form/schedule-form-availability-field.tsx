@@ -5,13 +5,13 @@ import { memo } from "react";
 import type { Control, UseFieldArrayRemove } from "react-hook-form";
 import type { ScheduleFormType } from "../../schemas/schedule-form.schema";
 
-type AvailabilityTimeSlotProps = {
+type ScheduleFormAvailabilityFieldProps = {
   originalIndex: number;
   remove: UseFieldArrayRemove;
   control: Control<ScheduleFormType>;
 };
 
-const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTimeSlotProps) => {
+const ScheduleFormAvailabilityField = ({ originalIndex, remove, control }: ScheduleFormAvailabilityFieldProps) => {
   const handleRemove = () => {
     remove(originalIndex);
   };
@@ -50,4 +50,4 @@ const AvailabilityTimeSlot = ({ originalIndex, remove, control }: AvailabilityTi
   );
 };
 
-export default memo(AvailabilityTimeSlot);
+export default memo(ScheduleFormAvailabilityField);

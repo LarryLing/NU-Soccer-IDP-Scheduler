@@ -1,22 +1,25 @@
-import type { Player } from "@/features/players/types/player.type";
 import type { TrainingBlock } from "@/features/schedule/types/training-block.type";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTimeStringWithMeridian } from "@/lib/time";
+import usePlayersStore from "@/features/players/hooks/use-players-store";
 
 type CalendarTrainingBlockPopoverProps = {
   currentCellStartInt: number;
-  assignedPlayerNames: Player["name"][];
-} & Pick<TrainingBlock, "day" | "start_int" | "end_int">;
+} & Pick<TrainingBlock, "id" | "day" | "start_int" | "end_int">;
 
 const CalendarTrainingBlockPopover = ({
   currentCellStartInt,
-  assignedPlayerNames,
+  id,
   day,
   start_int,
   end_int,
 }: CalendarTrainingBlockPopoverProps) => {
+  const players = usePlayersStore((state) => state.players);
+
+  const assignedPlayers = players.filter((player) => player.training_block_id === id).map((player) => player.name);
+
   const topPercentage = ((start_int - currentCellStartInt) / 60) * 100;
   const heightPercentage = ((end_int - start_int) / 60) * 100;
 
@@ -32,7 +35,7 @@ const CalendarTrainingBlockPopover = ({
             height: `calc(${heightPercentage}% - 2px)`,
           }}
         >
-          <p className="text-sm text-nowrap truncate">{assignedPlayerNames.join(", ")}</p>
+          <p className="text-sm text-nowrap truncate">{assignedPlayers.join(", ")}</p>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="space-y-2">
@@ -45,7 +48,7 @@ const CalendarTrainingBlockPopover = ({
             {getTimeStringWithMeridian(start_int)} - {getTimeStringWithMeridian(end_int)}
           </p>
         </div>
-        <p className="text-sm">{assignedPlayerNames.join(", ")}</p>
+        <p className="text-sm">{assignedPlayers.join(", ")}</p>
       </PopoverContent>
     </Popover>
   );

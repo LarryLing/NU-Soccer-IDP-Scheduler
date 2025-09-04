@@ -1,6 +1,6 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { DAYS } from "@/constants/days";
-import FieldAvailabilityDay from "./field-availability-day";
+import ScheduleFormAvailabilityFieldArray from "./schedule-form-availability-field-array";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SheetFooter, SheetClose } from "@/components/ui/sheet";
@@ -31,7 +31,7 @@ const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
               .map((field, idx) => ({ ...field, originalIndex: idx }))
               .filter((field) => field.day === day);
             return (
-              <FieldAvailabilityDay
+              <ScheduleFormAvailabilityFieldArray
                 key={day}
                 day={day}
                 dayFields={dayFields}

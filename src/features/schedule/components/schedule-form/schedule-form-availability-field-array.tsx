@@ -3,11 +3,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
-import FieldAvailabilityTimeSlot from "./field-availability-time-slot";
+import ScheduleFormAvailabilityField from "./schedule-form-availability-field";
 import type { ScheduleFormType } from "../../schemas/schedule-form.schema";
 import type { UseScheduleFormReturn } from "../../hooks/use-schedule-form";
 
-type AvailabilityDayProps = {
+type ScheduleFormAvailabilityFieldArrayProps = {
   day: Day;
   dayFields: (FieldArrayWithId<ScheduleFormType, "fieldAvailabilities", "id"> & {
     originalIndex: number;
@@ -17,7 +17,13 @@ type AvailabilityDayProps = {
   control: Control<ScheduleFormType>;
 };
 
-const FieldAvailabilityDay = ({ day, dayFields, addFieldAvailability, remove, control }: AvailabilityDayProps) => {
+const ScheduleFormAvailabilityFieldArray = ({
+  day,
+  dayFields,
+  addFieldAvailability,
+  remove,
+  control,
+}: ScheduleFormAvailabilityFieldArrayProps) => {
   const handleAddFieldAvailability = () => {
     addFieldAvailability(day);
   };
@@ -30,7 +36,7 @@ const FieldAvailabilityDay = ({ day, dayFields, addFieldAvailability, remove, co
           <i className="text-sm text-muted-foreground">No field availabilities</i>
         ) : (
           dayFields.map((field) => (
-            <FieldAvailabilityTimeSlot
+            <ScheduleFormAvailabilityField
               key={field.id}
               originalIndex={field.originalIndex}
               remove={remove}
@@ -47,4 +53,4 @@ const FieldAvailabilityDay = ({ day, dayFields, addFieldAvailability, remove, co
   );
 };
 
-export default FieldAvailabilityDay;
+export default ScheduleFormAvailabilityFieldArray;

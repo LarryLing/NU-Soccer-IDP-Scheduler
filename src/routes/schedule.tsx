@@ -10,7 +10,7 @@ function Schedule() {
   return (
     <>
       <ScheduleActionBar unassignedPlayerNames={[]} />
-      <Calendar players={[]} trainingBlocks={[]} />
+      <Calendar />
     </>
   );
 }
