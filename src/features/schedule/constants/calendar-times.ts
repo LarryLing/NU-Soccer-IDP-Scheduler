@@ -1,0 +1,12 @@
+export const CALENDAR_TIMES = {
+  "8 AM": 480,
+  "9 AM": 540,
+  "10 AM": 600,
+  "11 AM": 660,
+  "12 PM": 720,
+  "1 PM": 780,
+  "2 PM": 840,
+  "3 PM": 900,
+  "4 PM": 960,
+  "5 PM": 1020,
+} as const;
