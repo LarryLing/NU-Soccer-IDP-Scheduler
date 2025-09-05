@@ -109,6 +109,13 @@ export const useScheduleForm = (
 
     toast.success("Successfully created training schedule");
 
+    const playerAssignmentsValues = [...playerAssignmentsMap.values()];
+    if (playerAssignmentsValues.some((playerAssignmentsValues) => playerAssignmentsValues === null)) {
+      toast.warning("Some players could not be scheduled", {
+        description: "Please double check player and field availability",
+      });
+    }
+
     closeScheduleSheet();
   };
 
