@@ -2,6 +2,7 @@ import type { Table } from "@tanstack/react-table";
 import { Download, PlusIcon, TrashIcon, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { exportJson } from "@/lib/json";
 
 import type { Player } from "../../../types/player.type";
 import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
@@ -28,6 +29,12 @@ const PlayersActionBar = ({ selectedPlayerIds, table, openPlayerSheet }: ActionB
     openPlayerSheet();
   };
 
+  const handleExportPlayerJson = () => {
+    const players = usePlayersStore.getState().players;
+    const filename = `players_${Date.now()}`;
+    exportJson(players, filename);
+  };
+
   return (
     <div className="w-full flex justify-between items-center gap-x-2">
       <div className="flex gap-x-2">
@@ -44,7 +51,7 @@ const PlayersActionBar = ({ selectedPlayerIds, table, openPlayerSheet }: ActionB
         )}
       </div>
       <div className="flex gap-x-2">
-        <Button size="icon" variant="outline">
+        <Button size="icon" variant="outline" onClick={handleExportPlayerJson}>
           <Download />
         </Button>
         <Button size="icon" variant="outline">

@@ -1,30 +1,31 @@
 import { Download, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import usePlayersStore from "@/features/players/hooks/use-players-store";
+import { exportJson } from "@/lib/json";
 
 import { useScheduleSheet } from "../hooks/use-schedule-sheet";
+import useTrainingBlocksStore from "../hooks/use-training-blocks-store";
 
 import ScheduleSheet from "./schedule-form/schedule-sheet";
 import UnassignedPlayersPopover from "./unassigned-players-popover";
 
 const ScheduleActionBar = () => {
-  const players = usePlayersStore((state) => state.players);
-
   const scheduleSheetReturn = useScheduleSheet();
 
-  const unassignedPlayerNames = players
-    .filter((player) => player.training_block_id === null)
-    .map((player) => player.name);
+  const handleExportTrainingBlocksJson = () => {
+    const trainingBlocks = useTrainingBlocksStore.getState().trainingBlocks;
+    const filename = `training_blocks_${Date.now()}`;
+    exportJson(trainingBlocks, filename);
+  };
 
   return (
     <div className="w-full flex justify-between items-center gap-x-2">
       <div className="flex gap-x-2">
         <ScheduleSheet {...scheduleSheetReturn} />
-        {unassignedPlayerNames.length > 0 && <UnassignedPlayersPopover unassignedPlayerNames={unassignedPlayerNames} />}
+        <UnassignedPlayersPopover />
       </div>
       <div className="flex gap-x-2">
-        <Button size="icon" variant="outline">
+        <Button size="icon" variant="outline" onClick={handleExportTrainingBlocksJson}>
           <Download />
         </Button>
         <Button size="icon" variant="outline">

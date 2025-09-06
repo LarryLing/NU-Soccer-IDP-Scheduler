@@ -2,13 +2,15 @@ import { CalendarX2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { Player } from "@/types/player.type";
+import usePlayersStore from "@/features/players/hooks/use-players-store";
 
-type UnassignedPlayersPopoverProps = {
-  unassignedPlayerNames: Player["name"][];
-};
+const UnassignedPlayersPopover = () => {
+  const players = usePlayersStore((state) => state.players);
 
-const UnassignedPlayersPopover = ({ unassignedPlayerNames }: UnassignedPlayersPopoverProps) => {
+  const unassignedPlayerNames = players
+    .filter((player) => player.training_block_id === null)
+    .map((player) => player.name);
+
   return (
     <Popover>
       <PopoverTrigger asChild>

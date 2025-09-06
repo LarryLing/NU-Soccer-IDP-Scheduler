@@ -1,7 +1,6 @@
 import { DAYS } from "@/constants/days";
 import type { Day } from "@/constants/days";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
-import { getTimeStringWithoutMeridian } from "@/lib/time";
 import type { Availability } from "@/types/availability.type";
 import type { Player } from "@/types/player.type";
 import type { TrainingBlock } from "@/types/training-block.type";
@@ -23,8 +22,6 @@ export const generatePossibleTrainingBlocks = (availabilities: Availability[], t
         const createdTrainingBlock: TrainingBlock = {
           id: crypto.randomUUID(),
           day: day as Day,
-          start: getTimeStringWithoutMeridian(currentInt),
-          end: getTimeStringWithoutMeridian(currentInt + trainingBlockDuration),
           start_int: currentInt,
           end_int: currentInt + trainingBlockDuration,
         };
