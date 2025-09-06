@@ -10,15 +10,15 @@ export const PlayerFormSchema = z.object({
       message: "Name is required",
     })
     .regex(/^[A-Za-z]+(?:[ '-.][A-Za-z]+)*$/, {
-      message: "Name cannot contain special characters.",
+      message: "Name cannot contain special characters",
     }),
   number: z.coerce
     .number({ message: "Number is required" })
     .min(0, {
-      message: "Number must be greater than or equal to 0.",
+      message: "Number must be greater than or equal to 0",
     })
     .max(99, {
-      message: "Number must be less than or equal to 99.",
+      message: "Number must be less than or equal to 99",
     }),
   position: z.enum(POSITIONS),
   availabilities: z.array(AvailabilityFormSchema),

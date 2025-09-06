@@ -18,7 +18,7 @@ export const AvailabilityFormSchema = z
       return calculateMinutesFromTimeString(data.end) > calculateMinutesFromTimeString(data.start);
     },
     {
-      message: "End time must be after start time.",
+      message: "End time must be after start time",
       path: ["end"],
     }
   );
