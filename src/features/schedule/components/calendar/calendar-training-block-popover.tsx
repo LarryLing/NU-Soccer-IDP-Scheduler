@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
 import { getTimeStringWithMeridian } from "@/lib/time";
-import type { TrainingBlock } from "@/types/training-block.type";
+import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 type CalendarTrainingBlockPopoverProps = {
   currentCellStartInt: number;

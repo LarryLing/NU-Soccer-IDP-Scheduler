@@ -1,9 +1,9 @@
 import { DAYS } from "@/constants/days";
 import type { Day } from "@/constants/days";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
-import type { Availability } from "@/types/availability.type";
-import type { Player } from "@/types/player.type";
-import type { TrainingBlock } from "@/types/training-block.type";
+import type { Availability } from "@/schemas/availability.schema";
+import type { Player } from "@/schemas/player.schema";
+import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import useTrainingBlocksStore from "../hooks/use-training-blocks-store";
 
@@ -119,7 +119,7 @@ export const assignPlayersToTrainingBlocks = (possibleTrainingBlocks: TrainingBl
 };
 
 export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) => {
-  const setTrainingBlocks = useTrainingBlocksStore.getState().setTrainingBlocks;
+  const { setTrainingBlocks } = useTrainingBlocksStore.getState();
 
   setTrainingBlocks(trainingBlocks);
 };

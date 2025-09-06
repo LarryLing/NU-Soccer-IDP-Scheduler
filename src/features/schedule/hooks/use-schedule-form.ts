@@ -10,7 +10,7 @@ import {
 import { toast } from "sonner";
 
 import type { Day } from "@/constants/days";
-import { findOverlapInAvailabilities, transformIntoAvailabilityType } from "@/lib/availability";
+import { findOverlapInAvailabilities, transformIntoAvailabilityArray } from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 
 import {
@@ -19,21 +19,21 @@ import {
   saveAssignedPlayers,
   saveUsedTrainingBlocks,
 } from "../lib/schedule";
-import { type ScheduleFormType, ScheduleFormSchema } from "../schemas/schedule-form.schema";
+import { type ScheduleForm, ScheduleFormSchema } from "../schemas/schedule-form.schema";
 
 import type { UseScheduleSheetReturn } from "./use-schedule-sheet";
 
 export type UseScheduleFormReturn = {
-  form: UseFormReturn<ScheduleFormType>;
-  fieldArray: UseFieldArrayReturn<ScheduleFormType, "fieldAvailabilities", "id">;
+  form: UseFormReturn<ScheduleForm>;
+  fieldArray: UseFieldArrayReturn<ScheduleForm, "fieldAvailabilities", "id">;
   addFieldAvailability: (day: Day) => void;
-  onSubmit: SubmitHandler<ScheduleFormType>;
+  onSubmit: SubmitHandler<ScheduleForm>;
 };
 
 export const useScheduleForm = (
   closeScheduleSheet: UseScheduleSheetReturn["closeScheduleSheet"]
 ): UseScheduleFormReturn => {
-  const form = useForm<ScheduleFormType>({
+  const form = useForm<ScheduleForm>({
     resolver: zodResolver(ScheduleFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -80,8 +80,8 @@ export const useScheduleForm = (
     [fields, append]
   );
 
-  const onSubmit: SubmitHandler<ScheduleFormType> = (data: ScheduleFormType) => {
-    const transformedAvailabilities = transformIntoAvailabilityType(data.fieldAvailabilities);
+  const onSubmit: SubmitHandler<ScheduleForm> = (data: ScheduleForm) => {
+    const transformedAvailabilities = transformIntoAvailabilityArray(data.fieldAvailabilities);
 
     const overlap = findOverlapInAvailabilities(transformedAvailabilities);
     if (overlap) {

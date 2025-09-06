@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/schemas/player.schema";
 
 import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
 import usePlayersStore from "../../hooks/use-players-store";
@@ -19,10 +19,9 @@ type PlayersTableActionDropdownMenuProps = {
 };
 
 export const PlayersTableActionDropdownMenu = ({ playerId, openPlayerSheet }: PlayersTableActionDropdownMenuProps) => {
-  const players = usePlayersStore((state) => state.players);
-  const setPlayers = usePlayersStore((state) => state.setPlayers);
-
   const handleClearAvailability = () => {
+    const { players, setPlayers } = usePlayersStore.getState();
+
     const updatedPlayers = [...players].map((player) => {
       if (player.id === playerId) {
         return {
@@ -38,6 +37,8 @@ export const PlayersTableActionDropdownMenu = ({ playerId, openPlayerSheet }: Pl
   };
 
   const handleDeletePlayer = () => {
+    const { players, setPlayers } = usePlayersStore.getState();
+
     const updatedPlayers = [...players].filter((player) => player.id !== playerId);
     setPlayers(updatedPlayers);
   };

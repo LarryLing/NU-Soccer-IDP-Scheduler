@@ -6,18 +6,18 @@ import { Label } from "@/components/ui/label";
 import type { Day } from "@/constants/days";
 
 import type { UseScheduleFormReturn } from "../../hooks/use-schedule-form";
-import type { ScheduleFormType } from "../../schemas/schedule-form.schema";
+import type { ScheduleForm } from "../../schemas/schedule-form.schema";
 
 import ScheduleFormAvailabilityField from "./schedule-form-availability-field";
 
 type ScheduleFormAvailabilityFieldArrayProps = {
   day: Day;
-  dayFields: (FieldArrayWithId<ScheduleFormType, "fieldAvailabilities", "id"> & {
+  dayFields: (FieldArrayWithId<ScheduleForm, "fieldAvailabilities", "id"> & {
     originalIndex: number;
   })[];
   addFieldAvailability: UseScheduleFormReturn["addFieldAvailability"];
   remove: UseFieldArrayRemove;
-  control: Control<ScheduleFormType>;
+  control: Control<ScheduleForm>;
   disabled: boolean;
 };
 

@@ -19,9 +19,8 @@ const ScheduleActionBar = () => {
   const scheduleSheetReturn = useScheduleSheet();
 
   const handleClearSchedule = () => {
-    const players = usePlayersStore.getState().players;
-    const setPlayers = usePlayersStore.getState().setPlayers;
-    const setTrainingBlocks = useTrainingBlocksStore.getState().setTrainingBlocks;
+    const { players, setPlayers } = usePlayersStore.getState();
+    const { setTrainingBlocks } = useTrainingBlocksStore.getState();
 
     const updatedPlayers = [...players].map((player) => {
       return {

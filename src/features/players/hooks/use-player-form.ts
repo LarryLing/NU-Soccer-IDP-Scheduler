@@ -12,29 +12,29 @@ import type { Day } from "@/constants/days";
 import { GOALKEEPER } from "@/features/players/constants/positions";
 import {
   findOverlapInAvailabilities,
-  transformIntoAvailabilityType,
-  transformIntoAvailabilityFormType,
+  transformIntoAvailabilityArray,
+  transformIntoAvailabilityFormArray,
 } from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/schemas/player.schema";
 
-import { type PlayerFormType, PlayerFormSchema } from "../schemas/player-form.schema";
+import { type PlayerForm, PlayerFormSchema } from "../schemas/player-form.schema";
 
 import type { UsePlayerSheetReturn } from "./use-player-sheet";
 import usePlayersStore from "./use-players-store";
 
 export type UsePlayerFormReturn = {
-  form: UseFormReturn<PlayerFormType>;
-  fieldArray: UseFieldArrayReturn<PlayerFormType, "availabilities", "id">;
+  form: UseFormReturn<PlayerForm>;
+  fieldArray: UseFieldArrayReturn<PlayerForm, "availabilities", "id">;
   addAvailability: (day: Day) => void;
-  onSubmit: SubmitHandler<PlayerFormType>;
+  onSubmit: SubmitHandler<PlayerForm>;
 };
 
 export const usePlayerForm = (
   closePlayerSheet: UsePlayerSheetReturn["closePlayerSheet"],
   player?: Player
 ): UsePlayerFormReturn => {
-  const form = useForm<PlayerFormType>({
+  const form = useForm<PlayerForm>({
     resolver: zodResolver(PlayerFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -42,7 +42,7 @@ export const usePlayerForm = (
       name: player?.name ?? "",
       number: player?.number ?? 0,
       position: player?.position ?? GOALKEEPER,
-      availabilities: transformIntoAvailabilityFormType(player?.availabilities ?? []),
+      availabilities: transformIntoAvailabilityFormArray(player?.availabilities ?? []),
     },
   });
 
@@ -79,8 +79,8 @@ export const usePlayerForm = (
     });
   };
 
-  const onSubmit: SubmitHandler<PlayerFormType> = (data: PlayerFormType) => {
-    const transformedAvailabilities = transformIntoAvailabilityType(data.availabilities);
+  const onSubmit: SubmitHandler<PlayerForm> = (data: PlayerForm) => {
+    const transformedAvailabilities = transformIntoAvailabilityArray(data.availabilities);
 
     const overlap = findOverlapInAvailabilities(transformedAvailabilities);
     if (overlap) {
@@ -96,8 +96,7 @@ export const usePlayerForm = (
       return;
     }
 
-    const players = usePlayersStore.getState().players;
-    const setPlayers = usePlayersStore.getState().setPlayers;
+    const { players, setPlayers } = usePlayersStore.getState();
 
     let updatedPlayers = [...players];
     if (player) {

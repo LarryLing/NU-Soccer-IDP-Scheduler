@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Day } from "@/constants/days";
 import { getTimeStringWithMeridian } from "@/lib/time";
-import type { Availability } from "@/types/availability.type";
+import type { Availability } from "@/schemas/availability.schema";
 
 type PlayersTableAvailabilityPopoverProps = {
   day: Day;

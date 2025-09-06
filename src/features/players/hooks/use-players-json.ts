@@ -1,8 +1,8 @@
 import { useRef, type ChangeEvent, type RefObject } from "react";
 import { toast } from "sonner";
+import { ZodError } from "zod";
 
-import { exportJson } from "@/lib/json";
-import type { Player } from "@/types/player.type";
+import { PlayerSchema } from "@/schemas/player.schema";
 
 import usePlayersStore from "./use-players-store";
 
@@ -22,14 +22,23 @@ const usePlayersJson = (): UsePlayersJsonType => {
   };
 
   const handleExportPlayersJson = () => {
-    const players = usePlayersStore.getState().players;
-    const filename = `players_${Date.now()}`;
-    exportJson(players, filename);
+    const { players } = usePlayersStore.getState();
+
+    const stringifiedJson = JSON.stringify(players, null, 2);
+
+    const blob = new Blob([stringifiedJson], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `players_${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleImportPlayersJson = (event: ChangeEvent<HTMLInputElement>) => {
-    const setPlayers = usePlayersStore.getState().setPlayers;
-
     const file = event.target.files?.[0];
 
     if (!file) return;
@@ -47,16 +56,24 @@ const usePlayersJson = (): UsePlayersJsonType => {
       try {
         const result = e.target?.result;
         if (typeof result !== "string") {
-          throw new Error("Failed to read file");
+          throw new Error("Failed to parse json");
         }
 
-        const parsed: Player[] = JSON.parse(result);
+        const parsed = JSON.parse(result);
+        const validatedPlayers = PlayerSchema.array().parse(parsed);
 
-        setPlayers(parsed);
+        const { setPlayers } = usePlayersStore.getState();
+        setPlayers(validatedPlayers);
 
         toast.success("Successfully uploaded players");
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Invalid JSON file";
+      } catch (error) {
+        let errorMessage = "An unknown error occured";
+        if (error instanceof ZodError) {
+          errorMessage = error.issues[0]?.message || errorMessage;
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+
         toast.error("Failed to upload players", {
           description: errorMessage,
         });

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/schemas/player.schema";
 
 import usePlayersStore from "./use-players-store";
 
@@ -18,7 +18,7 @@ export const usePlayerSheet = (): UsePlayerSheetReturn => {
 
   const openPlayerSheet = useCallback((playerId?: Player["id"]) => {
     if (playerId) {
-      const players = usePlayersStore.getState().players;
+      const { players } = usePlayersStore.getState();
       const player = players.find((player) => player.id === playerId);
       setPlayer(player);
     }

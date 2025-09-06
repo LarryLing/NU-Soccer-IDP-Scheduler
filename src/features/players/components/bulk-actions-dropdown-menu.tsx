@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/schemas/player.schema";
 
 import usePlayersStore from "../hooks/use-players-store";
 
@@ -16,10 +16,9 @@ type BulkActionsDropdownMenuProps = {
 };
 
 export const BulkActionsDropdownMenu = ({ selectedPlayerIds }: BulkActionsDropdownMenuProps) => {
-  const players = usePlayersStore((state) => state.players);
-  const setPlayers = usePlayersStore((state) => state.setPlayers);
-
   const handleClearAvailabilities = () => {
+    const { players, setPlayers } = usePlayersStore.getState();
+
     const updatedPlayers = [...players].map((player) => {
       return {
         ...player,
@@ -31,6 +30,8 @@ export const BulkActionsDropdownMenu = ({ selectedPlayerIds }: BulkActionsDropdo
   };
 
   const handleDeletePlayers = () => {
+    const { setPlayers } = usePlayersStore.getState();
+
     setPlayers([]);
   };
 

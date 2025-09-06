@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-import type { TrainingBlock } from "@/types/training-block.type";
+import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 export type UseTrainingBlocksReturn = {
   trainingBlocks: TrainingBlock[];

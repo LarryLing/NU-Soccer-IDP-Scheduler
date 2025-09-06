@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/schemas/player.schema";
 
 import usePlayersStore from "./use-players-store";
 

@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import type { ScheduleFormType } from "../../schemas/schedule-form.schema";
+import type { ScheduleForm } from "../../schemas/schedule-form.schema";
 
 type ScheduleFormAvailabilityFieldProps = {
   originalIndex: number;
   remove: UseFieldArrayRemove;
-  control: Control<ScheduleFormType>;
+  control: Control<ScheduleForm>;
   disabled: boolean;
 };
 

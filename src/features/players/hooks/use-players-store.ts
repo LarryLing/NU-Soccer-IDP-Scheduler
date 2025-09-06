@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/schemas/player.schema";
 
 export type UsePlayersStoreReturn = {
   players: Player[];

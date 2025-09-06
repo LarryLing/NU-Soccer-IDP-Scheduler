@@ -3,7 +3,7 @@ import { Download, PlusIcon, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import type { Player } from "../../../types/player.type";
+import type { Player } from "../../../schemas/player.schema";
 import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
 import usePlayersJson from "../hooks/use-players-json";
 

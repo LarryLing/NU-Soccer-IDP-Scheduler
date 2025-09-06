@@ -1,8 +1,8 @@
 import { useRef, type ChangeEvent, type RefObject } from "react";
 import { toast } from "sonner";
+import { ZodError } from "zod";
 
-import { exportJson } from "@/lib/json";
-import type { TrainingBlock } from "@/types/training-block.type";
+import { TrainingBlockSchema } from "@/schemas/training-block.schema";
 
 import useTrainingBlocksStore from "./use-training-blocks-store";
 
@@ -14,9 +14,6 @@ type UseTrainingBlocksJsonType = {
 };
 
 const useTrainingBlocksJson = (): UseTrainingBlocksJsonType => {
-  const trainingBlocks = useTrainingBlocksStore((state) => state.trainingBlocks);
-  const setTrainingBlocks = useTrainingBlocksStore((state) => state.setTrainingBlocks);
-
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleOpenFileInput = () => {
@@ -25,11 +22,25 @@ const useTrainingBlocksJson = (): UseTrainingBlocksJsonType => {
   };
 
   const handleExportTrainingBlocksJson = () => {
-    const filename = `training_blocks_${Date.now()}`;
-    exportJson(trainingBlocks, filename);
+    const { trainingBlocks } = useTrainingBlocksStore.getState();
+
+    const stringifiedJson = JSON.stringify(trainingBlocks, null, 2);
+
+    const blob = new Blob([stringifiedJson], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `training_blocks_${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleImportTrainingBlocksJson = (event: ChangeEvent<HTMLInputElement>) => {
+    const { setTrainingBlocks } = useTrainingBlocksStore.getState();
+
     const file = event.target.files?.[0];
 
     if (!file) return;
@@ -47,16 +58,22 @@ const useTrainingBlocksJson = (): UseTrainingBlocksJsonType => {
       try {
         const result = e.target?.result;
         if (typeof result !== "string") {
-          throw new Error("Failed to read file");
+          throw new Error("Failed to parse json");
         }
 
-        const parsed: TrainingBlock[] = JSON.parse(result);
-
-        setTrainingBlocks(parsed);
+        const parsed = JSON.parse(result);
+        const validatedTrainingBlocks = TrainingBlockSchema.array().parse(parsed);
+        setTrainingBlocks(validatedTrainingBlocks);
 
         toast.success("Successfully uploaded training blocks");
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Invalid JSON file";
+      } catch (error) {
+        let errorMessage = "An unknown error occured";
+        if (error instanceof ZodError) {
+          errorMessage = error.issues[0]?.message || errorMessage;
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+
         toast.error("Failed to upload training blocks", {
           description: errorMessage,
         });
