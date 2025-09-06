@@ -106,22 +106,6 @@ export const useScheduleSettingsForm = (
     toast.success("Successfully saved schedule settings");
 
     closeScheduleSheet();
-    // const possibleTrainingBlocks = generatePossibleTrainingBlocks(transformedAvailabilities, data.duration);
-
-    // const { playerAssignmentsMap, usedTrainingBlocks } = assignPlayersToTrainingBlocks(
-    //   possibleTrainingBlocks,
-    //   data.maximumPlayerCount
-    // );
-
-    // saveUsedTrainingBlocks(usedTrainingBlocks);
-    // saveAssignedPlayers(playerAssignmentsMap);
-
-    // const playerAssignmentsValues = [...playerAssignmentsMap.values()];
-    // if (playerAssignmentsValues.some((playerAssignmentsValues) => playerAssignmentsValues === null)) {
-    //   toast.warning("Some players could not be scheduled", {
-    //     description: "Please double check player and field availability",
-    //   });
-    // }
   };
 
   return {
