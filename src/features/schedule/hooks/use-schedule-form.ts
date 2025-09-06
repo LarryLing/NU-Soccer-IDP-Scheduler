@@ -10,7 +10,7 @@ import {
 import { toast } from "sonner";
 
 import type { Day } from "@/constants/days";
-import { findOverlapInAvailabilities, transformAndSortAvailabilities } from "@/lib/availability";
+import { findOverlapInAvailabilities, transformIntoAvailabilityType } from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 
 import {
@@ -81,17 +81,17 @@ export const useScheduleForm = (
   );
 
   const onSubmit: SubmitHandler<ScheduleFormType> = (data: ScheduleFormType) => {
-    const transformedAvailabilities = transformAndSortAvailabilities(data.fieldAvailabilities);
+    const transformedAvailabilities = transformIntoAvailabilityType(data.fieldAvailabilities);
 
     const overlap = findOverlapInAvailabilities(transformedAvailabilities);
     if (overlap) {
-      const formattedPreviousStartInt = getTimeStringWithMeridian(overlap.previous.start_int);
-      const formattedPreviousEndInt = getTimeStringWithMeridian(overlap.previous.end_int);
-      const formattedCurrentStartInt = getTimeStringWithMeridian(overlap.current.start_int);
-      const formattedCurrentEndInt = getTimeStringWithMeridian(overlap.current.end_int);
+      const previousStartTimeString = getTimeStringWithMeridian(overlap.previous.start);
+      const previousEndTimeString = getTimeStringWithMeridian(overlap.previous.end);
+      const currentStartTimeString = getTimeStringWithMeridian(overlap.current.start);
+      const currentEndTimeString = getTimeStringWithMeridian(overlap.current.end);
 
       toast.error("Failed to create training schedule", {
-        description: `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`,
+        description: `Time overlap detected on ${overlap.day}: ${previousStartTimeString} - ${previousEndTimeString} overlaps with ${currentStartTimeString} - ${currentEndTimeString}`,
       });
 
       return;

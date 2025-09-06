@@ -15,15 +15,15 @@ export const generatePossibleTrainingBlocks = (availabilities: Availability[], t
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
     for (let i = 0; i < dayAvailabilities.length; i++) {
-      let currentInt = dayAvailabilities[i]?.start_int ?? 0;
-      const endInt = dayAvailabilities[i]?.end_int ?? 0;
+      let currentInt = dayAvailabilities[i]?.start ?? 0;
+      const endInt = dayAvailabilities[i]?.end ?? 0;
 
       while (currentInt < endInt) {
         const createdTrainingBlock: TrainingBlock = {
           id: crypto.randomUUID(),
           day: day as Day,
-          start_int: currentInt,
-          end_int: currentInt + trainingBlockDuration,
+          start: currentInt,
+          end: currentInt + trainingBlockDuration,
         };
 
         possibleTrainingBlocks.push(createdTrainingBlock);
@@ -40,8 +40,8 @@ const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: Traini
   return (player.availabilities as Availability[]).some((availability) => {
     return (
       availability.day === trainingBlock.day &&
-      availability.start_int <= trainingBlock.start_int &&
-      availability.end_int >= trainingBlock.end_int
+      availability.start <= trainingBlock.start &&
+      availability.end >= trainingBlock.end
     );
   });
 };

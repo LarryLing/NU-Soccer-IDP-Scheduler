@@ -10,7 +10,11 @@ import { toast } from "sonner";
 
 import type { Day } from "@/constants/days";
 import { GOALKEEPER } from "@/features/players/constants/positions";
-import { findOverlapInAvailabilities, transformAndSortAvailabilities } from "@/lib/availability";
+import {
+  findOverlapInAvailabilities,
+  transformIntoAvailabilityType,
+  transformIntoAvailabilityFormType,
+} from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 import type { Player } from "@/types/player.type";
 
@@ -38,7 +42,7 @@ export const usePlayerForm = (
       name: player?.name ?? "",
       number: player?.number ?? 0,
       position: player?.position ?? GOALKEEPER,
-      availabilities: player?.availabilities ?? [],
+      availabilities: transformIntoAvailabilityFormType(player?.availabilities ?? []),
     },
   });
 
@@ -76,17 +80,17 @@ export const usePlayerForm = (
   };
 
   const onSubmit: SubmitHandler<PlayerFormType> = (data: PlayerFormType) => {
-    const transformedAvailabilities = transformAndSortAvailabilities(data.availabilities);
+    const transformedAvailabilities = transformIntoAvailabilityType(data.availabilities);
 
     const overlap = findOverlapInAvailabilities(transformedAvailabilities);
     if (overlap) {
-      const formattedPreviousStartInt = getTimeStringWithMeridian(overlap.previous.start_int);
-      const formattedPreviousEndInt = getTimeStringWithMeridian(overlap.previous.end_int);
-      const formattedCurrentStartInt = getTimeStringWithMeridian(overlap.current.start_int);
-      const formattedCurrentEndInt = getTimeStringWithMeridian(overlap.current.end_int);
+      const previousStartTimeString = getTimeStringWithMeridian(overlap.previous.start);
+      const previousEndTimeString = getTimeStringWithMeridian(overlap.previous.end);
+      const currentStartTimeString = getTimeStringWithMeridian(overlap.current.start);
+      const currentEndTimeString = getTimeStringWithMeridian(overlap.current.end);
 
       toast.error("Failed to save player", {
-        description: `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`,
+        description: `Time overlap detected on ${overlap.day}: ${previousStartTimeString} - ${previousEndTimeString} overlaps with ${currentStartTimeString} - ${currentEndTimeString}`,
       });
 
       return;

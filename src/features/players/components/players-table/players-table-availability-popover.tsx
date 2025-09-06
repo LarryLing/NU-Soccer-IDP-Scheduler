@@ -12,7 +12,7 @@ type PlayersTableAvailabilityPopoverProps = {
 const PlayersTableAvailabilityPopover = ({ day, dayAvailabilities }: PlayersTableAvailabilityPopoverProps) => {
   const formattedDayAvailabilities = dayAvailabilities.map(
     (dayAvailability) =>
-      `${getTimeStringWithMeridian(dayAvailability.start_int)} - ${getTimeStringWithMeridian(dayAvailability.end_int)}`
+      `${getTimeStringWithMeridian(dayAvailability.start)} - ${getTimeStringWithMeridian(dayAvailability.end)}`
   );
 
   if (formattedDayAvailabilities.length === 1) {

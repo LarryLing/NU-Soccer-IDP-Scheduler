@@ -27,9 +27,7 @@ const CalendarDayColumn = ({ day }: CalendarDayColumnProps) => {
 
       const filteredTrainingBlocks = trainingBlocks.filter(
         (trainingBlock) =>
-          trainingBlock.day === day &&
-          trainingBlock.start_int >= currentEntry[1] &&
-          trainingBlock.start_int < nextEntry[1]
+          trainingBlock.day === day && trainingBlock.start >= currentEntry[1] && trainingBlock.start < nextEntry[1]
       );
 
       const children: JSX.Element[] = filteredTrainingBlocks.map((filteredTrainingBlock) => (
