@@ -4,7 +4,7 @@ import type { Day } from "@/constants/days";
 import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
 import { getDayAbbreviation } from "@/lib/time";
 
-import useTrainingBlocksStore from "../../hooks/use-training-blocks-store";
+import useScheduleStore from "../../hooks/use-schedule-store";
 
 import CalendarCell from "./calendar-cell";
 import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
@@ -14,7 +14,7 @@ type CalendarDayColumnProps = {
 };
 
 const CalendarDayColumn = ({ day }: CalendarDayColumnProps) => {
-  const trainingBlocks = useTrainingBlocksStore((state) => state.trainingBlocks);
+  const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
 
   const cells = useMemo(() => {
     const timesEntries = Object.entries(CALENDAR_TIMES);

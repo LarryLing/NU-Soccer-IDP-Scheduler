@@ -4,17 +4,17 @@ import { Input } from "@/components/ui/input";
 import { SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { DAYS } from "@/constants/days";
 
-import { useScheduleForm } from "../../hooks/use-schedule-form";
-import type { UseScheduleSheetReturn } from "../../hooks/use-schedule-sheet";
+import { useScheduleSettingsForm } from "../../hooks/use-schedule-settings-form";
+import type { UseScheduleSheetReturn } from "../../hooks/use-schedule-settings-sheet";
 
-import ScheduleFormAvailabilityFieldArray from "./schedule-form-availability-field-array";
+import ScheduleFormAvailabilityFieldArray from "./schedule-settings-form-availability-field-array";
 
 type ScheduleFormProps = {
   closeScheduleSheet: UseScheduleSheetReturn["closeScheduleSheet"];
 };
 
 const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
-  const { form, fieldArray, addFieldAvailability, onSubmit } = useScheduleForm(closeScheduleSheet);
+  const { form, fieldArray, addAvailability, onSubmit } = useScheduleSettingsForm(closeScheduleSheet);
 
   const {
     control,
@@ -37,7 +37,7 @@ const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
                 key={day}
                 day={day}
                 dayFields={dayFields}
-                addFieldAvailability={addFieldAvailability}
+                addAvailability={addAvailability}
                 remove={remove}
                 control={control}
                 disabled={isSubmitting}
@@ -73,7 +73,7 @@ const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
         </div>
         <SheetFooter>
           <Button type="submit" disabled={isSubmitting}>
-            Schedule Players
+            Save Settings
           </Button>
           <SheetClose asChild>
             <Button type="button" variant="outline" disabled={isSubmitting}>

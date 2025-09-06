@@ -4,7 +4,7 @@ import { ZodError } from "zod";
 
 import { TrainingBlockSchema } from "@/schemas/training-block.schema";
 
-import useTrainingBlocksStore from "./use-training-blocks-store";
+import useScheduleStore from "./use-schedule-store";
 
 type UseTrainingBlocksJsonType = {
   fileInputRef: RefObject<HTMLInputElement | null>;
@@ -22,7 +22,7 @@ const useTrainingBlocksJson = (): UseTrainingBlocksJsonType => {
   };
 
   const handleExportTrainingBlocksJson = () => {
-    const { trainingBlocks } = useTrainingBlocksStore.getState();
+    const { trainingBlocks } = useScheduleStore.getState();
 
     const stringifiedJson = JSON.stringify(trainingBlocks, null, 2);
 
@@ -64,7 +64,7 @@ const useTrainingBlocksJson = (): UseTrainingBlocksJsonType => {
         const parsed = JSON.parse(result);
         const validatedTrainingBlocks = TrainingBlockSchema.array().parse(parsed);
 
-        const { setTrainingBlocks } = useTrainingBlocksStore.getState();
+        const { setTrainingBlocks } = useScheduleStore.getState();
         setTrainingBlocks(validatedTrainingBlocks);
 
         toast.success("Successfully uploaded training blocks");

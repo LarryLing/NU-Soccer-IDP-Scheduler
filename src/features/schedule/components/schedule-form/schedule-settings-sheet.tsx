@@ -1,10 +1,10 @@
-import { CalendarIcon } from "lucide-react";
+import { CalendarCog } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import type { UseScheduleSheetReturn } from "@/features/schedule/hooks/use-schedule-sheet";
+import type { UseScheduleSheetReturn } from "@/features/schedule/hooks/use-schedule-settings-sheet";
 
-import ScheduleForm from "./schedule-form";
+import ScheduleForm from "./schedule-settings-form";
 
 type ScheduleSheetProps = Pick<
   UseScheduleSheetReturn,
@@ -15,15 +15,15 @@ const ScheduleSheet = ({ isScheduleSheetOpen, setIsScheduleSheetOpen, closeSched
   return (
     <Sheet open={isScheduleSheetOpen} onOpenChange={setIsScheduleSheetOpen}>
       <SheetTrigger asChild>
-        <Button>
-          <CalendarIcon />
-          Create Schedule
+        <Button variant="outline">
+          <CalendarCog />
+          Edit Schedule Settings
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-y-scroll">
         <SheetHeader>
-          <SheetTitle>Schedule Players</SheetTitle>
-          <SheetDescription>Create a weekly training schedule.</SheetDescription>
+          <SheetTitle>Edit Schedule Settings</SheetTitle>
+          <SheetDescription>Enter constraints for the training schedule</SheetDescription>
         </SheetHeader>
         <ScheduleForm closeScheduleSheet={closeScheduleSheet} />
       </SheetContent>

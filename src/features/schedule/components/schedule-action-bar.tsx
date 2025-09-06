@@ -1,17 +1,17 @@
-import { CalendarOff, Download, Upload } from "lucide-react";
+import { CalendarIcon, CalendarOff, Download, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
 
-import { useScheduleSheet } from "../hooks/use-schedule-sheet";
+import { useScheduleSheet } from "../hooks/use-schedule-settings-sheet";
+import useScheduleStore from "../hooks/use-schedule-store";
 import useTrainingBlocksJson from "../hooks/use-training-blocks-json";
-import useTrainingBlocksStore from "../hooks/use-training-blocks-store";
 
-import ScheduleSheet from "./schedule-form/schedule-sheet";
+import ScheduleSheet from "./schedule-form/schedule-settings-sheet";
 import UnassignedPlayersPopover from "./unassigned-players-popover";
 
 const ScheduleActionBar = () => {
-  const trainingBlocks = useTrainingBlocksStore((state) => state.trainingBlocks);
+  const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
 
   const { fileInputRef, handleOpenFileInput, handleExportTrainingBlocksJson, handleImportTrainingBlocksJson } =
     useTrainingBlocksJson();
@@ -20,7 +20,7 @@ const ScheduleActionBar = () => {
 
   const handleClearSchedule = () => {
     const { players, setPlayers } = usePlayersStore.getState();
-    const { setTrainingBlocks } = useTrainingBlocksStore.getState();
+    const { setTrainingBlocks } = useScheduleStore.getState();
 
     const updatedPlayers = [...players].map((player) => {
       return {
@@ -36,6 +36,10 @@ const ScheduleActionBar = () => {
   return (
     <div className="w-full flex justify-between items-center gap-x-2">
       <div className="flex gap-x-2">
+        <Button>
+          <CalendarIcon />
+          Create Schedule
+        </Button>
         <ScheduleSheet {...scheduleSheetReturn} />
         <UnassignedPlayersPopover />
         {trainingBlocks.length > 0 && (

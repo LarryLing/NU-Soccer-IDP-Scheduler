@@ -5,7 +5,7 @@ import type { Availability } from "@/schemas/availability.schema";
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import useTrainingBlocksStore from "../hooks/use-training-blocks-store";
+import useScheduleStore from "../hooks/use-schedule-store";
 
 import { calculateCombinedScore } from "./math";
 
@@ -119,7 +119,7 @@ export const assignPlayersToTrainingBlocks = (possibleTrainingBlocks: TrainingBl
 };
 
 export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) => {
-  const { setTrainingBlocks } = useTrainingBlocksStore.getState();
+  const { setTrainingBlocks } = useScheduleStore.getState();
 
   setTrainingBlocks(trainingBlocks);
 };
