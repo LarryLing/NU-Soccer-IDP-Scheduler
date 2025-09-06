@@ -19,7 +19,7 @@ const CalendarTrainingBlockPopover = ({
 }: CalendarTrainingBlockPopoverProps) => {
   const players = usePlayersStore((state) => state.players);
 
-  const assignedPlayers = players.filter((player) => player.training_block_id === id).map((player) => player.name);
+  const assignedPlayers = players.filter((player) => player.trainingBlockId === id).map((player) => player.name);
 
   const topPercentage = ((start - currentCellStartInt) / 60) * 100;
   const heightPercentage = ((end - start) / 60) * 100;

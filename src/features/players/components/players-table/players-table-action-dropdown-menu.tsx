@@ -14,26 +14,36 @@ import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
 import usePlayersStore from "../../hooks/use-players-store";
 
 type PlayersTableActionDropdownMenuProps = {
-  player: Player;
+  playerId: Player["id"];
   openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"];
 };
 
-export const PlayersTableActionDropdownMenu = ({ player, openPlayerSheet }: PlayersTableActionDropdownMenuProps) => {
+export const PlayersTableActionDropdownMenu = ({ playerId, openPlayerSheet }: PlayersTableActionDropdownMenuProps) => {
+  const players = usePlayersStore((state) => state.players);
+  const setPlayers = usePlayersStore((state) => state.setPlayers);
+
   const handleClearAvailability = () => {
-    const updatePlayer = usePlayersStore.getState().updatePlayer;
-    updatePlayer({
-      ...player,
-      availabilities: [],
+    const updatedPlayers = [...players].map((player) => {
+      if (player.id === playerId) {
+        return {
+          ...player,
+          availabilities: [],
+        };
+      }
+
+      return player;
     });
+
+    setPlayers(updatedPlayers);
   };
 
   const handleDeletePlayer = () => {
-    const deletePlayer = usePlayersStore.getState().deletePlayer;
-    deletePlayer(player.id);
+    const updatedPlayers = [...players].filter((player) => player.id !== playerId);
+    setPlayers(updatedPlayers);
   };
 
   const handleOpenPlayerSheet = () => {
-    openPlayerSheet(player.id);
+    openPlayerSheet(playerId);
   };
 
   return (

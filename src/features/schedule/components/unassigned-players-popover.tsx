@@ -8,7 +8,7 @@ const UnassignedPlayersPopover = () => {
   const players = usePlayersStore((state) => state.players);
 
   const unassignedPlayerNames = players
-    .filter((player) => player.training_block_id === null)
+    .filter((player) => player.trainingBlockId === null)
     .map((player) => player.name);
 
   return (

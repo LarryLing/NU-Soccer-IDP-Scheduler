@@ -96,25 +96,40 @@ export const usePlayerForm = (
       return;
     }
 
+    const players = usePlayersStore.getState().players;
+    const setPlayers = usePlayersStore.getState().setPlayers;
+
+    let updatedPlayers = [...players];
     if (player) {
-      const updatePlayer = usePlayersStore.getState().updatePlayer;
-      updatePlayer({
-        id: player.id,
-        training_block_id: player.training_block_id,
-        name: data.name,
-        number: data.number,
-        position: data.position,
-        availabilities: transformedAvailabilities,
+      updatedPlayers = [...players].map((updatedPlayer) => {
+        if (updatedPlayer.id === player.id) {
+          return {
+            id: player.id,
+            trainingBlockId: player.trainingBlockId,
+            name: data.name,
+            number: data.number,
+            position: data.position,
+            availabilities: transformedAvailabilities,
+          };
+        }
+
+        return updatedPlayer;
       });
     } else {
-      const createPlayer = usePlayersStore.getState().createPlayer;
-      createPlayer({
-        name: data.name,
-        number: data.number,
-        position: data.position,
-        availabilities: transformedAvailabilities,
-      });
+      updatedPlayers = [
+        ...players,
+        {
+          id: crypto.randomUUID(),
+          trainingBlockId: null,
+          name: data.name,
+          number: data.number,
+          position: data.position,
+          availabilities: transformedAvailabilities,
+        },
+      ];
     }
+
+    setPlayers(updatedPlayers);
 
     toast.success("Successfully saved player");
 

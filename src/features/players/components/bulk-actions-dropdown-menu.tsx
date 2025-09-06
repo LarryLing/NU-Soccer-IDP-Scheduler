@@ -16,25 +16,22 @@ type BulkActionsDropdownMenuProps = {
 };
 
 export const BulkActionsDropdownMenu = ({ selectedPlayerIds }: BulkActionsDropdownMenuProps) => {
+  const players = usePlayersStore((state) => state.players);
+  const setPlayers = usePlayersStore((state) => state.setPlayers);
+
   const handleClearAvailabilities = () => {
-    const players = usePlayersStore.getState().players;
-    const updatePlayer = usePlayersStore.getState().updatePlayer;
-
-    players.forEach((player) => {
-      if (player.availabilities.length === 0) return;
-
-      updatePlayer({
+    const updatedPlayers = [...players].map((player) => {
+      return {
         ...player,
         availabilities: [],
-      });
+      };
     });
+
+    setPlayers(updatedPlayers);
   };
 
   const handleDeletePlayers = () => {
-    const players = usePlayersStore.getState().players;
-    const deletePlayer = usePlayersStore.getState().deletePlayer;
-
-    players.forEach((player) => deletePlayer(player.id));
+    setPlayers([]);
   };
 
   return (

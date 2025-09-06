@@ -126,13 +126,14 @@ export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) =>
 
 export const saveAssignedPlayers = async (playerAssignmentsMap: Map<Player["id"], TrainingBlock["id"] | null>) => {
   const players = usePlayersStore.getState().players;
-  const updatePlayer = usePlayersStore.getState().updatePlayer;
+  const setPlayers = usePlayersStore.getState().setPlayers;
 
-  players.forEach((player) => {
-    const trainingBlockId = playerAssignmentsMap.get(player.id) || null;
-    updatePlayer({
+  const updatedPlayers = [...players].map((player) => {
+    return {
       ...player,
-      training_block_id: trainingBlockId,
-    });
+      trainingBlockId: playerAssignmentsMap.get(player.id) || null,
+    };
   });
+
+  setPlayers(updatedPlayers);
 };
