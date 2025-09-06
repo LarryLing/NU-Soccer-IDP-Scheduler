@@ -3,7 +3,7 @@ import z from "zod";
 import { DAYS } from "@/constants/days";
 
 export const TrainingBlockSchema = z.object({
-  id: z.string().uuid({ message: "Missing or invalid training block ID" }),
+  id: z.string({ message: "Missing training block ID" }).uuid({ message: "Invalid training block ID" }),
   day: z.enum(DAYS, {
     message: "Missing or invalid training block day",
   }),

@@ -5,7 +5,7 @@ import { POSITIONS } from "@/features/players/constants/positions";
 import { AvailabilitySchema } from "./availability.schema";
 
 export const PlayerSchema = z.object({
-  id: z.string().uuid({ message: "Missing or invalid player ID" }),
+  id: z.string({ message: "Missing player ID" }).uuid({ message: "Invalid player ID" }),
   trainingBlockId: z.string({ message: "Missing or invalid training block ID" }).nullable(),
   name: z.string({ message: "Missing or invalid player name" }),
   number: z
