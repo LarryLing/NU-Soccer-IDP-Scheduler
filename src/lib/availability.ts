@@ -1,19 +1,29 @@
 import { DAYS } from "@/constants/days";
-import type { AvailabilityFormType } from "@/schemas/availability.schema";
-import type { Availability } from "@/types/availability.type";
+import type { AvailabilityForm } from "@/schemas/availability-form.schema";
+import type { Availability } from "@/schemas/availability.schema";
 
-import { calculateMinutesFromTimeString } from "./time";
+import { calculateMinutesFromTimeString, getTimeStringWithoutMeridian } from "./time";
 
-export const transformAndSortAvailabilities = (availabilities: AvailabilityFormType[]) => {
+export const transformIntoAvailabilityArray = (availabilities: AvailabilityForm[]): Availability[] => {
   return availabilities
     .map((availability) => {
       return {
-        ...availability,
-        start_int: calculateMinutesFromTimeString(availability.start),
-        end_int: calculateMinutesFromTimeString(availability.end),
+        day: availability.day,
+        start: calculateMinutesFromTimeString(availability.start),
+        end: calculateMinutesFromTimeString(availability.end),
       };
     })
-    .sort((a, b) => a.start_int - b.start_int);
+    .sort((a, b) => a.start - b.start);
+};
+
+export const transformIntoAvailabilityFormArray = (availabilities: Availability[]): AvailabilityForm[] => {
+  return availabilities.map((availability) => {
+    return {
+      day: availability.day,
+      start: getTimeStringWithoutMeridian(availability.start),
+      end: getTimeStringWithoutMeridian(availability.end),
+    };
+  });
 };
 
 export const findOverlapInAvailabilities = (availabilities: Availability[]) => {
@@ -26,7 +36,7 @@ export const findOverlapInAvailabilities = (availabilities: Availability[]) => {
 
       if (!previous || !current) continue;
 
-      if (previous.end_int > current.start_int) {
+      if (previous.end > current.start) {
         return {
           day,
           previous,

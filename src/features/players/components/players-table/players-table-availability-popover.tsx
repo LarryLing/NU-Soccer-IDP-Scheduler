@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Day } from "@/constants/days";
 import { getTimeStringWithMeridian } from "@/lib/time";
-import type { Availability } from "@/types/availability.type";
+import type { Availability } from "@/schemas/availability.schema";
 
 type PlayersTableAvailabilityPopoverProps = {
   day: Day;
@@ -12,7 +12,7 @@ type PlayersTableAvailabilityPopoverProps = {
 const PlayersTableAvailabilityPopover = ({ day, dayAvailabilities }: PlayersTableAvailabilityPopoverProps) => {
   const formattedDayAvailabilities = dayAvailabilities.map(
     (dayAvailability) =>
-      `${getTimeStringWithMeridian(dayAvailability.start_int)} - ${getTimeStringWithMeridian(dayAvailability.end_int)}`
+      `${getTimeStringWithMeridian(dayAvailability.start)} - ${getTimeStringWithMeridian(dayAvailability.end)}`
   );
 
   if (formattedDayAvailabilities.length === 1) {

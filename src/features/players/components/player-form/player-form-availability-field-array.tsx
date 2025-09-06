@@ -6,18 +6,18 @@ import { Label } from "@/components/ui/label";
 import type { Day } from "@/constants/days";
 
 import type { UsePlayerFormReturn } from "../../hooks/use-player-form";
-import type { PlayerFormType } from "../../schemas/player-form.schema";
+import type { PlayerForm } from "../../schemas/player-form.schema";
 
 import PlayerFormAvailabilityFieldProps from "./player-form-availability-field";
 
 type PlayerFormAvailabilityFieldArrayProps = {
   day: Day;
-  dayFields: (FieldArrayWithId<PlayerFormType, "availabilities", "id"> & {
+  dayFields: (FieldArrayWithId<PlayerForm, "availabilities", "id"> & {
     originalIndex: number;
   })[];
   addAvailability: UsePlayerFormReturn["addAvailability"];
   remove: UseFieldArrayRemove;
-  control: Control<PlayerFormType>;
+  control: Control<PlayerForm>;
   disabled: boolean;
 };
 

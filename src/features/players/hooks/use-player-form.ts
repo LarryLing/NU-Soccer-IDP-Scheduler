@@ -10,27 +10,31 @@ import { toast } from "sonner";
 
 import type { Day } from "@/constants/days";
 import { GOALKEEPER } from "@/features/players/constants/positions";
-import { findOverlapInAvailabilities, transformAndSortAvailabilities } from "@/lib/availability";
+import {
+  findOverlapInAvailabilities,
+  transformIntoAvailabilityArray,
+  transformIntoAvailabilityFormArray,
+} from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/schemas/player.schema";
 
-import { type PlayerFormType, PlayerFormSchema } from "../schemas/player-form.schema";
+import { type PlayerForm, PlayerFormSchema } from "../schemas/player-form.schema";
 
 import type { UsePlayerSheetReturn } from "./use-player-sheet";
 import usePlayersStore from "./use-players-store";
 
 export type UsePlayerFormReturn = {
-  form: UseFormReturn<PlayerFormType>;
-  fieldArray: UseFieldArrayReturn<PlayerFormType, "availabilities", "id">;
+  form: UseFormReturn<PlayerForm>;
+  fieldArray: UseFieldArrayReturn<PlayerForm, "availabilities", "id">;
   addAvailability: (day: Day) => void;
-  onSubmit: SubmitHandler<PlayerFormType>;
+  onSubmit: SubmitHandler<PlayerForm>;
 };
 
 export const usePlayerForm = (
   closePlayerSheet: UsePlayerSheetReturn["closePlayerSheet"],
   player?: Player
 ): UsePlayerFormReturn => {
-  const form = useForm<PlayerFormType>({
+  const form = useForm<PlayerForm>({
     resolver: zodResolver(PlayerFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -38,7 +42,7 @@ export const usePlayerForm = (
       name: player?.name ?? "",
       number: player?.number ?? 0,
       position: player?.position ?? GOALKEEPER,
-      availabilities: player?.availabilities ?? [],
+      availabilities: transformIntoAvailabilityFormArray(player?.availabilities ?? []),
     },
   });
 
@@ -75,42 +79,56 @@ export const usePlayerForm = (
     });
   };
 
-  const onSubmit: SubmitHandler<PlayerFormType> = (data: PlayerFormType) => {
-    const transformedAvailabilities = transformAndSortAvailabilities(data.availabilities);
+  const onSubmit: SubmitHandler<PlayerForm> = (data: PlayerForm) => {
+    const transformedAvailabilities = transformIntoAvailabilityArray(data.availabilities);
 
     const overlap = findOverlapInAvailabilities(transformedAvailabilities);
     if (overlap) {
-      const formattedPreviousStartInt = getTimeStringWithMeridian(overlap.previous.start_int);
-      const formattedPreviousEndInt = getTimeStringWithMeridian(overlap.previous.end_int);
-      const formattedCurrentStartInt = getTimeStringWithMeridian(overlap.current.start_int);
-      const formattedCurrentEndInt = getTimeStringWithMeridian(overlap.current.end_int);
+      const previousStartTimeString = getTimeStringWithMeridian(overlap.previous.start);
+      const previousEndTimeString = getTimeStringWithMeridian(overlap.previous.end);
+      const currentStartTimeString = getTimeStringWithMeridian(overlap.current.start);
+      const currentEndTimeString = getTimeStringWithMeridian(overlap.current.end);
 
       toast.error("Failed to save player", {
-        description: `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`,
+        description: `Time overlap detected on ${overlap.day}: ${previousStartTimeString} - ${previousEndTimeString} overlaps with ${currentStartTimeString} - ${currentEndTimeString}`,
       });
 
       return;
     }
 
+    const { players, setPlayers } = usePlayersStore.getState();
+
+    let updatedPlayers = [...players];
     if (player) {
-      const updatePlayer = usePlayersStore.getState().updatePlayer;
-      updatePlayer({
-        id: player.id,
-        training_block_id: player.training_block_id,
-        name: data.name,
-        number: data.number,
-        position: data.position,
-        availabilities: transformedAvailabilities,
+      updatedPlayers = [...players].map((updatedPlayer) => {
+        if (updatedPlayer.id === player.id) {
+          return {
+            id: player.id,
+            trainingBlockId: player.trainingBlockId,
+            name: data.name,
+            number: data.number,
+            position: data.position,
+            availabilities: transformedAvailabilities,
+          };
+        }
+
+        return updatedPlayer;
       });
     } else {
-      const createPlayer = usePlayersStore.getState().createPlayer;
-      createPlayer({
-        name: data.name,
-        number: data.number,
-        position: data.position,
-        availabilities: transformedAvailabilities,
-      });
+      updatedPlayers = [
+        ...players,
+        {
+          id: crypto.randomUUID(),
+          trainingBlockId: null,
+          name: data.name,
+          number: data.number,
+          position: data.position,
+          availabilities: transformedAvailabilities,
+        },
+      ];
     }
+
+    setPlayers(updatedPlayers);
 
     toast.success("Successfully saved player");
 

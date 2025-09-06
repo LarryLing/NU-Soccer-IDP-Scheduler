@@ -10,7 +10,7 @@ import {
 import { toast } from "sonner";
 
 import type { Day } from "@/constants/days";
-import { findOverlapInAvailabilities, transformAndSortAvailabilities } from "@/lib/availability";
+import { findOverlapInAvailabilities, transformIntoAvailabilityArray } from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 
 import {
@@ -19,21 +19,21 @@ import {
   saveAssignedPlayers,
   saveUsedTrainingBlocks,
 } from "../lib/schedule";
-import { type ScheduleFormType, ScheduleFormSchema } from "../schemas/schedule-form.schema";
+import { type ScheduleForm, ScheduleFormSchema } from "../schemas/schedule-form.schema";
 
 import type { UseScheduleSheetReturn } from "./use-schedule-sheet";
 
 export type UseScheduleFormReturn = {
-  form: UseFormReturn<ScheduleFormType>;
-  fieldArray: UseFieldArrayReturn<ScheduleFormType, "fieldAvailabilities", "id">;
+  form: UseFormReturn<ScheduleForm>;
+  fieldArray: UseFieldArrayReturn<ScheduleForm, "fieldAvailabilities", "id">;
   addFieldAvailability: (day: Day) => void;
-  onSubmit: SubmitHandler<ScheduleFormType>;
+  onSubmit: SubmitHandler<ScheduleForm>;
 };
 
 export const useScheduleForm = (
   closeScheduleSheet: UseScheduleSheetReturn["closeScheduleSheet"]
 ): UseScheduleFormReturn => {
-  const form = useForm<ScheduleFormType>({
+  const form = useForm<ScheduleForm>({
     resolver: zodResolver(ScheduleFormSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -80,18 +80,18 @@ export const useScheduleForm = (
     [fields, append]
   );
 
-  const onSubmit: SubmitHandler<ScheduleFormType> = (data: ScheduleFormType) => {
-    const transformedAvailabilities = transformAndSortAvailabilities(data.fieldAvailabilities);
+  const onSubmit: SubmitHandler<ScheduleForm> = (data: ScheduleForm) => {
+    const transformedAvailabilities = transformIntoAvailabilityArray(data.fieldAvailabilities);
 
     const overlap = findOverlapInAvailabilities(transformedAvailabilities);
     if (overlap) {
-      const formattedPreviousStartInt = getTimeStringWithMeridian(overlap.previous.start_int);
-      const formattedPreviousEndInt = getTimeStringWithMeridian(overlap.previous.end_int);
-      const formattedCurrentStartInt = getTimeStringWithMeridian(overlap.current.start_int);
-      const formattedCurrentEndInt = getTimeStringWithMeridian(overlap.current.end_int);
+      const previousStartTimeString = getTimeStringWithMeridian(overlap.previous.start);
+      const previousEndTimeString = getTimeStringWithMeridian(overlap.previous.end);
+      const currentStartTimeString = getTimeStringWithMeridian(overlap.current.start);
+      const currentEndTimeString = getTimeStringWithMeridian(overlap.current.end);
 
       toast.error("Failed to create training schedule", {
-        description: `Time overlap detected on ${overlap.day}: ${formattedPreviousStartInt} - ${formattedPreviousEndInt} overlaps with ${formattedCurrentStartInt} - ${formattedCurrentEndInt}`,
+        description: `Time overlap detected on ${overlap.day}: ${previousStartTimeString} - ${previousEndTimeString} overlaps with ${currentStartTimeString} - ${currentEndTimeString}`,
       });
 
       return;

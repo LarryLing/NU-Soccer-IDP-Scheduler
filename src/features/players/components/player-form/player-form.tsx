@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SheetClose, SheetFooter } from "@/components/ui/sheet";
 import { DAYS } from "@/constants/days";
 import { POSITIONS } from "@/features/players/constants/positions";
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/schemas/player.schema";
 
 import { usePlayerForm } from "../../hooks/use-player-form";
 import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";

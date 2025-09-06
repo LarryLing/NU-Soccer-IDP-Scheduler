@@ -1,30 +1,50 @@
-import { Ellipsis, PencilIcon, TrashIcon } from "lucide-react";
+import { Ellipsis, CalendarOff, PencilIcon, TrashIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Player } from "@/types/player.type";
+import type { Player } from "@/schemas/player.schema";
 
 import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
 import usePlayersStore from "../../hooks/use-players-store";
 
 type PlayersTableActionDropdownMenuProps = {
-  id: Player["id"];
+  playerId: Player["id"];
   openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"];
 };
 
-export const PlayersTableActionDropdownMenu = ({ id, openPlayerSheet }: PlayersTableActionDropdownMenuProps) => {
+export const PlayersTableActionDropdownMenu = ({ playerId, openPlayerSheet }: PlayersTableActionDropdownMenuProps) => {
+  const handleClearAvailability = () => {
+    const { players, setPlayers } = usePlayersStore.getState();
+
+    const updatedPlayers = [...players].map((player) => {
+      if (player.id === playerId) {
+        return {
+          ...player,
+          availabilities: [],
+        };
+      }
+
+      return player;
+    });
+
+    setPlayers(updatedPlayers);
+  };
+
   const handleDeletePlayer = () => {
-    const deletePlayer = usePlayersStore.getState().deletePlayer;
-    deletePlayer(id);
+    const { players, setPlayers } = usePlayersStore.getState();
+
+    const updatedPlayers = [...players].filter((player) => player.id !== playerId);
+    setPlayers(updatedPlayers);
   };
 
   const handleOpenPlayerSheet = () => {
-    openPlayerSheet(id);
+    openPlayerSheet(playerId);
   };
 
   return (
@@ -34,13 +54,18 @@ export const PlayersTableActionDropdownMenu = ({ id, openPlayerSheet }: PlayersT
           <Ellipsis />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={handleOpenPlayerSheet}>
           <PencilIcon />
           Edit Player
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDeletePlayer}>
-          <TrashIcon color="red" />
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleClearAvailability} variant="destructive">
+          <CalendarOff />
+          Clear Availabilities
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleDeletePlayer} variant="destructive">
+          <TrashIcon />
           Delete Player
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import type { PlayerFormType } from "../../schemas/player-form.schema";
+import type { PlayerForm } from "../../schemas/player-form.schema";
 
 type PlayerFormAvailabilityFieldProps = {
   originalIndex: number;
   remove: UseFieldArrayRemove;
-  control: Control<PlayerFormType>;
+  control: Control<PlayerForm>;
   disabled: boolean;
 };
 

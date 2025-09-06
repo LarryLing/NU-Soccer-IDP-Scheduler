@@ -4,25 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
 import { getTimeStringWithMeridian } from "@/lib/time";
-import type { TrainingBlock } from "@/types/training-block.type";
+import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 type CalendarTrainingBlockPopoverProps = {
   currentCellStartInt: number;
-} & Pick<TrainingBlock, "id" | "day" | "start_int" | "end_int">;
+} & Pick<TrainingBlock, "id" | "day" | "start" | "end">;
 
 const CalendarTrainingBlockPopover = ({
   currentCellStartInt,
   id,
   day,
-  start_int,
-  end_int,
+  start,
+  end,
 }: CalendarTrainingBlockPopoverProps) => {
   const players = usePlayersStore((state) => state.players);
 
-  const assignedPlayers = players.filter((player) => player.training_block_id === id).map((player) => player.name);
+  const assignedPlayers = players.filter((player) => player.trainingBlockId === id).map((player) => player.name);
 
-  const topPercentage = ((start_int - currentCellStartInt) / 60) * 100;
-  const heightPercentage = ((end_int - start_int) / 60) * 100;
+  const topPercentage = ((start - currentCellStartInt) / 60) * 100;
+  const heightPercentage = ((end - start) / 60) * 100;
 
   return (
     <Popover>
@@ -46,7 +46,7 @@ const CalendarTrainingBlockPopover = ({
           </h4>
           <p className="text-muted-foreground text-sm flex items-center gap-1">
             <Clock className="size-4" />
-            {getTimeStringWithMeridian(start_int)} - {getTimeStringWithMeridian(end_int)}
+            {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)}
           </p>
         </div>
         <p className="text-sm">{assignedPlayers.join(", ")}</p>

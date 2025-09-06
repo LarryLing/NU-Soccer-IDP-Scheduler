@@ -1,10 +1,9 @@
 import { DAYS } from "@/constants/days";
 import type { Day } from "@/constants/days";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
-import { getTimeStringWithoutMeridian } from "@/lib/time";
-import type { Availability } from "@/types/availability.type";
-import type { Player } from "@/types/player.type";
-import type { TrainingBlock } from "@/types/training-block.type";
+import type { Availability } from "@/schemas/availability.schema";
+import type { Player } from "@/schemas/player.schema";
+import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import useTrainingBlocksStore from "../hooks/use-training-blocks-store";
 
@@ -16,17 +15,15 @@ export const generatePossibleTrainingBlocks = (availabilities: Availability[], t
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
     for (let i = 0; i < dayAvailabilities.length; i++) {
-      let currentInt = dayAvailabilities[i]?.start_int ?? 0;
-      const endInt = dayAvailabilities[i]?.end_int ?? 0;
+      let currentInt = dayAvailabilities[i]?.start ?? 0;
+      const endInt = dayAvailabilities[i]?.end ?? 0;
 
       while (currentInt < endInt) {
         const createdTrainingBlock: TrainingBlock = {
           id: crypto.randomUUID(),
           day: day as Day,
-          start: getTimeStringWithoutMeridian(currentInt),
-          end: getTimeStringWithoutMeridian(currentInt + trainingBlockDuration),
-          start_int: currentInt,
-          end_int: currentInt + trainingBlockDuration,
+          start: currentInt,
+          end: currentInt + trainingBlockDuration,
         };
 
         possibleTrainingBlocks.push(createdTrainingBlock);
@@ -43,8 +40,8 @@ const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: Traini
   return (player.availabilities as Availability[]).some((availability) => {
     return (
       availability.day === trainingBlock.day &&
-      availability.start_int <= trainingBlock.start_int &&
-      availability.end_int >= trainingBlock.end_int
+      availability.start <= trainingBlock.start &&
+      availability.end >= trainingBlock.end
     );
   });
 };
@@ -122,20 +119,21 @@ export const assignPlayersToTrainingBlocks = (possibleTrainingBlocks: TrainingBl
 };
 
 export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) => {
-  const setTrainingBlocks = useTrainingBlocksStore.getState().setTrainingBlocks;
+  const { setTrainingBlocks } = useTrainingBlocksStore.getState();
 
   setTrainingBlocks(trainingBlocks);
 };
 
 export const saveAssignedPlayers = async (playerAssignmentsMap: Map<Player["id"], TrainingBlock["id"] | null>) => {
   const players = usePlayersStore.getState().players;
-  const updatePlayer = usePlayersStore.getState().updatePlayer;
+  const setPlayers = usePlayersStore.getState().setPlayers;
 
-  players.forEach((player) => {
-    const trainingBlockId = playerAssignmentsMap.get(player.id) || null;
-    updatePlayer({
+  const updatedPlayers = [...players].map((player) => {
+    return {
       ...player,
-      training_block_id: trainingBlockId,
-    });
+      trainingBlockId: playerAssignmentsMap.get(player.id) || null,
+    };
   });
+
+  setPlayers(updatedPlayers);
 };

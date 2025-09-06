@@ -1,19 +1,24 @@
-import { memo } from "react";
 import type { Control, UseFieldArrayRemove } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import type { ScheduleFormType } from "../../schemas/schedule-form.schema";
+import type { ScheduleForm } from "../../schemas/schedule-form.schema";
 
 type ScheduleFormAvailabilityFieldProps = {
   originalIndex: number;
   remove: UseFieldArrayRemove;
-  control: Control<ScheduleFormType>;
+  control: Control<ScheduleForm>;
+  disabled: boolean;
 };
 
-const ScheduleFormAvailabilityField = ({ originalIndex, remove, control }: ScheduleFormAvailabilityFieldProps) => {
+const ScheduleFormAvailabilityField = ({
+  originalIndex,
+  remove,
+  control,
+  disabled,
+}: ScheduleFormAvailabilityFieldProps) => {
   const handleRemove = () => {
     remove(originalIndex);
   };
@@ -26,7 +31,7 @@ const ScheduleFormAvailabilityField = ({ originalIndex, remove, control }: Sched
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input type="time" {...field} />
+              <Input type="time" {...field} disabled={disabled} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -39,17 +44,17 @@ const ScheduleFormAvailabilityField = ({ originalIndex, remove, control }: Sched
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input type="time" {...field} />
+              <Input type="time" {...field} disabled={disabled} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-      <Button type="button" variant="outline" onClick={handleRemove}>
+      <Button type="button" variant="outline" onClick={handleRemove} disabled={disabled}>
         Remove
       </Button>
     </div>
   );
 };
 
-export default memo(ScheduleFormAvailabilityField);
+export default ScheduleFormAvailabilityField;

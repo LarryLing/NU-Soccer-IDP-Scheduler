@@ -1,6 +1,6 @@
 # NU Soccer IDP Scheduler
 
-A frontend application for creating a weekly training schedule based on player and field availability
+A frontend application the Northwestern Men's Soccer coaching staff for creating weekly training schedules based on player and field availability
 
 ![Project Demo](images/demo.png)
 
@@ -39,12 +39,12 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 ## Acknowledgments
 
-* [TailwindCSS](https://tailwindcss.com/docs/installation/using-vite)
-* [ShadCN](https://ui.shadcn.com/docs/installation)
-* [Tanstack Table](https://tanstack.com/table/latest/docs/introduction)
-* [Tanstack Router](https://tanstack.com/router/latest/docs/framework/react/overview)
-* [React Hook Form](https://react-hook-form.com)
-* [Zod](https://zod.dev)
-* [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
+* [TailwindCSS Docs](https://tailwindcss.com/docs/installation/using-vite)
+* [ShadCN Docs](https://ui.shadcn.com/docs/installation)
+* [Tanstack Table Docs](https://tanstack.com/table/latest/docs/introduction)
+* [Tanstack Router Docs](https://tanstack.com/router/latest/docs/framework/react/overview)
+* [React Hook Form Docs](https://react-hook-form.com)
+* [Zod Docs](https://zod.dev)
+* [Zustand Docs](https://zustand.docs.pmnd.rs/getting-started/introduction)
 * [Lucide React Icons](https://lucide.dev)
 * [TweakCN](https://tweakcn.com)

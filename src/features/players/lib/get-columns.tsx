@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DAYS } from "@/constants/days";
-import type { Availability } from "@/types/availability.type";
-import type { Player } from "@/types/player.type";
+import type { Availability } from "@/schemas/availability.schema";
+import type { Player } from "@/schemas/player.schema";
 
 import PlayersTableActionDropdownMenu from "../components/players-table/players-table-action-dropdown-menu";
 import PlayersTableAvailabilityPopover from "../components/players-table/players-table-availability-popover";
@@ -84,7 +84,9 @@ const getColumns = (openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"]): C
     },
     {
       id: "actions",
-      cell: ({ row }) => <PlayersTableActionDropdownMenu id={row.original.id} openPlayerSheet={openPlayerSheet} />,
+      cell: ({ row }) => (
+        <PlayersTableActionDropdownMenu playerId={row.original.id} openPlayerSheet={openPlayerSheet} />
+      ),
     },
   ];
 };

@@ -1,46 +1,53 @@
 import type { Table } from "@tanstack/react-table";
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { Download, PlusIcon, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import type { Player } from "../../../types/player.type";
+import type { Player } from "../../../schemas/player.schema";
 import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
-import usePlayersStore from "../hooks/use-players-store";
+import usePlayersJson from "../hooks/use-players-json";
+
+import { BulkActionsDropdownMenu } from "./bulk-actions-dropdown-menu";
 
 type ActionBarProps = {
-  selectedPlayerIds: string[];
   table: Table<Player>;
   openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"];
 };
 
-const PlayersActionBar = ({ selectedPlayerIds, table, openPlayerSheet }: ActionBarProps) => {
-  const deletePlayer = usePlayersStore((state) => state.deletePlayer);
+const PlayersActionBar = ({ table, openPlayerSheet }: ActionBarProps) => {
+  const { fileInputRef, handleOpenFileInput, handleExportPlayersJson, handleImportPlayersJson } = usePlayersJson();
 
-  const handleDeletePlayers = () => {
-    table
-      .getFilteredSelectedRowModel()
-      .rows.map((row) => row.original.id)
-      .forEach((playerId) => deletePlayer(playerId));
-    table.resetRowSelection();
-  };
+  const selectedPlayerIds = table.getFilteredSelectedRowModel().rows.map((row) => row.original.id);
 
   const handleOpenPlayerSheet = () => {
     openPlayerSheet();
   };
 
   return (
-    <div className="w-full flex flex-col sm:flex-row justify-start items-start sm:items-center gap-2">
-      <Button onClick={handleOpenPlayerSheet}>
-        <PlusIcon />
-        Add Player
-      </Button>
-      {selectedPlayerIds.length > 0 && (
-        <Button variant="destructive" onClick={handleDeletePlayers}>
-          <TrashIcon />
-          Remove {selectedPlayerIds.length} Player
-          {selectedPlayerIds.length > 1 ? "s" : ""}
+    <div className="w-full flex justify-between items-center gap-x-2">
+      <div className="flex gap-x-2">
+        <Button onClick={handleOpenPlayerSheet}>
+          <PlusIcon />
+          Add Player
         </Button>
-      )}
+        {selectedPlayerIds.length > 0 && <BulkActionsDropdownMenu selectedPlayerIds={selectedPlayerIds} />}
+      </div>
+      <div className="flex gap-x-2">
+        <Button size="icon" variant="outline" onClick={handleExportPlayersJson}>
+          <Download />
+        </Button>
+        <Button size="icon" variant="outline" onClick={handleOpenFileInput}>
+          <Upload />
+        </Button>
+        <input
+          ref={fileInputRef}
+          id="hidden"
+          type="file"
+          accept=".json,application/json"
+          onChange={handleImportPlayersJson}
+          className="hidden"
+        />
+      </div>
     </div>
   );
 };
