@@ -38,10 +38,10 @@ const useTrainingBlocksJson = (): UseTrainingBlocksJsonType => {
     URL.revokeObjectURL(url);
   };
 
-  const handleImportTrainingBlocksJson = (event: ChangeEvent<HTMLInputElement>) => {
-    const { setTrainingBlocks } = useTrainingBlocksStore.getState();
+  const handleImportTrainingBlocksJson = () => {
+    if (!fileInputRef.current) return;
 
-    const file = event.target.files?.[0];
+    const file = fileInputRef.current.files?.[0];
 
     if (!file) return;
 
@@ -63,6 +63,8 @@ const useTrainingBlocksJson = (): UseTrainingBlocksJsonType => {
 
         const parsed = JSON.parse(result);
         const validatedTrainingBlocks = TrainingBlockSchema.array().parse(parsed);
+
+        const { setTrainingBlocks } = useTrainingBlocksStore.getState();
         setTrainingBlocks(validatedTrainingBlocks);
 
         toast.success("Successfully uploaded training blocks");
@@ -77,6 +79,10 @@ const useTrainingBlocksJson = (): UseTrainingBlocksJsonType => {
         toast.error("Failed to upload training blocks", {
           description: errorMessage,
         });
+      } finally {
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
     };
 

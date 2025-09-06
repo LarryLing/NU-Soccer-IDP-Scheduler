@@ -38,8 +38,10 @@ const usePlayersJson = (): UsePlayersJsonType => {
     URL.revokeObjectURL(url);
   };
 
-  const handleImportPlayersJson = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleImportPlayersJson = () => {
+    if (!fileInputRef.current) return;
+
+    const file = fileInputRef.current.files?.[0];
 
     if (!file) return;
 
@@ -77,6 +79,10 @@ const usePlayersJson = (): UsePlayersJsonType => {
         toast.error("Failed to upload players", {
           description: errorMessage,
         });
+      } finally {
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
     };
 
