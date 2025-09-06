@@ -84,7 +84,7 @@ const getColumns = (openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"]): C
     },
     {
       id: "actions",
-      cell: ({ row }) => <PlayersTableActionDropdownMenu id={row.original.id} openPlayerSheet={openPlayerSheet} />,
+      cell: ({ row }) => <PlayersTableActionDropdownMenu player={row.original} openPlayerSheet={openPlayerSheet} />,
     },
   ];
 };

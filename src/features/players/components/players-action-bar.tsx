@@ -1,5 +1,5 @@
 import type { Table } from "@tanstack/react-table";
-import { Download, PlusIcon, TrashIcon, Upload } from "lucide-react";
+import { Download, PlusIcon, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { exportJson } from "@/lib/json";
@@ -8,22 +8,15 @@ import type { Player } from "../../../types/player.type";
 import type { UsePlayerSheetReturn } from "../hooks/use-player-sheet";
 import usePlayersStore from "../hooks/use-players-store";
 
+import { BulkActionsDropdownMenu } from "./bulk-actions-dropdown-menu";
+
 type ActionBarProps = {
-  selectedPlayerIds: string[];
   table: Table<Player>;
   openPlayerSheet: UsePlayerSheetReturn["openPlayerSheet"];
 };
 
-const PlayersActionBar = ({ selectedPlayerIds, table, openPlayerSheet }: ActionBarProps) => {
-  const deletePlayer = usePlayersStore((state) => state.deletePlayer);
-
-  const handleDeletePlayers = () => {
-    table
-      .getFilteredSelectedRowModel()
-      .rows.map((row) => row.original.id)
-      .forEach((playerId) => deletePlayer(playerId));
-    table.resetRowSelection();
-  };
+const PlayersActionBar = ({ table, openPlayerSheet }: ActionBarProps) => {
+  const selectedPlayerIds = table.getFilteredSelectedRowModel().rows.map((row) => row.original.id);
 
   const handleOpenPlayerSheet = () => {
     openPlayerSheet();
@@ -42,13 +35,7 @@ const PlayersActionBar = ({ selectedPlayerIds, table, openPlayerSheet }: ActionB
           <PlusIcon />
           Add Player
         </Button>
-        {selectedPlayerIds.length > 0 && (
-          <Button variant="destructive" onClick={handleDeletePlayers}>
-            <TrashIcon />
-            Remove {selectedPlayerIds.length} Player
-            {selectedPlayerIds.length > 1 ? "s" : ""}
-          </Button>
-        )}
+        {selectedPlayerIds.length > 0 && <BulkActionsDropdownMenu selectedPlayerIds={selectedPlayerIds} />}
       </div>
       <div className="flex gap-x-2">
         <Button size="icon" variant="outline" onClick={handleExportPlayerJson}>
