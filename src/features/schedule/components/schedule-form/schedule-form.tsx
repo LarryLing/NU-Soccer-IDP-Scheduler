@@ -40,6 +40,7 @@ const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
                 addFieldAvailability={addFieldAvailability}
                 remove={remove}
                 control={control}
+                disabled={isSubmitting}
               />
             );
           })}
@@ -50,7 +51,7 @@ const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
               <FormItem>
                 <FormLabel>Duration</FormLabel>
                 <FormControl>
-                  <Input type="number" min={15} max={60} step={15} {...field} />
+                  <Input type="number" min={15} max={60} step={15} {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>

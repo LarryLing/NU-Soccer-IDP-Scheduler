@@ -18,6 +18,7 @@ type ScheduleFormAvailabilityFieldArrayProps = {
   addFieldAvailability: UseScheduleFormReturn["addFieldAvailability"];
   remove: UseFieldArrayRemove;
   control: Control<ScheduleFormType>;
+  disabled: boolean;
 };
 
 const ScheduleFormAvailabilityFieldArray = ({
@@ -26,6 +27,7 @@ const ScheduleFormAvailabilityFieldArray = ({
   addFieldAvailability,
   remove,
   control,
+  disabled,
 }: ScheduleFormAvailabilityFieldArrayProps) => {
   const handleAddFieldAvailability = () => {
     addFieldAvailability(day);
@@ -44,11 +46,12 @@ const ScheduleFormAvailabilityFieldArray = ({
               originalIndex={field.originalIndex}
               remove={remove}
               control={control}
+              disabled={disabled}
             />
           ))
         )}
       </div>
-      <Button type="button" variant="outline" size="sm" onClick={handleAddFieldAvailability}>
+      <Button type="button" variant="outline" size="sm" onClick={handleAddFieldAvailability} disabled={disabled}>
         <PlusIcon />
         Add Field Availability
       </Button>
