@@ -1,5 +1,5 @@
 import type { Table } from "@tanstack/react-table";
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { Download, PlusIcon, TrashIcon, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -29,18 +29,28 @@ const PlayersActionBar = ({ selectedPlayerIds, table, openPlayerSheet }: ActionB
   };
 
   return (
-    <div className="w-full flex flex-col sm:flex-row justify-start items-start sm:items-center gap-2">
-      <Button onClick={handleOpenPlayerSheet}>
-        <PlusIcon />
-        Add Player
-      </Button>
-      {selectedPlayerIds.length > 0 && (
-        <Button variant="destructive" onClick={handleDeletePlayers}>
-          <TrashIcon />
-          Remove {selectedPlayerIds.length} Player
-          {selectedPlayerIds.length > 1 ? "s" : ""}
+    <div className="w-full flex justify-between items-center gap-x-2">
+      <div className="flex gap-x-2">
+        <Button onClick={handleOpenPlayerSheet}>
+          <PlusIcon />
+          Add Player
         </Button>
-      )}
+        {selectedPlayerIds.length > 0 && (
+          <Button variant="destructive" onClick={handleDeletePlayers}>
+            <TrashIcon />
+            Remove {selectedPlayerIds.length} Player
+            {selectedPlayerIds.length > 1 ? "s" : ""}
+          </Button>
+        )}
+      </div>
+      <div className="flex gap-x-2">
+        <Button size="icon" variant="outline">
+          <Download />
+        </Button>
+        <Button size="icon" variant="outline">
+          <Upload />
+        </Button>
+      </div>
     </div>
   );
 };
