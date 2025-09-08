@@ -17,7 +17,8 @@ import {
 } from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 
-import { type ScheduleSettingsForm, ScheduleSettingsFormSchema } from "../schemas/schedule-settings-form.schema copy";
+import { generateTrainingBlocks } from "../lib/schedule";
+import { type ScheduleSettingsForm, ScheduleSettingsFormSchema } from "../schemas/schedule-settings-form.schema";
 
 import type { UseScheduleSheetReturn } from "./use-schedule-settings-sheet";
 import useScheduleStore from "./use-schedule-store";
@@ -97,7 +98,11 @@ export const useScheduleSettingsForm = (
       return;
     }
 
-    const { setScheduleSettings } = useScheduleStore.getState();
+    const trainingBlocks = generateTrainingBlocks(transformedAvailabilities, data.duration);
+
+    const { setTrainingBlocks, setScheduleSettings } = useScheduleStore.getState();
+
+    setTrainingBlocks(trainingBlocks);
     setScheduleSettings({
       ...data,
       availabilities: transformedAvailabilities,

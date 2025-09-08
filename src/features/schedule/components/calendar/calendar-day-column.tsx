@@ -31,7 +31,9 @@ const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnPr
           trainingBlock.day === day && trainingBlock.start >= currentEntry[1] && trainingBlock.start < nextEntry[1]
       );
 
-      const children: JSX.Element[] = filteredTrainingBlocks.map((filteredTrainingBlock) => {
+      const children: (JSX.Element | null)[] = filteredTrainingBlocks.map((filteredTrainingBlock) => {
+        if (filteredTrainingBlock.assignedPlayerCount === 0) return null;
+
         const handleOpenTrainingBlockDialog = () => {
           openTrainingBlockDialog(filteredTrainingBlock);
         };

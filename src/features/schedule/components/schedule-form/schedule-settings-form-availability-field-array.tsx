@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import type { Day } from "@/constants/days";
 
 import type { UseScheduleSettingsFormReturn } from "../../hooks/use-schedule-settings-form";
-import type { ScheduleSettingsForm } from "../../schemas/schedule-settings-form.schema copy";
+import type { ScheduleSettingsForm } from "../../schemas/schedule-settings-form.schema";
 
 import ScheduleSettingsFormAvailabilityField from "./schedule-settings-form-availability-field";
 

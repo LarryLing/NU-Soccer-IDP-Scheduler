@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import type { ScheduleSettingsForm } from "../../schemas/schedule-settings-form.schema copy";
+import type { ScheduleSettingsForm } from "../../schemas/schedule-settings-form.schema";
 
 type ScheduleSettingsFormAvailabilityFieldProps = {
   originalIndex: number;

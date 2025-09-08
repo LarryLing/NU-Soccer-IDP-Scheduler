@@ -10,7 +10,7 @@ type TrainingBlockDialogSearchItemProps = {
 };
 
 const TrainingBlockDialogSearchItem = ({ player, trainingBlock }: TrainingBlockDialogSearchItemProps) => {
-  const { name, number, position } = player;
+  const { trainingBlockId, name, number, position } = player;
 
   return (
     <div className="flex items-center justify-start gap-2">
@@ -20,7 +20,7 @@ const TrainingBlockDialogSearchItem = ({ player, trainingBlock }: TrainingBlockD
       <div className="w-full">
         <p className="text-sm font-medium">{name}</p>
         <p className="text-sm text-muted-foreground">
-          {`${position} • ${isPlayerAvailableForTrainingBlock(player, trainingBlock) ? "Available" : "Not Available"}`}
+          {`${position} • ${isPlayerAvailableForTrainingBlock(player, trainingBlock) ? "Available" : "Not Available"} ${trainingBlockId ? "(Assigned)" : ""}`}
         </p>
       </div>
     </div>

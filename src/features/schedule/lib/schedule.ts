@@ -9,8 +9,8 @@ import useScheduleStore from "../hooks/use-schedule-store";
 
 import { calculateCombinedScore } from "./math";
 
-export const generatePossibleTrainingBlocks = (availabilities: Availability[], trainingBlockDuration: number) => {
-  const possibleTrainingBlocks: TrainingBlock[] = [];
+export const generateTrainingBlocks = (availabilities: Availability[], trainingBlockDuration: number) => {
+  const trainingBlocks: TrainingBlock[] = [];
   for (const day of DAYS) {
     const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
 
@@ -24,16 +24,17 @@ export const generatePossibleTrainingBlocks = (availabilities: Availability[], t
           day: day as Day,
           start: currentInt,
           end: currentInt + trainingBlockDuration,
+          assignedPlayerCount: 0,
         };
 
-        possibleTrainingBlocks.push(createdTrainingBlock);
+        trainingBlocks.push(createdTrainingBlock);
 
         currentInt += trainingBlockDuration;
       }
     }
   }
 
-  return possibleTrainingBlocks;
+  return trainingBlocks;
 };
 
 export const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: TrainingBlock) => {
@@ -52,88 +53,77 @@ const getTrainingBlockIdsForPlayer = (player: Player, trainingBlocks: TrainingBl
     .map((trainingBlock) => trainingBlock.id);
 };
 
-export const assignPlayersToTrainingBlocks = (possibleTrainingBlocks: TrainingBlock[], maximumPlayerCount: number) => {
-  const players = usePlayersStore.getState().players;
+export const assignPlayersToTrainingBlocks = () => {
+  const { players } = usePlayersStore.getState();
+  const { trainingBlocks, scheduleSettings } = useScheduleStore.getState();
+  const { maximumPlayerCount } = scheduleSettings;
 
-  const playerAssignmentsMap = new Map<Player["id"], TrainingBlock["id"] | null>();
+  const assignedPlayerCounts: Record<TrainingBlock["id"], TrainingBlock["assignedPlayerCount"]> = {};
+  trainingBlocks.forEach((trainingBlock) => {
+    assignedPlayerCounts[trainingBlock.id] = 0;
+  });
+
+  const availableTrainingBlockIdsMap: Record<Player["id"], TrainingBlock["id"][]> = {};
   players.forEach((player) => {
-    playerAssignmentsMap.set(player.id, null);
+    availableTrainingBlockIdsMap[player.id] = getTrainingBlockIdsForPlayer(player, trainingBlocks);
   });
 
-  const trainingBlockAssignedPlayerCounts: Record<TrainingBlock["id"], number> = {};
-  possibleTrainingBlocks.forEach((possibleTrainingBlock) => {
-    trainingBlockAssignedPlayerCounts[possibleTrainingBlock.id] = 0;
-  });
-
-  const availableTrainingBlockIdsMap = new Map<Player["id"], TrainingBlock["id"][]>();
-  players.forEach((player) => {
-    availableTrainingBlockIdsMap.set(player.id, getTrainingBlockIdsForPlayer(player, possibleTrainingBlocks));
-  });
-
-  const sortedPlayers = [...players].sort((a, b) => {
-    const aBlocks = availableTrainingBlockIdsMap.get(a.id)?.length || 0;
-    const bBlocks = availableTrainingBlockIdsMap.get(b.id)?.length || 0;
-    return aBlocks - bBlocks;
-  });
-
-  for (const player of sortedPlayers) {
-    const availableBlockIds = availableTrainingBlockIdsMap.get(player.id) || [];
-    if (availableBlockIds.length === 0) continue;
-
-    let bestBlockIds: TrainingBlock["id"][] = [];
-    let bestScore = -Infinity;
-
-    for (const blockId of availableBlockIds) {
-      const tempCounts = { ...trainingBlockAssignedPlayerCounts };
-      tempCounts[blockId]!++;
-
-      const score = calculateCombinedScore(tempCounts, maximumPlayerCount);
-
-      if (bestScore < score) {
-        bestScore = score;
-        bestBlockIds = [blockId];
-      } else if (bestScore === score) {
-        bestBlockIds.push(blockId);
+  const updatedPlayers = [...players]
+    .sort((a, b) => {
+      const aBlocks = availableTrainingBlockIdsMap[a.id]?.length || 0;
+      const bBlocks = availableTrainingBlockIdsMap[b.id]?.length || 0;
+      return aBlocks - bBlocks;
+    })
+    .map((player) => {
+      const availableBlockIds = availableTrainingBlockIdsMap[player.id] || [];
+      if (availableBlockIds.length === 0) {
+        return {
+          ...player,
+          trainingBlockId: null,
+        };
       }
-    }
 
-    if (bestBlockIds.length > 0) {
-      const randomBlockIndex = Math.floor(Math.random() * bestBlockIds.length);
+      let bestBlockIds: TrainingBlock["id"][] = [];
+      let bestScore = -Infinity;
 
-      const bestBlockId = bestBlockIds[randomBlockIndex];
-      if (!bestBlockId) continue;
+      for (const blockId of availableBlockIds) {
+        const tempCounts = { ...assignedPlayerCounts };
+        tempCounts[blockId]!++;
 
-      playerAssignmentsMap.set(player.id, bestBlockId);
-      trainingBlockAssignedPlayerCounts[bestBlockId]!++;
-    }
-  }
+        const score = calculateCombinedScore(tempCounts, maximumPlayerCount);
 
-  const usedTrainingBlocks = possibleTrainingBlocks.filter(
-    (possibleTrainingBlock) => (trainingBlockAssignedPlayerCounts[possibleTrainingBlock.id] || 0) > 0
-  );
+        if (bestScore < score) {
+          bestScore = score;
+          bestBlockIds = [blockId];
+        } else if (bestScore === score) {
+          bestBlockIds.push(blockId);
+        }
+      }
 
-  return {
-    playerAssignmentsMap,
-    usedTrainingBlocks,
-  };
-};
+      if (bestBlockIds.length > 0) {
+        const randomBlockIndex = Math.floor(Math.random() * bestBlockIds.length);
 
-export const saveUsedTrainingBlocks = async (trainingBlocks: TrainingBlock[]) => {
-  const { setTrainingBlocks } = useScheduleStore.getState();
+        const bestBlockId = bestBlockIds[randomBlockIndex];
+        if (!bestBlockId) {
+          return {
+            ...player,
+            trainingBlockId: null,
+          };
+        }
 
-  setTrainingBlocks(trainingBlocks);
-};
+        assignedPlayerCounts[bestBlockId]!++;
 
-export const saveAssignedPlayers = async (playerAssignmentsMap: Map<Player["id"], TrainingBlock["id"] | null>) => {
-  const players = usePlayersStore.getState().players;
-  const setPlayers = usePlayersStore.getState().setPlayers;
+        return {
+          ...player,
+          trainingBlockId: bestBlockId,
+        };
+      }
 
-  const updatedPlayers = [...players].map((player) => {
-    return {
-      ...player,
-      trainingBlockId: playerAssignmentsMap.get(player.id) || null,
-    };
-  });
+      return {
+        ...player,
+        trainingBlockId: null,
+      };
+    });
 
-  setPlayers(updatedPlayers);
+  return { updatedPlayers, assignedPlayerCounts };
 };
