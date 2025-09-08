@@ -10,6 +10,7 @@ import useTrainingBlocksJson from "../hooks/use-training-blocks-json";
 import { assignPlayersToTrainingBlocks } from "../lib/schedule";
 
 import ScheduleSheet from "./schedule-form/schedule-settings-sheet";
+import CreateTrainingBlockDialog from "./training-block-dialog/create-training-block-dialog";
 import UnassignedPlayersPopover from "./unassigned-players-popover";
 
 const ScheduleActionBar = () => {
@@ -69,6 +70,7 @@ const ScheduleActionBar = () => {
           Create Schedule
         </Button>
         <ScheduleSheet {...scheduleSheetReturn} />
+        <CreateTrainingBlockDialog />
         {trainingBlocks.length > 0 && (
           <>
             <UnassignedPlayersPopover />

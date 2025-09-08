@@ -2,18 +2,28 @@ import { Button } from "@/components/ui/button";
 import { getTimeStringWithMeridian } from "@/lib/time";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-type TrainingBlockTriggerProps = {
-  currentCellStartInt: number;
-  handleOpenTrainingBlockDialog: () => void;
-} & Pick<TrainingBlock, "day" | "start" | "end">;
+import { type UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 
-const TrainingBlockTrigger = ({
+type EditTrainingBlockTriggerProps = {
+  currentCellStartInt: number;
+} & Pick<UseEditTrainingBlockDialogReturn, "openTrainingBlockDialog"> &
+  Pick<TrainingBlock, "id" | "day" | "start" | "end" | "assignedPlayerCount">;
+
+const EditTrainingBlockTrigger = ({
   currentCellStartInt,
-  handleOpenTrainingBlockDialog,
+  openTrainingBlockDialog,
+  id,
   day,
   start,
   end,
-}: TrainingBlockTriggerProps) => {
+  assignedPlayerCount,
+}: EditTrainingBlockTriggerProps) => {
+  if (assignedPlayerCount === 0) return null;
+
+  const handleOpenTrainingBlockDialog = () => {
+    openTrainingBlockDialog(id);
+  };
+
   const topPercentage = ((start - currentCellStartInt) / 60) * 100;
   const heightPercentage = ((end - start) / 60) * 100;
 
@@ -35,4 +45,4 @@ const TrainingBlockTrigger = ({
   );
 };
 
-export default TrainingBlockTrigger;
+export default EditTrainingBlockTrigger;

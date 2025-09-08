@@ -10,13 +10,13 @@ import {
 } from "@/components/ui/dialog";
 import { getTimeStringWithMeridian } from "@/lib/time";
 
-import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
+import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 
 import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
 import TrainingBlockDialogSearchCombobox from "./training-block-dialog-search-combobox";
 
-type TrainingBlockDialogProps = Pick<
-  UseTrainingBlockDialogReturn,
+type EditTrainingBlockDialogProps = Pick<
+  UseEditTrainingBlockDialogReturn,
   | "isTrainingBlockDialogOpen"
   | "setIsTrainingBlockDialogOpen"
   | "selectedTrainingBlock"
@@ -26,7 +26,7 @@ type TrainingBlockDialogProps = Pick<
   | "deleteTrainingBlock"
 >;
 
-const TrainingBlockDialog = ({
+const EditTrainingBlockDialog = ({
   isTrainingBlockDialogOpen,
   setIsTrainingBlockDialogOpen,
   selectedTrainingBlock,
@@ -34,7 +34,7 @@ const TrainingBlockDialog = ({
   assignPlayer,
   unassignPlayer,
   deleteTrainingBlock,
-}: TrainingBlockDialogProps) => {
+}: EditTrainingBlockDialogProps) => {
   if (!selectedTrainingBlock) return null;
 
   const { day, start, end } = selectedTrainingBlock!;
@@ -43,9 +43,9 @@ const TrainingBlockDialog = ({
     <Dialog open={isTrainingBlockDialogOpen} onOpenChange={setIsTrainingBlockDialogOpen}>
       <DialogContent className="w-[450px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-1">{day}</DialogTitle>
+          <DialogTitle className="flex items-center gap-1">Edit Training Block</DialogTitle>
           <DialogDescription className="flex items-center gap-1">
-            {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)}
+            {day} • {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)}
           </DialogDescription>
         </DialogHeader>
         <TrainingBlockDialogSearchCombobox
@@ -71,4 +71,4 @@ const TrainingBlockDialog = ({
   );
 };
 
-export default TrainingBlockDialog;
+export default EditTrainingBlockDialog;

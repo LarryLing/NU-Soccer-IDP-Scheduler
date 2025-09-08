@@ -1,11 +1,11 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
+import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 
 import TrainingBlockDialogAssignedPlayersItem from "./training-block-dialog-assigned-players-item";
 
 type TrainingBlockDialogAssignedPlayersListProps = Pick<
-  UseTrainingBlockDialogReturn,
+  UseEditTrainingBlockDialogReturn,
   "selectedTrainingBlock" | "assignedPlayers" | "unassignPlayer"
 >;
 
@@ -14,6 +14,8 @@ const TrainingBlockDialogAssignedPlayersList = ({
   assignedPlayers,
   unassignPlayer,
 }: TrainingBlockDialogAssignedPlayersListProps) => {
+  if (!selectedTrainingBlock) return null;
+
   return (
     <div>
       <h3 className="text-md font-medium mb-2">Assigned Players</h3>
@@ -23,7 +25,7 @@ const TrainingBlockDialogAssignedPlayersList = ({
             <TrainingBlockDialogAssignedPlayersItem
               key={assignedPlayer.id}
               player={assignedPlayer}
-              trainingBlock={selectedTrainingBlock!}
+              trainingBlock={selectedTrainingBlock}
               unassignPlayer={unassignPlayer}
             />
           ))}

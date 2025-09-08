@@ -6,106 +6,97 @@ import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import useScheduleStore from "./use-schedule-store";
 
-export type UseTrainingBlockDialogReturn = {
+export type UseCreateTrainingBlockDialogReturn = {
   isTrainingBlockDialogOpen: boolean;
   setIsTrainingBlockDialogOpen: (isTrainingBlockDialogOpen: boolean) => void;
   selectedTrainingBlock: TrainingBlock | null;
-  openTrainingBlockDialog: (trainingBlock: TrainingBlock) => void;
   assignedPlayers: Player[];
+  selectTrainingBlock: (trainingBlockId: TrainingBlock["id"]) => void;
   assignPlayer: (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => void;
   unassignPlayer: (playerId: Player["id"]) => void;
-  deleteTrainingBlock: () => void;
+  createTrainingBlock: () => void;
 };
 
-const useTrainingBlockDialog = () => {
+const useCreateTrainingBlockDialog = () => {
   const players = usePlayersStore((state) => state.players);
   const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
 
   const [isTrainingBlockDialogOpen, setIsTrainingBlockDialogOpen] = useState<boolean>(false);
   const [selectedTrainingBlock, setSelectedTrainingBlock] = useState<TrainingBlock | null>(null);
+  const [assignedPlayers, setAssignedPlayers] = useState<Player[]>([]);
 
-  const assignedPlayers = players.filter((player) => player.trainingBlockId === selectedTrainingBlock?.id);
-
-  const openTrainingBlockDialog = useCallback((trainingBlock: TrainingBlock) => {
-    setSelectedTrainingBlock(trainingBlock);
-    setIsTrainingBlockDialogOpen(true);
-  }, []);
+  const selectTrainingBlock = useCallback(
+    (trainingBlockId: TrainingBlock["id"]) => {
+      setSelectedTrainingBlock(trainingBlocks.find((trainingBlock) => trainingBlock.id === trainingBlockId) || null);
+    },
+    [trainingBlocks]
+  );
 
   const assignPlayer = useCallback(
     (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => {
-      const setPlayers = usePlayersStore.getState().setPlayers;
-
-      const updatedPlayers = [...players].map((player) => {
-        if (player.id === playerId) {
-          return {
-            ...player,
-            trainingBlockId,
-          };
-        }
-
-        return player;
-      });
-
-      setPlayers(updatedPlayers);
+      const player = players.find((player) => player.id === playerId);
+      if (!player) return;
+      setAssignedPlayers((prevAssignedPlayers) => [
+        ...prevAssignedPlayers,
+        { ...player, trainingBlockId: trainingBlockId },
+      ]);
     },
     [players]
   );
 
   const unassignPlayer = useCallback(
     (playerId: Player["id"]) => {
-      const setPlayers = usePlayersStore.getState().setPlayers;
-
-      const updatedPlayers = [...players].map((player) => {
-        if (player.id === playerId) {
-          return {
-            ...player,
-            trainingBlockId: null,
-          };
-        }
-
-        return player;
-      });
-
-      setPlayers(updatedPlayers);
+      const updatedAssignedPlayers = [...assignedPlayers].filter((assignedPlayer) => assignedPlayer.id !== playerId);
+      setAssignedPlayers(updatedAssignedPlayers);
     },
-    [players]
+    [assignedPlayers]
   );
 
-  const deleteTrainingBlock = useCallback(() => {
+  const createTrainingBlock = useCallback(() => {
+    if (!selectedTrainingBlock) return;
+
     const setPlayers = usePlayersStore.getState().setPlayers;
     const setTrainingBlocks = useScheduleStore.getState().setTrainingBlocks;
 
     const updatedPlayers = [...players].map((player) => {
-      if (player.trainingBlockId === selectedTrainingBlock?.id) {
+      if (assignedPlayers.some((assignedPlayer) => assignedPlayer.id === player.id)) {
         return {
           ...player,
-          trainingBlockId: null,
+          trainingBlockId: selectedTrainingBlock.id,
         };
       }
 
       return player;
     });
 
-    const updatedTrainingBlocks = [...trainingBlocks].filter(
-      (trainingBlock) => trainingBlock.id !== selectedTrainingBlock?.id
-    );
+    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+      if (trainingBlock.id === selectedTrainingBlock.id) {
+        return {
+          ...trainingBlock,
+          assignedPlayerCount: assignedPlayers.length,
+        };
+      }
+
+      return trainingBlock;
+    });
 
     setPlayers(updatedPlayers);
     setTrainingBlocks(updatedTrainingBlocks);
     setSelectedTrainingBlock(null);
+    setAssignedPlayers([]);
     setIsTrainingBlockDialogOpen(false);
-  }, [players, selectedTrainingBlock?.id, trainingBlocks]);
+  }, [assignedPlayers, players, selectedTrainingBlock, trainingBlocks]);
 
   return {
     isTrainingBlockDialogOpen,
     setIsTrainingBlockDialogOpen,
     selectedTrainingBlock,
-    openTrainingBlockDialog,
     assignedPlayers,
+    selectTrainingBlock,
     assignPlayer,
     unassignPlayer,
-    deleteTrainingBlock,
+    createTrainingBlock,
   };
 };
 
-export default useTrainingBlockDialog;
+export default useCreateTrainingBlockDialog;

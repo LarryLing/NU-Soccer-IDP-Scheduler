@@ -6,12 +6,12 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
 
-import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
+import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 
 import TrainingBlockDialogSearchItem from "./training-block-dialog-search-item";
 
 type TrainingBlockDialogSearchComboboxProps = Pick<
-  UseTrainingBlockDialogReturn,
+  UseEditTrainingBlockDialogReturn,
   "selectedTrainingBlock" | "assignedPlayers" | "assignPlayer"
 >;
 
@@ -24,12 +24,14 @@ const TrainingBlockDialogSearchCombobox = ({
 
   const players = usePlayersStore((state) => state.players);
 
+  if (!selectedTrainingBlock) return null;
+
   const filteredPlayers = players.filter(
     (player) => !assignedPlayers.some((assignedPlayer) => assignedPlayer.id === player.id)
   );
 
   const handleAssignPlayer = (value: string) => {
-    assignPlayer(value, selectedTrainingBlock!.id);
+    assignPlayer(value, selectedTrainingBlock.id);
     setOpen(false);
   };
 
@@ -49,7 +51,7 @@ const TrainingBlockDialogSearchCombobox = ({
             <CommandGroup className="overflow-y-scroll">
               {filteredPlayers.map((player) => (
                 <CommandItem key={player.id} value={player.id} onSelect={handleAssignPlayer}>
-                  <TrainingBlockDialogSearchItem player={player} trainingBlock={selectedTrainingBlock!} />
+                  <TrainingBlockDialogSearchItem player={player} trainingBlock={selectedTrainingBlock} />
                 </CommandItem>
               ))}
             </CommandGroup>

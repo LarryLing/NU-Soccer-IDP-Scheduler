@@ -4,15 +4,15 @@ import type { Day } from "@/constants/days";
 import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
 import { getDayAbbreviation } from "@/lib/time";
 
+import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 import useScheduleStore from "../../hooks/use-schedule-store";
-import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
-import TrainingBlockTrigger from "../training-block-dialog/training-block-trigger";
+import TrainingBlockTrigger from "../training-block-dialog/edit-training-block-trigger";
 
 import CalendarCell from "./calendar-cell";
 
 type CalendarDayColumnProps = {
   day: Day;
-} & Pick<UseTrainingBlockDialogReturn, "openTrainingBlockDialog">;
+} & Pick<UseEditTrainingBlockDialogReturn, "openTrainingBlockDialog">;
 
 const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnProps) => {
   const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
@@ -31,22 +31,14 @@ const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnPr
           trainingBlock.day === day && trainingBlock.start >= currentEntry[1] && trainingBlock.start < nextEntry[1]
       );
 
-      const children: (JSX.Element | null)[] = filteredTrainingBlocks.map((filteredTrainingBlock) => {
-        if (filteredTrainingBlock.assignedPlayerCount === 0) return null;
-
-        const handleOpenTrainingBlockDialog = () => {
-          openTrainingBlockDialog(filteredTrainingBlock);
-        };
-
-        return (
-          <TrainingBlockTrigger
-            key={filteredTrainingBlock.id}
-            currentCellStartInt={currentEntry[1]}
-            handleOpenTrainingBlockDialog={handleOpenTrainingBlockDialog}
-            {...filteredTrainingBlock}
-          />
-        );
-      });
+      const children: (JSX.Element | null)[] = filteredTrainingBlocks.map((filteredTrainingBlock) => (
+        <TrainingBlockTrigger
+          key={filteredTrainingBlock.id}
+          currentCellStartInt={currentEntry[1]}
+          openTrainingBlockDialog={openTrainingBlockDialog}
+          {...filteredTrainingBlock}
+        />
+      ));
 
       return <CalendarCell key={`${day}.${currentEntry[0]}.${nextEntry[0]}`}>{children}</CalendarCell>;
     });

@@ -20,7 +20,8 @@ const TrainingBlockDialogSearchItem = ({ player, trainingBlock }: TrainingBlockD
       <div className="w-full">
         <p className="text-sm font-medium">{name}</p>
         <p className="text-sm text-muted-foreground">
-          {`${position} • ${isPlayerAvailableForTrainingBlock(player, trainingBlock) ? "Available" : "Not Available"} ${trainingBlockId ? "(Assigned)" : ""}`}
+          {position} • {isPlayerAvailableForTrainingBlock(player, trainingBlock) ? "Available" : "Not Available"}{" "}
+          {trainingBlockId ? "(Assigned)" : ""}
         </p>
       </div>
     </div>
