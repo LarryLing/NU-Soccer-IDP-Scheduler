@@ -57,7 +57,7 @@ const ScheduleActionBar = () => {
     const playerAssignmentsValues = [...playerAssignmentsMap.values()];
     if (playerAssignmentsValues.some((playerAssignmentsValues) => playerAssignmentsValues === null)) {
       toast.warning("Some players could not be scheduled", {
-        description: "Please double check player and field availability",
+        description: "Please double check player availability and schedule settings",
       });
     }
 
@@ -77,7 +77,7 @@ const ScheduleActionBar = () => {
             <UnassignedPlayersPopover />
             <Button variant="destructive" onClick={handleClearSchedule}>
               <CalendarOff />
-              Clear
+              Clear Schedule
             </Button>
           </>
         )}

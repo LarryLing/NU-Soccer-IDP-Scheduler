@@ -5,15 +5,17 @@ import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
 import { getDayAbbreviation } from "@/lib/time";
 
 import useScheduleStore from "../../hooks/use-schedule-store";
+import type { UseTrainingBlockDialogType } from "../../hooks/use-training-block-dialog";
+import TrainingBlockTrigger from "../training-block-dialog/training-block-trigger";
 
 import CalendarCell from "./calendar-cell";
-import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
 
 type CalendarDayColumnProps = {
   day: Day;
+  openTrainingBlockDialog: UseTrainingBlockDialogType["openTrainingBlockDialog"];
 };
 
-const CalendarDayColumn = ({ day }: CalendarDayColumnProps) => {
+const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnProps) => {
   const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
 
   const cells = useMemo(() => {
@@ -30,17 +32,24 @@ const CalendarDayColumn = ({ day }: CalendarDayColumnProps) => {
           trainingBlock.day === day && trainingBlock.start >= currentEntry[1] && trainingBlock.start < nextEntry[1]
       );
 
-      const children: JSX.Element[] = filteredTrainingBlocks.map((filteredTrainingBlock) => (
-        <CalendarTrainingBlockPopover
-          key={filteredTrainingBlock.id}
-          currentCellStartInt={currentEntry[1]}
-          {...filteredTrainingBlock}
-        />
-      ));
+      const children: JSX.Element[] = filteredTrainingBlocks.map((filteredTrainingBlock) => {
+        const handleOpenTrainingBlockDialog = () => {
+          openTrainingBlockDialog(filteredTrainingBlock);
+        };
+
+        return (
+          <TrainingBlockTrigger
+            key={filteredTrainingBlock.id}
+            currentCellStartInt={currentEntry[1]}
+            handleOpenTrainingBlockDialog={handleOpenTrainingBlockDialog}
+            {...filteredTrainingBlock}
+          />
+        );
+      });
 
       return <CalendarCell key={`${day}.${currentEntry[0]}.${nextEntry[0]}`}>{children}</CalendarCell>;
     });
-  }, [day, trainingBlocks]);
+  }, [day, openTrainingBlockDialog, trainingBlocks]);
 
   const dayAbbreviation = getDayAbbreviation(day);
 

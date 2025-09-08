@@ -36,7 +36,7 @@ export const generatePossibleTrainingBlocks = (availabilities: Availability[], t
   return possibleTrainingBlocks;
 };
 
-const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: TrainingBlock) => {
+export const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: TrainingBlock) => {
   return (player.availabilities as Availability[]).some((availability) => {
     return (
       availability.day === trainingBlock.day &&
