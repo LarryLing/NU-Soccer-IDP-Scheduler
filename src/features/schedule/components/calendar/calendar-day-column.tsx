@@ -5,15 +5,14 @@ import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
 import { getDayAbbreviation } from "@/lib/time";
 
 import useScheduleStore from "../../hooks/use-schedule-store";
-import type { UseTrainingBlockDialogType } from "../../hooks/use-training-block-dialog";
+import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 import TrainingBlockTrigger from "../training-block-dialog/training-block-trigger";
 
 import CalendarCell from "./calendar-cell";
 
 type CalendarDayColumnProps = {
   day: Day;
-  openTrainingBlockDialog: UseTrainingBlockDialogType["openTrainingBlockDialog"];
-};
+} & Pick<UseTrainingBlockDialogReturn, "openTrainingBlockDialog">;
 
 const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnProps) => {
   const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);

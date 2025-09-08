@@ -6,12 +6,13 @@ import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import useScheduleStore from "./use-schedule-store";
 
-export type UseTrainingBlockDialogType = {
+export type UseTrainingBlockDialogReturn = {
   isTrainingBlockDialogOpen: boolean;
   setIsTrainingBlockDialogOpen: (isTrainingBlockDialogOpen: boolean) => void;
   selectedTrainingBlock: TrainingBlock | null;
   openTrainingBlockDialog: (trainingBlock: TrainingBlock) => void;
   assignedPlayers: Player[];
+  assignPlayer: (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => void;
   unassignPlayer: (playerId: Player["id"]) => void;
   deleteTrainingBlock: () => void;
 };
@@ -29,6 +30,26 @@ const useTrainingBlockDialog = () => {
     setSelectedTrainingBlock(trainingBlock);
     setIsTrainingBlockDialogOpen(true);
   }, []);
+
+  const assignPlayer = useCallback(
+    (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => {
+      const setPlayers = usePlayersStore.getState().setPlayers;
+
+      const updatedPlayers = [...players].map((player) => {
+        if (player.id === playerId) {
+          return {
+            ...player,
+            trainingBlockId,
+          };
+        }
+
+        return player;
+      });
+
+      setPlayers(updatedPlayers);
+    },
+    [players]
+  );
 
   const unassignPlayer = useCallback(
     (playerId: Player["id"]) => {
@@ -81,6 +102,7 @@ const useTrainingBlockDialog = () => {
     selectedTrainingBlock,
     openTrainingBlockDialog,
     assignedPlayers,
+    assignPlayer,
     unassignPlayer,
     deleteTrainingBlock,
   };

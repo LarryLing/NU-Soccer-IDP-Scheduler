@@ -3,29 +3,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import type { UseTrainingBlockDialogType } from "../../hooks/use-training-block-dialog";
+import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
 
-type TrainingBlockDialogPlayerItemProps = {
+type TrainingBlockDialogAssignedPlayersItemProps = {
   player: Player;
   trainingBlock: TrainingBlock;
-  unassignPlayer: UseTrainingBlockDialogType["unassignPlayer"];
+  unassignPlayer: UseTrainingBlockDialogReturn["unassignPlayer"];
 };
 
-const TrainingBlockDialogPlayerItem = ({
+const TrainingBlockDialogAssignedPlayersItem = ({
   player,
   trainingBlock,
   unassignPlayer,
-}: TrainingBlockDialogPlayerItemProps) => {
+}: TrainingBlockDialogAssignedPlayersItemProps) => {
   const { id, name, number, position } = player;
 
-  const handleUnassignPlayer = (e: string) => {
-    if (e === "remove") unassignPlayer(id);
+  const handleUnassignPlayer = (value: string) => {
+    if (value === "remove") unassignPlayer(id);
   };
 
   return (
     <div className="flex items-center justify-start gap-2">
-      <Avatar>
+      <Avatar className="size-9">
         <AvatarFallback>{number}</AvatarFallback>
       </Avatar>
       <div className="w-full">
@@ -47,4 +47,4 @@ const TrainingBlockDialogPlayerItem = ({
   );
 };
 
-export default TrainingBlockDialogPlayerItem;
+export default TrainingBlockDialogAssignedPlayersItem;

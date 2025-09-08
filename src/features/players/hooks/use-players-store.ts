@@ -14,7 +14,7 @@ const usePlayersStore = create<UsePlayersStoreReturn>()(
       players: [],
       setPlayers: (players: Player[]) => {
         set(() => ({
-          players,
+          players: players.sort((a, b) => a.number - b.number),
         }));
       },
     }),

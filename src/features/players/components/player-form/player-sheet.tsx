@@ -12,7 +12,7 @@ type PlayerSheetProps = Pick<
 const PlayerSheet = ({ player, isPlayerSheetOpen, setIsPlayerSheetOpen, closePlayerSheet }: PlayerSheetProps) => {
   return (
     <Sheet open={isPlayerSheetOpen} onOpenChange={setIsPlayerSheetOpen}>
-      <SheetContent className="overflow-y-scroll">
+      <SheetContent>
         <SheetHeader>
           <SheetTitle>{player ? "Edit Player" : "Add Player"}</SheetTitle>
           <SheetDescription>{player ? "Edit the selected player." : "Add a new player."}</SheetDescription>

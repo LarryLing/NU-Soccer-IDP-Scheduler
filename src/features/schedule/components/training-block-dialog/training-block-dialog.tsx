@@ -10,16 +10,18 @@ import {
 } from "@/components/ui/dialog";
 import { getTimeStringWithMeridian } from "@/lib/time";
 
-import type { UseTrainingBlockDialogType } from "../../hooks/use-training-block-dialog";
+import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 
-import TrainingBlockDialogPlayerItem from "./training-block-dialog-player-item";
+import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
+import TrainingBlockDialogSearchCombobox from "./training-block-dialog-search-combobox";
 
 type TrainingBlockDialogProps = Pick<
-  UseTrainingBlockDialogType,
+  UseTrainingBlockDialogReturn,
   | "isTrainingBlockDialogOpen"
   | "setIsTrainingBlockDialogOpen"
   | "selectedTrainingBlock"
   | "assignedPlayers"
+  | "assignPlayer"
   | "unassignPlayer"
   | "deleteTrainingBlock"
 >;
@@ -29,12 +31,13 @@ const TrainingBlockDialog = ({
   setIsTrainingBlockDialogOpen,
   selectedTrainingBlock,
   assignedPlayers,
+  assignPlayer,
   unassignPlayer,
   deleteTrainingBlock,
 }: TrainingBlockDialogProps) => {
   if (!selectedTrainingBlock) return null;
 
-  const { day, start, end } = selectedTrainingBlock;
+  const { day, start, end } = selectedTrainingBlock!;
 
   return (
     <Dialog open={isTrainingBlockDialogOpen} onOpenChange={setIsTrainingBlockDialogOpen}>
@@ -45,19 +48,16 @@ const TrainingBlockDialog = ({
             {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)}
           </DialogDescription>
         </DialogHeader>
-        <div>
-          <h3 className="text-md font-medium mb-2">Assigned Players</h3>
-          <div className="flex flex-col gap-2 max-h-[185px] overflow-y-scroll">
-            {assignedPlayers.map((assignedPlayer) => (
-              <TrainingBlockDialogPlayerItem
-                key={assignedPlayer.id}
-                player={assignedPlayer}
-                trainingBlock={selectedTrainingBlock}
-                unassignPlayer={unassignPlayer}
-              />
-            ))}
-          </div>
-        </div>
+        <TrainingBlockDialogSearchCombobox
+          selectedTrainingBlock={selectedTrainingBlock}
+          assignedPlayers={assignedPlayers}
+          assignPlayer={assignPlayer}
+        />
+        <TrainingBlockDialogAssignedPlayersList
+          selectedTrainingBlock={selectedTrainingBlock}
+          assignedPlayers={assignedPlayers}
+          unassignPlayer={unassignPlayer}
+        />
         <DialogFooter>
           <Button variant="destructive" onClick={deleteTrainingBlock}>
             Delete Training Block
