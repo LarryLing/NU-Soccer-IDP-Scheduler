@@ -48,10 +48,7 @@ const CreateTrainingBlockDialog = () => {
         };
       }
 
-      return {
-        ...player,
-        trainingBlockId: null,
-      };
+      return player;
     });
 
     const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
@@ -109,7 +106,10 @@ const CreateTrainingBlockDialog = () => {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button onClick={createTrainingBlock} disabled={selectedTrainingBlock === null}>
+          <Button
+            onClick={createTrainingBlock}
+            disabled={selectedTrainingBlock === null || assignedPlayers.length === 0}
+          >
             Create Training Block
           </Button>
         </DialogFooter>

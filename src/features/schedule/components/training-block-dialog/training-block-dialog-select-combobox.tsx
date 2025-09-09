@@ -47,7 +47,7 @@ const TrainingBlockDialogSelectCombobox = ({
       <PopoverContent className="w-[400px] p-0">
         <Command>
           <CommandList>
-            <CommandEmpty>No training blocks found.</CommandEmpty>
+            <CommandEmpty>No training blocks found. Please make sure field availabilities have been set.</CommandEmpty>
             <CommandGroup className="overflow-y-scroll">
               {filteredTrainingBlocks.map((trainingBlock) => (
                 <CommandItem key={trainingBlock.id} value={trainingBlock.id} onSelect={handleSelectTrainingBlock}>

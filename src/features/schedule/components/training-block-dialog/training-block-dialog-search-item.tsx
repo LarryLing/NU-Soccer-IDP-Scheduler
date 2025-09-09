@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
@@ -34,4 +36,4 @@ const TrainingBlockDialogSearchItem = ({
   );
 };
 
-export default TrainingBlockDialogSearchItem;
+export default memo(TrainingBlockDialogSearchItem);

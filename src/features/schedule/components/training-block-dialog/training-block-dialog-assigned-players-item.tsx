@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Player } from "@/schemas/player.schema";
@@ -47,4 +49,4 @@ const TrainingBlockDialogAssignedPlayersItem = ({
   );
 };
 
-export default TrainingBlockDialogAssignedPlayersItem;
+export default memo(TrainingBlockDialogAssignedPlayersItem);

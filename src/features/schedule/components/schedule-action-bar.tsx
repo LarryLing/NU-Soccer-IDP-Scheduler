@@ -28,21 +28,33 @@ const ScheduleActionBar = () => {
     const updatedPlayers = [...players].map((player) => {
       return {
         ...player,
-        training_block_id: null,
+        trainingBlockId: null,
       };
     });
 
-    setTrainingBlocks([]);
+    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+      return {
+        ...trainingBlock,
+        assignedPlayerCount: 0,
+      };
+    });
+
     setPlayers(updatedPlayers);
+    setTrainingBlocks(updatedTrainingBlocks);
   };
 
   const handleAssignPlayers = () => {
+    if (trainingBlocks.length === 0) {
+      toast.error("Failed to create training schedule", {
+        description: "Field availability has not been set in schedule settings",
+      });
+      return;
+    }
+
     const { setPlayers } = usePlayersStore.getState();
-    const { trainingBlocks, setTrainingBlocks } = useScheduleStore.getState();
+    const { setTrainingBlocks } = useScheduleStore.getState();
 
     const { updatedPlayers, assignedPlayerCounts } = assignPlayersToTrainingBlocks();
-
-    setPlayers(updatedPlayers);
 
     const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
       return {
@@ -51,6 +63,7 @@ const ScheduleActionBar = () => {
       };
     });
 
+    setPlayers(updatedPlayers);
     setTrainingBlocks(updatedTrainingBlocks);
 
     if (updatedPlayers.some((updatedPlayer) => updatedPlayer.trainingBlockId === null)) {
@@ -62,6 +75,8 @@ const ScheduleActionBar = () => {
     toast.success("Successfully created training schedule");
   };
 
+  const hasAssignedPlayers = trainingBlocks.some((trainingBlock) => trainingBlock.assignedPlayerCount > 0);
+
   return (
     <div className="w-full flex justify-between items-center gap-x-2">
       <div className="flex gap-x-2">
@@ -69,9 +84,9 @@ const ScheduleActionBar = () => {
           <CalendarIcon />
           Create Schedule
         </Button>
-        <ScheduleSheet {...scheduleSheetReturn} />
         <CreateTrainingBlockDialog />
-        {trainingBlocks.length > 0 && (
+        <ScheduleSheet {...scheduleSheetReturn} />
+        {hasAssignedPlayers && (
           <>
             <UnassignedPlayersPopover />
             <Button variant="destructive" onClick={handleClearSchedule}>

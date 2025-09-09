@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { getTimeStringWithMeridian } from "@/lib/time";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
@@ -19,4 +21,4 @@ const TrainingBlockDialogSelectItem = ({
   );
 };
 
-export default TrainingBlockDialogSelectItem;
+export default memo(TrainingBlockDialogSelectItem);
