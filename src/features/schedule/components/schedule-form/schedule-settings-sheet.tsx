@@ -23,7 +23,9 @@ const ScheduleSheet = ({ isScheduleSheetOpen, setIsScheduleSheetOpen, closeSched
       <SheetContent className="overflow-y-scroll">
         <SheetHeader>
           <SheetTitle>Edit Schedule Settings</SheetTitle>
-          <SheetDescription>Enter constraints for the training schedule</SheetDescription>
+          <SheetDescription>
+            Enter field availability, training block duration, and maximum player count.
+          </SheetDescription>
         </SheetHeader>
         <ScheduleForm closeScheduleSheet={closeScheduleSheet} />
       </SheetContent>

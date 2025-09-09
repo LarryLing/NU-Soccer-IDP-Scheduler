@@ -4,6 +4,8 @@ import usePlayersStore from "@/features/players/hooks/use-players-store";
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
+import { isPlayerAvailableForTrainingBlock } from "../lib/schedule";
+
 import useScheduleStore from "./use-schedule-store";
 
 export type UseCreateTrainingBlockDialogReturn = {
@@ -11,6 +13,7 @@ export type UseCreateTrainingBlockDialogReturn = {
   setIsTrainingBlockDialogOpen: (isTrainingBlockDialogOpen: boolean) => void;
   selectedTrainingBlock: TrainingBlock | null;
   assignedPlayers: Player[];
+  unavailablePlayerNames: Player["name"][];
   selectTrainingBlock: (trainingBlockId: TrainingBlock["id"]) => void;
   assignPlayer: (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => void;
   unassignPlayer: (playerId: Player["id"]) => void;
@@ -25,6 +28,12 @@ const useCreateTrainingBlockDialog = () => {
   const [selectedTrainingBlock, setSelectedTrainingBlock] = useState<TrainingBlock | null>(null);
   const [assignedPlayers, setAssignedPlayers] = useState<Player[]>([]);
 
+  const unavailablePlayerNames = selectedTrainingBlock
+    ? assignedPlayers
+        .filter((assignedPlayer) => !isPlayerAvailableForTrainingBlock(assignedPlayer.id, selectedTrainingBlock.id))
+        .map((assignedPlayer) => assignedPlayer.name)
+    : [];
+
   const selectTrainingBlock = useCallback(
     (trainingBlockId: TrainingBlock["id"]) => {
       setSelectedTrainingBlock(trainingBlocks.find((trainingBlock) => trainingBlock.id === trainingBlockId) || null);
@@ -33,8 +42,8 @@ const useCreateTrainingBlockDialog = () => {
   );
 
   const assignPlayer = useCallback(
-    (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => {
-      const player = players.find((player) => player.id === playerId);
+    (playerName: Player["name"], trainingBlockId: TrainingBlock["id"]) => {
+      const player = players.find((player) => player.name === playerName);
       if (!player) return;
       setAssignedPlayers((prevAssignedPlayers) => [
         ...prevAssignedPlayers,
@@ -98,6 +107,7 @@ const useCreateTrainingBlockDialog = () => {
     setIsTrainingBlockDialogOpen,
     selectedTrainingBlock,
     assignedPlayers,
+    unavailablePlayerNames,
     selectTrainingBlock,
     assignPlayer,
     unassignPlayer,

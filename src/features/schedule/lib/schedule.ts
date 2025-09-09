@@ -37,7 +37,15 @@ export const generateTrainingBlocks = (availabilities: Availability[], trainingB
   return trainingBlocks;
 };
 
-export const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: TrainingBlock) => {
+export const isPlayerAvailableForTrainingBlock = (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => {
+  const players = usePlayersStore.getState().players;
+  const trainingBlocks = useScheduleStore.getState().trainingBlocks;
+
+  const player = players.find((player) => player.id === playerId);
+  const trainingBlock = trainingBlocks.find((trainingBlock) => trainingBlock.id === trainingBlockId);
+
+  if (!player || !trainingBlock) return false;
+
   return (player.availabilities as Availability[]).some((availability) => {
     return (
       availability.day === trainingBlock.day &&
@@ -49,7 +57,7 @@ export const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock:
 
 const getTrainingBlockIdsForPlayer = (player: Player, trainingBlocks: TrainingBlock[]) => {
   return trainingBlocks
-    .filter((trainingBlock) => isPlayerAvailableForTrainingBlock(player, trainingBlock))
+    .filter((trainingBlock) => isPlayerAvailableForTrainingBlock(player.id, trainingBlock.id))
     .map((trainingBlock) => trainingBlock.id);
 };
 

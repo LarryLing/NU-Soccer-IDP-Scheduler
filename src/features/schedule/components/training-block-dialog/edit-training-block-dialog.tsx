@@ -13,6 +13,7 @@ import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-trai
 
 import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
 import TrainingBlockDialogSearchCombobox from "./training-block-dialog-search-combobox";
+import UnavailablePlayersAlert from "./unavailable-players-alert";
 
 type EditTrainingBlockDialogProps = Pick<
   UseEditTrainingBlockDialogReturn,
@@ -20,6 +21,7 @@ type EditTrainingBlockDialogProps = Pick<
   | "setIsTrainingBlockDialogOpen"
   | "selectedTrainingBlock"
   | "assignedPlayers"
+  | "unavailablePlayerNames"
   | "assignPlayer"
   | "unassignPlayer"
   | "updateTrainingBlock"
@@ -31,6 +33,7 @@ const EditTrainingBlockDialog = ({
   setIsTrainingBlockDialogOpen,
   selectedTrainingBlock,
   assignedPlayers,
+  unavailablePlayerNames,
   assignPlayer,
   unassignPlayer,
   updateTrainingBlock,
@@ -59,6 +62,7 @@ const EditTrainingBlockDialog = ({
           assignedPlayers={assignedPlayers}
           unassignPlayer={unassignPlayer}
         />
+        <UnavailablePlayersAlert unavailablePlayerNames={unavailablePlayerNames} />
         <DialogFooter>
           <Button variant="destructive" onClick={deleteTrainingBlock}>
             Delete Training Block

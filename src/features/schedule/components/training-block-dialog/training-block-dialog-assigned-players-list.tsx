@@ -1,13 +1,14 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
+import type { Player } from "@/schemas/player.schema";
+import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import TrainingBlockDialogAssignedPlayersItem from "./training-block-dialog-assigned-players-item";
 
-type TrainingBlockDialogAssignedPlayersListProps = Pick<
-  UseEditTrainingBlockDialogReturn,
-  "selectedTrainingBlock" | "assignedPlayers" | "unassignPlayer"
->;
+type TrainingBlockDialogAssignedPlayersListProps = {
+  selectedTrainingBlock: TrainingBlock | null;
+  assignedPlayers: Player[];
+  unassignPlayer: (playerName: Player["name"]) => void;
+};
 
 const TrainingBlockDialogAssignedPlayersList = ({
   selectedTrainingBlock,
@@ -24,8 +25,8 @@ const TrainingBlockDialogAssignedPlayersList = ({
           {assignedPlayers.map((assignedPlayer) => (
             <TrainingBlockDialogAssignedPlayersItem
               key={assignedPlayer.id}
-              player={assignedPlayer}
-              trainingBlock={selectedTrainingBlock}
+              {...assignedPlayer}
+              trainingBlockId={selectedTrainingBlock.id}
               unassignPlayer={unassignPlayer}
             />
           ))}

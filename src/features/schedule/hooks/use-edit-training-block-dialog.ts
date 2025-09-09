@@ -4,6 +4,8 @@ import usePlayersStore from "@/features/players/hooks/use-players-store";
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
+import { isPlayerAvailableForTrainingBlock } from "../lib/schedule";
+
 import useScheduleStore from "./use-schedule-store";
 
 export type UseEditTrainingBlockDialogReturn = {
@@ -12,6 +14,7 @@ export type UseEditTrainingBlockDialogReturn = {
   selectedTrainingBlock: TrainingBlock | null;
   openTrainingBlockDialog: (trainingBlockId: TrainingBlock["id"]) => void;
   assignedPlayers: Player[];
+  unavailablePlayerNames: Player["name"][];
   assignPlayer: (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => void;
   unassignPlayer: (playerId: Player["id"]) => void;
   updateTrainingBlock: () => void;
@@ -25,6 +28,12 @@ const useEditTrainingBlockDialog = () => {
   const [isTrainingBlockDialogOpen, setIsTrainingBlockDialogOpen] = useState<boolean>(false);
   const [selectedTrainingBlock, setSelectedTrainingBlock] = useState<TrainingBlock | null>(null);
   const [assignedPlayers, setAssignedPlayers] = useState<Player[]>([]);
+
+  const unavailablePlayerNames = selectedTrainingBlock
+    ? assignedPlayers
+        .filter((assignedPlayer) => !isPlayerAvailableForTrainingBlock(assignedPlayer.id, selectedTrainingBlock.id))
+        .map((assignedPlayer) => assignedPlayer.name)
+    : [];
 
   const openTrainingBlockDialog = useCallback(
     (trainingBlockId: TrainingBlock["id"]) => {
@@ -139,6 +148,7 @@ const useEditTrainingBlockDialog = () => {
     selectedTrainingBlock,
     openTrainingBlockDialog,
     assignedPlayers,
+    unavailablePlayerNames,
     assignPlayer,
     unassignPlayer,
     updateTrainingBlock,

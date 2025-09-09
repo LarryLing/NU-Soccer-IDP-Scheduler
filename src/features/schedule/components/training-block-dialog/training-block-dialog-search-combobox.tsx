@@ -5,15 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
-
-import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
+import type { Player } from "@/schemas/player.schema";
+import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import TrainingBlockDialogSearchItem from "./training-block-dialog-search-item";
 
-type TrainingBlockDialogSearchComboboxProps = Pick<
-  UseEditTrainingBlockDialogReturn,
-  "selectedTrainingBlock" | "assignedPlayers" | "assignPlayer"
->;
+type TrainingBlockDialogSearchComboboxProps = {
+  selectedTrainingBlock: TrainingBlock | null;
+  assignedPlayers: Player[];
+  assignPlayer: (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => void;
+};
 
 const TrainingBlockDialogSearchCombobox = ({
   selectedTrainingBlock,
@@ -51,7 +52,7 @@ const TrainingBlockDialogSearchCombobox = ({
             <CommandGroup className="overflow-y-scroll">
               {filteredPlayers.map((player) => (
                 <CommandItem key={player.id} value={player.name} onSelect={handleAssignPlayer}>
-                  <TrainingBlockDialogSearchItem player={player} trainingBlock={selectedTrainingBlock} />
+                  <TrainingBlockDialogSearchItem selectedTrainingBlockId={selectedTrainingBlock.id} {...player} />
                 </CommandItem>
               ))}
             </CommandGroup>

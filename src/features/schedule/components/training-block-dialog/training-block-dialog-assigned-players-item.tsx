@@ -3,24 +3,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
 
 type TrainingBlockDialogAssignedPlayersItemProps = {
-  player: Player;
-  trainingBlock: TrainingBlock;
-  unassignPlayer: UseEditTrainingBlockDialogReturn["unassignPlayer"];
-};
+  trainingBlockId: TrainingBlock["id"];
+  unassignPlayer: (playerName: Player["name"]) => void;
+} & Pick<Player, "id" | "name" | "number" | "position">;
 
 const TrainingBlockDialogAssignedPlayersItem = ({
-  player,
-  trainingBlock,
+  trainingBlockId,
+  id: playerId,
+  name,
+  number,
+  position,
   unassignPlayer,
 }: TrainingBlockDialogAssignedPlayersItemProps) => {
-  const { id, name, number, position } = player;
-
   const handleUnassignPlayer = (value: string) => {
-    if (value === "remove") unassignPlayer(id);
+    if (value === "remove") unassignPlayer(playerId);
   };
 
   return (
@@ -38,7 +37,7 @@ const TrainingBlockDialogAssignedPlayersItem = ({
         </SelectTrigger>
         <SelectContent align="center">
           <SelectItem value="availablility-status">
-            {isPlayerAvailableForTrainingBlock(player, trainingBlock) ? "Available" : "Not Available"}
+            {isPlayerAvailableForTrainingBlock(playerId, trainingBlockId) ? "Available" : "Not Available"}
           </SelectItem>
           <SelectItem value="remove">Remove</SelectItem>
         </SelectContent>

@@ -17,6 +17,7 @@ import useCreateTrainingBlockDialog from "../../hooks/use-create-training-block-
 import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
 import TrainingBlockDialogSearchCombobox from "./training-block-dialog-search-combobox";
 import TrainingBlockDialogSelectCombobox from "./training-block-dialog-select-combobox";
+import UnavailablePlayersAlert from "./unavailable-players-alert";
 
 const CreateTrainingBlockDialog = () => {
   const {
@@ -24,6 +25,7 @@ const CreateTrainingBlockDialog = () => {
     setIsTrainingBlockDialogOpen,
     selectedTrainingBlock,
     assignedPlayers,
+    unavailablePlayerNames,
     selectTrainingBlock,
     assignPlayer,
     unassignPlayer,
@@ -59,6 +61,7 @@ const CreateTrainingBlockDialog = () => {
           assignedPlayers={assignedPlayers}
           unassignPlayer={unassignPlayer}
         />
+        <UnavailablePlayersAlert unavailablePlayerNames={unavailablePlayerNames} />
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
