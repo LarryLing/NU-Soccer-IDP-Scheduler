@@ -1,14 +1,13 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { Player } from "@/schemas/player.schema";
-import type { TrainingBlock } from "@/schemas/training-block.schema";
+
+import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 
 import TrainingBlockDialogAssignedPlayersItem from "./training-block-dialog-assigned-players-item";
 
-type TrainingBlockDialogAssignedPlayersListProps = {
-  selectedTrainingBlock: TrainingBlock | null;
-  assignedPlayers: Player[];
-  unassignPlayer: (playerName: Player["name"]) => void;
-};
+type TrainingBlockDialogAssignedPlayersListProps = Pick<
+  UseTrainingBlockDialogReturn,
+  "selectedTrainingBlock" | "assignedPlayers" | "unassignPlayer"
+>;
 
 const TrainingBlockDialogAssignedPlayersList = ({
   selectedTrainingBlock,

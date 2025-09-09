@@ -5,19 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-import type { UseCreateTrainingBlockDialogReturn } from "../../hooks/use-create-training-block-dialog";
 import useScheduleStore from "../../hooks/use-schedule-store";
+import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 
 import TrainingBlockDialogSelectItem from "./training-block-dialog-select-item";
 
 type TrainingBlockDialogSelectComboboxProps = Pick<
-  UseCreateTrainingBlockDialogReturn,
-  "selectedTrainingBlock" | "selectTrainingBlock"
+  UseTrainingBlockDialogReturn,
+  "selectedTrainingBlock" | "setSelectedTrainingBlock"
 >;
 
 const TrainingBlockDialogSelectCombobox = ({
   selectedTrainingBlock,
-  selectTrainingBlock,
+  setSelectedTrainingBlock,
 }: TrainingBlockDialogSelectComboboxProps) => {
   const [open, setOpen] = useState(false);
 
@@ -26,7 +26,7 @@ const TrainingBlockDialogSelectCombobox = ({
   const filteredTrainingBlocks = trainingBlocks.filter((trainingBlock) => trainingBlock.assignedPlayerCount === 0);
 
   const handleSelectTrainingBlock = (value: string) => {
-    selectTrainingBlock(value);
+    setSelectedTrainingBlock(trainingBlocks.find((trainingBlock) => trainingBlock.id === value) || null);
     setOpen(false);
   };
 

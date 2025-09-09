@@ -7,41 +7,121 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import usePlayersStore from "@/features/players/hooks/use-players-store";
 import { getTimeStringWithMeridian } from "@/lib/time";
 
-import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
+import useScheduleStore from "../../hooks/use-schedule-store";
+import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 
 import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
 import TrainingBlockDialogSearchCombobox from "./training-block-dialog-search-combobox";
 import UnavailablePlayersAlert from "./unavailable-players-alert";
 
 type EditTrainingBlockDialogProps = Pick<
-  UseEditTrainingBlockDialogReturn,
+  UseTrainingBlockDialogReturn,
   | "isTrainingBlockDialogOpen"
   | "setIsTrainingBlockDialogOpen"
   | "selectedTrainingBlock"
+  | "setSelectedTrainingBlock"
   | "assignedPlayers"
+  | "setAssignedPlayers"
   | "unavailablePlayerNames"
   | "assignPlayer"
   | "unassignPlayer"
-  | "updateTrainingBlock"
-  | "deleteTrainingBlock"
 >;
 
 const EditTrainingBlockDialog = ({
   isTrainingBlockDialogOpen,
   setIsTrainingBlockDialogOpen,
   selectedTrainingBlock,
+  setSelectedTrainingBlock,
   assignedPlayers,
+  setAssignedPlayers,
   unavailablePlayerNames,
   assignPlayer,
   unassignPlayer,
-  updateTrainingBlock,
-  deleteTrainingBlock,
 }: EditTrainingBlockDialogProps) => {
   if (!selectedTrainingBlock) return null;
 
-  const { day, start, end } = selectedTrainingBlock!;
+  const { day, start, end } = selectedTrainingBlock;
+
+  const updateTrainingBlock = () => {
+    if (!selectedTrainingBlock) return;
+
+    const { players, setPlayers } = usePlayersStore.getState();
+    const { trainingBlocks, setTrainingBlocks } = useScheduleStore.getState();
+
+    const updatedPlayers = [...players].map((player) => {
+      if (assignedPlayers.some((assignedPlayer) => assignedPlayer.id === player.id)) {
+        return {
+          ...player,
+          trainingBlockId: selectedTrainingBlock.id,
+        };
+      }
+
+      return {
+        ...player,
+        trainingBlockId: null,
+      };
+    });
+
+    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+      const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
+        if (player.trainingBlockId === trainingBlock.id) {
+          return accumulator + 1;
+        }
+        return accumulator;
+      }, 0);
+
+      return {
+        ...trainingBlock,
+        assignedPlayerCount: updatedAssignPlayerCount,
+      };
+    });
+
+    setPlayers(updatedPlayers);
+    setTrainingBlocks(updatedTrainingBlocks);
+    setSelectedTrainingBlock(null);
+    setAssignedPlayers([]);
+    setIsTrainingBlockDialogOpen(false);
+  };
+
+  const deleteTrainingBlock = () => {
+    if (!selectedTrainingBlock) return;
+
+    const { players, setPlayers } = usePlayersStore.getState();
+    const { trainingBlocks, setTrainingBlocks } = useScheduleStore.getState();
+
+    const updatedPlayers = [...players].map((player) => {
+      if (player.trainingBlockId === selectedTrainingBlock?.id) {
+        return {
+          ...player,
+          trainingBlockId: null,
+        };
+      }
+
+      return player;
+    });
+
+    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+      const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
+        if (player.trainingBlockId === trainingBlock.id) {
+          return accumulator + 1;
+        }
+        return accumulator;
+      }, 0);
+
+      return {
+        ...trainingBlock,
+        assignedPlayerCount: updatedAssignPlayerCount,
+      };
+    });
+
+    setPlayers(updatedPlayers);
+    setTrainingBlocks(updatedTrainingBlocks);
+    setSelectedTrainingBlock(null);
+    setIsTrainingBlockDialogOpen(false);
+  };
 
   return (
     <Dialog open={isTrainingBlockDialogOpen} onOpenChange={setIsTrainingBlockDialogOpen}>

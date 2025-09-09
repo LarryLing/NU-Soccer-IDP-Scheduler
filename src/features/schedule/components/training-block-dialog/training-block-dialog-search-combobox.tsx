@@ -5,16 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
-import type { Player } from "@/schemas/player.schema";
-import type { TrainingBlock } from "@/schemas/training-block.schema";
+
+import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 
 import TrainingBlockDialogSearchItem from "./training-block-dialog-search-item";
 
-type TrainingBlockDialogSearchComboboxProps = {
-  selectedTrainingBlock: TrainingBlock | null;
-  assignedPlayers: Player[];
-  assignPlayer: (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => void;
-};
+type TrainingBlockDialogSearchComboboxProps = Pick<
+  UseTrainingBlockDialogReturn,
+  "selectedTrainingBlock" | "assignedPlayers" | "assignPlayer"
+>;
 
 const TrainingBlockDialogSearchCombobox = ({
   selectedTrainingBlock,

@@ -11,8 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import usePlayersStore from "@/features/players/hooks/use-players-store";
 
-import useCreateTrainingBlockDialog from "../../hooks/use-create-training-block-dialog";
+import useScheduleStore from "../../hooks/use-schedule-store";
+import useTrainingBlockDialog from "../../hooks/use-training-block-dialog";
 
 import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
 import TrainingBlockDialogSearchCombobox from "./training-block-dialog-search-combobox";
@@ -24,13 +26,54 @@ const CreateTrainingBlockDialog = () => {
     isTrainingBlockDialogOpen,
     setIsTrainingBlockDialogOpen,
     selectedTrainingBlock,
+    setSelectedTrainingBlock,
     assignedPlayers,
+    setAssignedPlayers,
     unavailablePlayerNames,
-    selectTrainingBlock,
     assignPlayer,
     unassignPlayer,
-    createTrainingBlock,
-  } = useCreateTrainingBlockDialog();
+  } = useTrainingBlockDialog();
+
+  const createTrainingBlock = () => {
+    if (!selectedTrainingBlock) return;
+
+    const { players, setPlayers } = usePlayersStore.getState();
+    const { trainingBlocks, setTrainingBlocks } = useScheduleStore.getState();
+
+    const updatedPlayers = [...players].map((player) => {
+      if (assignedPlayers.some((assignedPlayer) => assignedPlayer.id === player.id)) {
+        return {
+          ...player,
+          trainingBlockId: selectedTrainingBlock.id,
+        };
+      }
+
+      return {
+        ...player,
+        trainingBlockId: null,
+      };
+    });
+
+    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+      const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
+        if (player.trainingBlockId === trainingBlock.id) {
+          return accumulator + 1;
+        }
+        return accumulator;
+      }, 0);
+
+      return {
+        ...trainingBlock,
+        assignedPlayerCount: updatedAssignPlayerCount,
+      };
+    });
+
+    setPlayers(updatedPlayers);
+    setTrainingBlocks(updatedTrainingBlocks);
+    setSelectedTrainingBlock(null);
+    setAssignedPlayers([]);
+    setIsTrainingBlockDialogOpen(false);
+  };
 
   return (
     <Dialog open={isTrainingBlockDialogOpen} onOpenChange={setIsTrainingBlockDialogOpen}>
@@ -49,7 +92,7 @@ const CreateTrainingBlockDialog = () => {
         </DialogHeader>
         <TrainingBlockDialogSelectCombobox
           selectedTrainingBlock={selectedTrainingBlock}
-          selectTrainingBlock={selectTrainingBlock}
+          setSelectedTrainingBlock={setSelectedTrainingBlock}
         />
         <TrainingBlockDialogSearchCombobox
           selectedTrainingBlock={selectedTrainingBlock}

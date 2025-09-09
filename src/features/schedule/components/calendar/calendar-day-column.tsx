@@ -3,8 +3,8 @@ import { memo, useMemo, type JSX } from "react";
 import type { Day } from "@/constants/days";
 import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
 import { getDayAbbreviation } from "@/lib/time";
+import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 import useScheduleStore from "../../hooks/use-schedule-store";
 import TrainingBlockTrigger from "../training-block-dialog/edit-training-block-trigger";
 
@@ -12,7 +12,8 @@ import CalendarCell from "./calendar-cell";
 
 type CalendarDayColumnProps = {
   day: Day;
-} & Pick<UseEditTrainingBlockDialogReturn, "openTrainingBlockDialog">;
+  openTrainingBlockDialog: (trainingBlockId: TrainingBlock["id"]) => void;
+};
 
 const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnProps) => {
   const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);

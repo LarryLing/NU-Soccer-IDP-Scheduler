@@ -1,11 +1,10 @@
 import { AlertTriangleIcon } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import type { Player } from "@/schemas/player.schema";
 
-type UnavailablePlayersAlertProps = {
-  unavailablePlayerNames: Player["name"][];
-};
+import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
+
+type UnavailablePlayersAlertProps = Pick<UseTrainingBlockDialogReturn, "unavailablePlayerNames">;
 
 const UnavailablePlayersAlert = ({ unavailablePlayerNames }: UnavailablePlayersAlertProps) => {
   if (unavailablePlayerNames.length === 0) return null;

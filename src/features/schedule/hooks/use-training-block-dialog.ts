@@ -6,23 +6,20 @@ import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import { isPlayerAvailableForTrainingBlock } from "../lib/schedule";
 
-import useScheduleStore from "./use-schedule-store";
-
-export type UseCreateTrainingBlockDialogReturn = {
+export type UseTrainingBlockDialogReturn = {
   isTrainingBlockDialogOpen: boolean;
   setIsTrainingBlockDialogOpen: (isTrainingBlockDialogOpen: boolean) => void;
   selectedTrainingBlock: TrainingBlock | null;
+  setSelectedTrainingBlock: (selectedTrainingBlock: TrainingBlock | null) => void;
   assignedPlayers: Player[];
+  setAssignedPlayers: (assignedPlayers: Player[]) => void;
   unavailablePlayerNames: Player["name"][];
-  selectTrainingBlock: (trainingBlockId: TrainingBlock["id"]) => void;
   assignPlayer: (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => void;
   unassignPlayer: (playerId: Player["id"]) => void;
-  createTrainingBlock: () => void;
 };
 
-const useCreateTrainingBlockDialog = () => {
+const useTrainingBlockDialog = () => {
   const players = usePlayersStore((state) => state.players);
-  const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
 
   const [isTrainingBlockDialogOpen, setIsTrainingBlockDialogOpen] = useState<boolean>(false);
   const [selectedTrainingBlock, setSelectedTrainingBlock] = useState<TrainingBlock | null>(null);
@@ -33,13 +30,6 @@ const useCreateTrainingBlockDialog = () => {
         .filter((assignedPlayer) => !isPlayerAvailableForTrainingBlock(assignedPlayer.id, selectedTrainingBlock.id))
         .map((assignedPlayer) => assignedPlayer.name)
     : [];
-
-  const selectTrainingBlock = useCallback(
-    (trainingBlockId: TrainingBlock["id"]) => {
-      setSelectedTrainingBlock(trainingBlocks.find((trainingBlock) => trainingBlock.id === trainingBlockId) || null);
-    },
-    [trainingBlocks]
-  );
 
   const assignPlayer = useCallback(
     (playerName: Player["name"], trainingBlockId: TrainingBlock["id"]) => {
@@ -61,58 +51,17 @@ const useCreateTrainingBlockDialog = () => {
     [assignedPlayers]
   );
 
-  const createTrainingBlock = useCallback(() => {
-    if (!selectedTrainingBlock) return;
-
-    const setPlayers = usePlayersStore.getState().setPlayers;
-    const setTrainingBlocks = useScheduleStore.getState().setTrainingBlocks;
-
-    const updatedPlayers = [...players].map((player) => {
-      if (assignedPlayers.some((assignedPlayer) => assignedPlayer.id === player.id)) {
-        return {
-          ...player,
-          trainingBlockId: selectedTrainingBlock.id,
-        };
-      }
-
-      return {
-        ...player,
-        trainingBlockId: null,
-      };
-    });
-
-    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
-      const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
-        if (player.trainingBlockId === trainingBlock.id) {
-          return accumulator + 1;
-        }
-        return accumulator;
-      }, 0);
-
-      return {
-        ...trainingBlock,
-        assignedPlayerCount: updatedAssignPlayerCount,
-      };
-    });
-
-    setPlayers(updatedPlayers);
-    setTrainingBlocks(updatedTrainingBlocks);
-    setSelectedTrainingBlock(null);
-    setAssignedPlayers([]);
-    setIsTrainingBlockDialogOpen(false);
-  }, [assignedPlayers, players, selectedTrainingBlock, trainingBlocks]);
-
   return {
     isTrainingBlockDialogOpen,
     setIsTrainingBlockDialogOpen,
     selectedTrainingBlock,
+    setSelectedTrainingBlock,
     assignedPlayers,
+    setAssignedPlayers,
     unavailablePlayerNames,
-    selectTrainingBlock,
     assignPlayer,
     unassignPlayer,
-    createTrainingBlock,
   };
 };
 
-export default useCreateTrainingBlockDialog;
+export default useTrainingBlockDialog;

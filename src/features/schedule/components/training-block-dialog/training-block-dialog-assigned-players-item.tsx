@@ -3,12 +3,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
+import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
 
 type TrainingBlockDialogAssignedPlayersItemProps = {
   trainingBlockId: TrainingBlock["id"];
-  unassignPlayer: (playerName: Player["name"]) => void;
-} & Pick<Player, "id" | "name" | "number" | "position">;
+} & Pick<UseTrainingBlockDialogReturn, "unassignPlayer"> &
+  Pick<Player, "id" | "name" | "number" | "position">;
 
 const TrainingBlockDialogAssignedPlayersItem = ({
   trainingBlockId,
