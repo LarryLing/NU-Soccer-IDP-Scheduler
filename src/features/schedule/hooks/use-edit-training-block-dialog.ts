@@ -14,6 +14,7 @@ export type UseEditTrainingBlockDialogReturn = {
   assignedPlayers: Player[];
   assignPlayer: (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => void;
   unassignPlayer: (playerId: Player["id"]) => void;
+  updateTrainingBlock: () => void;
   deleteTrainingBlock: () => void;
 };
 
@@ -23,58 +24,81 @@ const useEditTrainingBlockDialog = () => {
 
   const [isTrainingBlockDialogOpen, setIsTrainingBlockDialogOpen] = useState<boolean>(false);
   const [selectedTrainingBlock, setSelectedTrainingBlock] = useState<TrainingBlock | null>(null);
-
-  const assignedPlayers = players.filter((player) => player.trainingBlockId === selectedTrainingBlock?.id);
+  const [assignedPlayers, setAssignedPlayers] = useState<Player[]>([]);
 
   const openTrainingBlockDialog = useCallback(
     (trainingBlockId: TrainingBlock["id"]) => {
       setSelectedTrainingBlock(trainingBlocks.find((trainingBlock) => trainingBlock.id === trainingBlockId) || null);
+      setAssignedPlayers(players.filter((player) => player.trainingBlockId === trainingBlockId));
       setIsTrainingBlockDialogOpen(true);
     },
-    [trainingBlocks]
+    [players, trainingBlocks]
   );
 
   const assignPlayer = useCallback(
     (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => {
-      const setPlayers = usePlayersStore.getState().setPlayers;
-
-      const updatedPlayers = [...players].map((player) => {
-        if (player.id === playerId) {
-          return {
-            ...player,
-            trainingBlockId,
-          };
-        }
-
-        return player;
-      });
-
-      setPlayers(updatedPlayers);
+      const player = players.find((player) => player.id === playerId);
+      if (!player) return;
+      setAssignedPlayers((prevAssignedPlayers) => [
+        ...prevAssignedPlayers,
+        { ...player, trainingBlockId: trainingBlockId },
+      ]);
     },
     [players]
   );
 
   const unassignPlayer = useCallback(
     (playerId: Player["id"]) => {
-      const setPlayers = usePlayersStore.getState().setPlayers;
-
-      const updatedPlayers = [...players].map((player) => {
-        if (player.id === playerId) {
-          return {
-            ...player,
-            trainingBlockId: null,
-          };
-        }
-
-        return player;
-      });
-
-      setPlayers(updatedPlayers);
+      const updatedAssignedPlayers = [...assignedPlayers].filter((assignedPlayer) => assignedPlayer.id !== playerId);
+      setAssignedPlayers(updatedAssignedPlayers);
     },
-    [players]
+    [assignedPlayers]
   );
 
+  const updateTrainingBlock = useCallback(() => {
+    if (!selectedTrainingBlock) return;
+
+    const setPlayers = usePlayersStore.getState().setPlayers;
+    const setTrainingBlocks = useScheduleStore.getState().setTrainingBlocks;
+
+    const updatedPlayers = [...players].map((player) => {
+      if (assignedPlayers.some((assignedPlayer) => assignedPlayer.id === player.id)) {
+        return {
+          ...player,
+          trainingBlockId: selectedTrainingBlock.id,
+        };
+      }
+
+      return {
+        ...player,
+        trainingBlockId: null,
+      };
+    });
+
+    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+      const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
+        if (player.trainingBlockId === trainingBlock.id) {
+          return accumulator + 1;
+        }
+        return accumulator;
+      }, 0);
+
+      return {
+        ...trainingBlock,
+        assignedPlayerCount: updatedAssignPlayerCount,
+      };
+    });
+
+    setPlayers(updatedPlayers);
+    setTrainingBlocks(updatedTrainingBlocks);
+    setSelectedTrainingBlock(null);
+    setAssignedPlayers([]);
+    setIsTrainingBlockDialogOpen(false);
+  }, [assignedPlayers, players, selectedTrainingBlock, trainingBlocks]);
+
   const deleteTrainingBlock = useCallback(() => {
+    if (!selectedTrainingBlock) return;
+
     const setPlayers = usePlayersStore.getState().setPlayers;
     const setTrainingBlocks = useScheduleStore.getState().setTrainingBlocks;
 
@@ -89,15 +113,25 @@ const useEditTrainingBlockDialog = () => {
       return player;
     });
 
-    const updatedTrainingBlocks = [...trainingBlocks].filter(
-      (trainingBlock) => trainingBlock.id !== selectedTrainingBlock?.id
-    );
+    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+      const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
+        if (player.trainingBlockId === trainingBlock.id) {
+          return accumulator + 1;
+        }
+        return accumulator;
+      }, 0);
+
+      return {
+        ...trainingBlock,
+        assignedPlayerCount: updatedAssignPlayerCount,
+      };
+    });
 
     setPlayers(updatedPlayers);
     setTrainingBlocks(updatedTrainingBlocks);
     setSelectedTrainingBlock(null);
     setIsTrainingBlockDialogOpen(false);
-  }, [players, selectedTrainingBlock?.id, trainingBlocks]);
+  }, [players, selectedTrainingBlock, trainingBlocks]);
 
   return {
     isTrainingBlockDialogOpen,
@@ -107,6 +141,7 @@ const useEditTrainingBlockDialog = () => {
     assignedPlayers,
     assignPlayer,
     unassignPlayer,
+    updateTrainingBlock,
     deleteTrainingBlock,
   };
 };

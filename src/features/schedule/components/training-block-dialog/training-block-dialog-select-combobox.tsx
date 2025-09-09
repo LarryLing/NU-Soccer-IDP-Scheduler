@@ -2,7 +2,7 @@ import { ChevronsUpDownIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 import type { UseCreateTrainingBlockDialogReturn } from "../../hooks/use-create-training-block-dialog";
@@ -10,9 +10,15 @@ import useScheduleStore from "../../hooks/use-schedule-store";
 
 import TrainingBlockDialogSelectItem from "./training-block-dialog-select-item";
 
-type TrainingBlockDialogSelectComboboxProps = Pick<UseCreateTrainingBlockDialogReturn, "selectTrainingBlock">;
+type TrainingBlockDialogSelectComboboxProps = Pick<
+  UseCreateTrainingBlockDialogReturn,
+  "selectedTrainingBlock" | "selectTrainingBlock"
+>;
 
-const TrainingBlockDialogSelectCombobox = ({ selectTrainingBlock }: TrainingBlockDialogSelectComboboxProps) => {
+const TrainingBlockDialogSelectCombobox = ({
+  selectedTrainingBlock,
+  selectTrainingBlock,
+}: TrainingBlockDialogSelectComboboxProps) => {
   const [open, setOpen] = useState(false);
 
   const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
@@ -27,14 +33,19 @@ const TrainingBlockDialogSelectCombobox = ({ selectTrainingBlock }: TrainingBloc
   return (
     <Popover modal open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
-          Select Training Block...
-          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+        {selectedTrainingBlock ? (
+          <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between h-[50px]">
+            <TrainingBlockDialogSelectItem {...selectedTrainingBlock} />
+          </Button>
+        ) : (
+          <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between h-">
+            Select Training Block...
+            <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-[400px] p-0">
         <Command>
-          <CommandInput placeholder="Search Training Blocks..." />
           <CommandList>
             <CommandEmpty>No training blocks found.</CommandEmpty>
             <CommandGroup className="overflow-y-scroll">

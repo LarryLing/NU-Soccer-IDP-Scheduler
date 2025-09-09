@@ -10,7 +10,7 @@ const TrainingBlockDialogSelectItem = ({
   assignedPlayerCount,
 }: TrainingBlockDialogSelectItemProps) => {
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col items-start">
       <p className="text-sm font-medium">{day}</p>
       <p className="text-sm text-muted-foreground">
         {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)} • {assignedPlayerCount} Players Assigned

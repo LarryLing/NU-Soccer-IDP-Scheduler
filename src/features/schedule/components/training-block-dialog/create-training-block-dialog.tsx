@@ -41,11 +41,14 @@ const CreateTrainingBlockDialog = () => {
       <DialogContent className="w-[450px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1">Create Training Block</DialogTitle>
-          {/* <DialogDescription className="flex items-center gap-1">
-            {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)}
-          </DialogDescription> */}
+          <DialogDescription className="flex items-center gap-1">
+            Create a training block with custom player assignments
+          </DialogDescription>
         </DialogHeader>
-        <TrainingBlockDialogSelectCombobox selectTrainingBlock={selectTrainingBlock} />
+        <TrainingBlockDialogSelectCombobox
+          selectedTrainingBlock={selectedTrainingBlock}
+          selectTrainingBlock={selectTrainingBlock}
+        />
         <TrainingBlockDialogSearchCombobox
           selectedTrainingBlock={selectedTrainingBlock}
           assignedPlayers={assignedPlayers}
@@ -58,7 +61,7 @@ const CreateTrainingBlockDialog = () => {
         />
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button onClick={createTrainingBlock} disabled={selectedTrainingBlock === null}>
             Create Training Block

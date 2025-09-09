@@ -66,18 +66,24 @@ const useCreateTrainingBlockDialog = () => {
         };
       }
 
-      return player;
+      return {
+        ...player,
+        trainingBlockId: null,
+      };
     });
 
     const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
-      if (trainingBlock.id === selectedTrainingBlock.id) {
-        return {
-          ...trainingBlock,
-          assignedPlayerCount: assignedPlayers.length,
-        };
-      }
+      const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
+        if (player.trainingBlockId === trainingBlock.id) {
+          return accumulator + 1;
+        }
+        return accumulator;
+      }, 0);
 
-      return trainingBlock;
+      return {
+        ...trainingBlock,
+        assignedPlayerCount: updatedAssignPlayerCount,
+      };
     });
 
     setPlayers(updatedPlayers);

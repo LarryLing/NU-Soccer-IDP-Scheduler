@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -23,6 +22,7 @@ type EditTrainingBlockDialogProps = Pick<
   | "assignedPlayers"
   | "assignPlayer"
   | "unassignPlayer"
+  | "updateTrainingBlock"
   | "deleteTrainingBlock"
 >;
 
@@ -33,6 +33,7 @@ const EditTrainingBlockDialog = ({
   assignedPlayers,
   assignPlayer,
   unassignPlayer,
+  updateTrainingBlock,
   deleteTrainingBlock,
 }: EditTrainingBlockDialogProps) => {
   if (!selectedTrainingBlock) return null;
@@ -62,9 +63,7 @@ const EditTrainingBlockDialog = ({
           <Button variant="destructive" onClick={deleteTrainingBlock}>
             Delete Training Block
           </Button>
-          <DialogClose asChild>
-            <Button variant="outline">Close</Button>
-          </DialogClose>
+          <Button onClick={updateTrainingBlock}>Save Training Block</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
