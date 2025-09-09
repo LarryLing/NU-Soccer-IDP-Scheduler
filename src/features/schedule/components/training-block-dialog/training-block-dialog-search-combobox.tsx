@@ -50,7 +50,7 @@ const TrainingBlockDialogSearchCombobox = ({
             <CommandEmpty>No players found.</CommandEmpty>
             <CommandGroup className="overflow-y-scroll">
               {filteredPlayers.map((player) => (
-                <CommandItem key={player.id} value={player.id} onSelect={handleAssignPlayer}>
+                <CommandItem key={player.id} value={player.name} onSelect={handleAssignPlayer}>
                   <TrainingBlockDialogSearchItem player={player} trainingBlock={selectedTrainingBlock} />
                 </CommandItem>
               ))}

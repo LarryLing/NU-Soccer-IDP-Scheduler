@@ -16,7 +16,7 @@ const UnassignedPlayersPopover = () => {
       <PopoverTrigger asChild>
         <Button variant="outline">
           <CalendarX2 />
-          {unassignedPlayerNames.length} unassigned players
+          <span className="hidden lg:block">Unassigned Players</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="space-y-2">

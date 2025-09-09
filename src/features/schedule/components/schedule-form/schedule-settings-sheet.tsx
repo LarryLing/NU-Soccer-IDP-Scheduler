@@ -17,7 +17,7 @@ const ScheduleSheet = ({ isScheduleSheetOpen, setIsScheduleSheetOpen, closeSched
       <SheetTrigger asChild>
         <Button variant="outline">
           <CalendarCog />
-          Edit Schedule Settings
+          <span className="hidden lg:block">Edit Settings</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-y-scroll">

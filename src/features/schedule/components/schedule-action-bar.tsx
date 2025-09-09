@@ -76,7 +76,7 @@ const ScheduleActionBar = () => {
             <UnassignedPlayersPopover />
             <Button variant="destructive" onClick={handleClearSchedule}>
               <CalendarOff />
-              Clear Schedule
+              <span className="hidden lg:block">Clear Schedule</span>
             </Button>
           </>
         )}

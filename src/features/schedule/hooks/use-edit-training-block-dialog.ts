@@ -36,8 +36,8 @@ const useEditTrainingBlockDialog = () => {
   );
 
   const assignPlayer = useCallback(
-    (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => {
-      const player = players.find((player) => player.id === playerId);
+    (playerName: Player["name"], trainingBlockId: TrainingBlock["id"]) => {
+      const player = players.find((player) => player.name === playerName);
       if (!player) return;
       setAssignedPlayers((prevAssignedPlayers) => [
         ...prevAssignedPlayers,
