@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
 
-import { useScheduleSheet } from "../hooks/use-schedule-settings-sheet";
 import useScheduleStore from "../hooks/use-schedule-store";
 import useTrainingBlocksJson from "../hooks/use-training-blocks-json";
 import { assignPlayersToTrainingBlocks } from "../lib/schedule";
@@ -18,8 +17,6 @@ const ScheduleActionBar = () => {
 
   const { fileInputRef, handleOpenFileInput, handleExportTrainingBlocksJson, handleImportTrainingBlocksJson } =
     useTrainingBlocksJson();
-
-  const scheduleSheetReturn = useScheduleSheet();
 
   const handleClearSchedule = () => {
     const { players, setPlayers } = usePlayersStore.getState();
@@ -85,7 +82,7 @@ const ScheduleActionBar = () => {
           Create Schedule
         </Button>
         <CreateTrainingBlockDialog />
-        <ScheduleSheet {...scheduleSheetReturn} />
+        <ScheduleSheet />
         {hasAssignedPlayers && (
           <>
             <UnassignedPlayersPopover />

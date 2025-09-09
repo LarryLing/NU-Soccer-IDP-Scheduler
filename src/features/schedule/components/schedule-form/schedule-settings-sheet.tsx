@@ -2,16 +2,13 @@ import { CalendarCog } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import type { UseScheduleSheetReturn } from "@/features/schedule/hooks/use-schedule-settings-sheet";
+import { useScheduleSheet } from "@/features/schedule/hooks/use-schedule-settings-sheet";
 
 import ScheduleForm from "./schedule-settings-form";
 
-type ScheduleSheetProps = Pick<
-  UseScheduleSheetReturn,
-  "isScheduleSheetOpen" | "setIsScheduleSheetOpen" | "closeScheduleSheet"
->;
+const ScheduleSheet = () => {
+  const { isScheduleSheetOpen, setIsScheduleSheetOpen, closeScheduleSheet } = useScheduleSheet();
 
-const ScheduleSheet = ({ isScheduleSheetOpen, setIsScheduleSheetOpen, closeScheduleSheet }: ScheduleSheetProps) => {
   return (
     <Sheet open={isScheduleSheetOpen} onOpenChange={setIsScheduleSheetOpen}>
       <SheetTrigger asChild>
