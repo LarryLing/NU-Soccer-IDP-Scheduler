@@ -1,11 +1,10 @@
-import { CalendarIcon, CalendarOff, Download, Upload } from "lucide-react";
+import { CalendarIcon, CalendarOff } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
 
 import useScheduleStore from "../hooks/use-schedule-store";
-import useTrainingBlocksJson from "../hooks/use-training-blocks-json";
 import { assignPlayersToTrainingBlocks } from "../lib/schedule";
 
 import ScheduleSheet from "./schedule-form/schedule-settings-sheet";
@@ -14,9 +13,6 @@ import UnassignedPlayersPopover from "./unassigned-players-popover";
 
 const ScheduleActionBar = () => {
   const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
-
-  const { fileInputRef, handleOpenFileInput, handleExportTrainingBlocksJson, handleImportTrainingBlocksJson } =
-    useTrainingBlocksJson();
 
   const handleClearSchedule = () => {
     const { players, setPlayers } = usePlayersStore.getState();
@@ -75,40 +71,22 @@ const ScheduleActionBar = () => {
   const hasAssignedPlayers = trainingBlocks.some((trainingBlock) => trainingBlock.assignedPlayerCount > 0);
 
   return (
-    <div className="w-full flex justify-between items-center gap-x-2">
-      <div className="flex gap-x-2">
-        <Button onClick={handleAssignPlayers}>
-          <CalendarIcon />
-          Create Schedule
-        </Button>
-        <CreateTrainingBlockDialog />
-        <ScheduleSheet />
-        {hasAssignedPlayers && (
-          <>
-            <UnassignedPlayersPopover />
-            <Button variant="destructive" onClick={handleClearSchedule}>
-              <CalendarOff />
-              <span className="hidden lg:block">Clear Schedule</span>
-            </Button>
-          </>
-        )}
-      </div>
-      <div className="flex gap-x-2">
-        <Button size="icon" variant="outline" onClick={handleExportTrainingBlocksJson}>
-          <Download />
-        </Button>
-        <Button size="icon" variant="outline" onClick={handleOpenFileInput}>
-          <Upload />
-        </Button>
-        <input
-          ref={fileInputRef}
-          id="hidden"
-          type="file"
-          accept=".json,application/json"
-          onChange={handleImportTrainingBlocksJson}
-          className="hidden"
-        />
-      </div>
+    <div className="w-full flex flex-wrap justify-start items-center gap-2">
+      <Button onClick={handleAssignPlayers}>
+        <CalendarIcon />
+        Create Schedule
+      </Button>
+      <CreateTrainingBlockDialog />
+      <ScheduleSheet />
+      {hasAssignedPlayers && (
+        <>
+          <UnassignedPlayersPopover />
+          <Button variant="destructive" onClick={handleClearSchedule}>
+            <CalendarOff />
+            Clear Schedule
+          </Button>
+        </>
+      )}
     </div>
   );
 };

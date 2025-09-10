@@ -20,6 +20,10 @@ A frontend application the Northwestern Men's Soccer coaching staff for creating
 ![Zod](https://img.shields.io/badge/zod-%233068b7.svg?style=for-the-badge&logo=zod&logoColor=white)
 ![Zustand](https://img.shields.io/badge/Zustand-5190cf?style=for-the-badge&logo=zustand&logoColor=white)
 
+## Usage
+
+You may use this [players.json]() file as a starting point
+
 ## Contributing
 
 Any contributions you make are **greatly appreciated**.

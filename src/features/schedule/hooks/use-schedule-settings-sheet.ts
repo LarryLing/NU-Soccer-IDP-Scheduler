@@ -1,21 +1,21 @@
 import { useState, useCallback } from "react";
 
-export type UseScheduleSheetReturn = {
-  isScheduleSheetOpen: boolean;
-  setIsScheduleSheetOpen: (isScheduleSheetOpen: boolean) => void;
-  closeScheduleSheet: () => void;
+export type UseScheduleSettingsSheetReturn = {
+  isScheduleSettingsSheetOpen: boolean;
+  setIsScheduleSettingsSheetOpen: (isScheduleSettingsSheetOpen: boolean) => void;
+  closeScheduleSettingsSheet: () => void;
 };
 
-export const useScheduleSheet = (): UseScheduleSheetReturn => {
-  const [isScheduleSheetOpen, setIsScheduleSheetOpen] = useState<boolean>(false);
+export const useScheduleSettingsSheet = (): UseScheduleSettingsSheetReturn => {
+  const [isScheduleSettingsSheetOpen, setIsScheduleSettingsSheetOpen] = useState<boolean>(false);
 
-  const closeScheduleSheet = useCallback(() => {
-    setIsScheduleSheetOpen(false);
+  const closeScheduleSettingsSheet = useCallback(() => {
+    setIsScheduleSettingsSheetOpen(false);
   }, []);
 
   return {
-    isScheduleSheetOpen,
-    setIsScheduleSheetOpen,
-    closeScheduleSheet,
+    isScheduleSettingsSheetOpen,
+    setIsScheduleSettingsSheetOpen,
+    closeScheduleSettingsSheet,
   };
 };

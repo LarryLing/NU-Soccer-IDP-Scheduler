@@ -1,0 +1,673 @@
+[
+  {
+    "id": "891c17c7-ba40-4b09-be93-9af6b30266df",
+    "trainingBlockId": null,
+    "name": "Josue Hangi",
+    "number": 0,
+    "position": "Goalkeeper",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "2595d155-c83a-46ea-8fde-358794bd67d2",
+    "trainingBlockId": null,
+    "name": "Dominic Pereira",
+    "number": 0,
+    "position": "Goalkeeper",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Thursday",
+        "start": 780,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "48a94215-7e71-46ef-89f6-7cc3d38c7e72",
+    "trainingBlockId": null,
+    "name": "Rafael Ponce de Leon",
+    "number": 1,
+    "position": "Goalkeeper",
+    "availabilities": [
+      {
+        "day": "Tuesday",
+        "start": 480,
+        "end": 660
+      },
+      {
+        "day": "Thursday",
+        "start": 480,
+        "end": 660
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 1020
+      },
+      {
+        "day": "Tuesday",
+        "start": 740,
+        "end": 900
+      },
+      {
+        "day": "Thursday",
+        "start": 740,
+        "end": 900
+      }
+    ]
+  },
+  {
+    "id": "dfc3f203-2aab-4b2e-b581-6c6fb58519a6",
+    "trainingBlockId": null,
+    "name": "Sam Nagano",
+    "number": 2,
+    "position": "Midfielder",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "46e4576d-6927-41c2-a11d-7302570dc73b",
+    "trainingBlockId": null,
+    "name": "Andrew Johnson",
+    "number": 3,
+    "position": "Defender",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "c44d10dc-21b4-4088-bc40-8229ca1041ec",
+    "trainingBlockId": null,
+    "name": "Dalton Bulowski",
+    "number": 4,
+    "position": "Defender",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "84af739e-16c7-421a-ad6f-5bc31c77e254",
+    "trainingBlockId": null,
+    "name": "Dimas van der Heide",
+    "number": 5,
+    "position": "Defender",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "b9be5bca-c803-407a-b0ec-14e0acf11320",
+    "trainingBlockId": null,
+    "name": "Jason Gajadhar",
+    "number": 6,
+    "position": "Midfielder",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "09b311c3-6274-40c2-b8c8-a69adb3f4f13",
+    "trainingBlockId": null,
+    "name": "Tyler Glassberg",
+    "number": 7,
+    "position": "Midfielder",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Tuesday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Thursday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 630
+      }
+    ]
+  },
+  {
+    "id": "17cf9eaa-796f-455f-b2b4-eac64ea74949",
+    "trainingBlockId": null,
+    "name": "Joe Suchecki",
+    "number": 8,
+    "position": "Midfielder",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "d1e02571-7e40-4e4a-9b8c-421a5f83f305",
+    "trainingBlockId": null,
+    "name": "Yuval Nimrodi",
+    "number": 10,
+    "position": "Midfielder",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "32598cac-be25-473d-8b9d-07683044dd0c",
+    "trainingBlockId": null,
+    "name": "Jayvin Van Deventer",
+    "number": 11,
+    "position": "Midfielder",
+    "availabilities": [
+      {
+        "day": "Friday",
+        "start": 660,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "c8e56398-8421-481a-89de-14d556db1735",
+    "trainingBlockId": null,
+    "name": "Nigel Prince",
+    "number": 12,
+    "position": "Defender",
+    "availabilities": [
+      {
+        "day": "Thursday",
+        "start": 480,
+        "end": 660
+      },
+      {
+        "day": "Monday",
+        "start": 750,
+        "end": 1020
+      },
+      {
+        "day": "Wednesday",
+        "start": 750,
+        "end": 1020
+      },
+      {
+        "day": "Friday",
+        "start": 750,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "47b90047-490f-4082-8f27-f3827d585e07",
+    "trainingBlockId": null,
+    "name": "Baraka Tarleton",
+    "number": 13,
+    "position": "Midfielder",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "afd5eeca-e909-44cf-974e-a4c9946a4ad0",
+    "trainingBlockId": null,
+    "name": "Omar Jallow",
+    "number": 14,
+    "position": "Forward",
+    "availabilities": [
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 1020
+      },
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 570
+      },
+      {
+        "day": "Tuesday",
+        "start": 480,
+        "end": 570
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 570
+      },
+      {
+        "day": "Thursday",
+        "start": 480,
+        "end": 570
+      },
+      {
+        "day": "Monday",
+        "start": 900,
+        "end": 1020
+      },
+      {
+        "day": "Tuesday",
+        "start": 900,
+        "end": 1020
+      },
+      {
+        "day": "Wednesday",
+        "start": 900,
+        "end": 1020
+      },
+      {
+        "day": "Thursday",
+        "start": 900,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "afd5e9de-f4f5-4853-a20a-d44032ce5264",
+    "trainingBlockId": null,
+    "name": "Doug Hainer",
+    "number": 15,
+    "position": "Midfielder",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "31e2561b-feae-4ad2-af74-2676f1556d08",
+    "trainingBlockId": null,
+    "name": "Peter Reisz",
+    "number": 16,
+    "position": "Midfielder",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 660
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 660
+      },
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 660
+      }
+    ]
+  },
+  {
+    "id": "b1c9da23-19f0-43e0-984a-c3699aee8b66",
+    "trainingBlockId": null,
+    "name": "Alejandro Martinez Santamaria",
+    "number": 17,
+    "position": "Forward",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "be95f41d-fbf9-45f3-993d-134ca301fa85",
+    "trainingBlockId": null,
+    "name": "Aaron O'Reilly",
+    "number": 18,
+    "position": "Goalkeeper",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "6116440f-d603-4694-8eb6-15fc3606ca6d",
+    "trainingBlockId": null,
+    "name": "Fritz Volmar",
+    "number": 19,
+    "position": "Defender",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 540
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 540
+      },
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 540
+      },
+      {
+        "day": "Tuesday",
+        "start": 480,
+        "end": 570
+      },
+      {
+        "day": "Thursday",
+        "start": 480,
+        "end": 570
+      },
+      {
+        "day": "Monday",
+        "start": 660,
+        "end": 1020
+      },
+      {
+        "day": "Wednesday",
+        "start": 660,
+        "end": 1020
+      },
+      {
+        "day": "Friday",
+        "start": 660,
+        "end": 1020
+      },
+      {
+        "day": "Tuesday",
+        "start": 750,
+        "end": 1020
+      },
+      {
+        "day": "Thursday",
+        "start": 750,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "684b0fbf-c908-479f-ae5d-c884c5818248",
+    "trainingBlockId": null,
+    "name": "Henri Richter",
+    "number": 20,
+    "position": "Midfielder",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 1020
+      },
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 1020
+      },
+      {
+        "day": "Wednesday",
+        "start": 765,
+        "end": 1020
+      },
+      {
+        "day": "Tuesday",
+        "start": 780,
+        "end": 1020
+      },
+      {
+        "day": "Thursday",
+        "start": 780,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "6cfea8cc-44ab-4f13-8ea3-9ca085835d28",
+    "trainingBlockId": null,
+    "name": "James Spatzek",
+    "number": 21,
+    "position": "Midfielder",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 780,
+        "end": 1020
+      },
+      {
+        "day": "Wednesday",
+        "start": 780,
+        "end": 1020
+      },
+      {
+        "day": "Friday",
+        "start": 780,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "53ddf9c2-6d21-4239-a625-5687253fefe5",
+    "trainingBlockId": null,
+    "name": "Aidan O'Neil",
+    "number": 22,
+    "position": "Midfielder",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Thursday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 630
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 630
+      }
+    ]
+  },
+  {
+    "id": "ea98232d-3746-48c1-bb0e-af1004f03888",
+    "trainingBlockId": null,
+    "name": "Italo Addimandi",
+    "number": 23,
+    "position": "Forward",
+    "availabilities": [
+      {
+        "day": "Friday",
+        "start": 540,
+        "end": 840
+      },
+      {
+        "day": "Tuesday",
+        "start": 780,
+        "end": 1020
+      },
+      {
+        "day": "Thursday",
+        "start": 780,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "ca090103-f99f-4763-a1d3-8a9b999f8090",
+    "trainingBlockId": null,
+    "name": "Gregory Cook",
+    "number": 25,
+    "position": "Forward",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 660
+      },
+      {
+        "day": "Tuesday",
+        "start": 480,
+        "end": 660
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 660
+      },
+      {
+        "day": "Thursday",
+        "start": 480,
+        "end": 660
+      },
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 600
+      },
+      {
+        "day": "Monday",
+        "start": 740,
+        "end": 1020
+      },
+      {
+        "day": "Tuesday",
+        "start": 740,
+        "end": 1020
+      },
+      {
+        "day": "Wednesday",
+        "start": 740,
+        "end": 1020
+      },
+      {
+        "day": "Thursday",
+        "start": 740,
+        "end": 1020
+      },
+      {
+        "day": "Friday",
+        "start": 750,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "6e4db274-514a-4b2c-8196-6baa8564cff9",
+    "trainingBlockId": null,
+    "name": "Bryant Mayer",
+    "number": 26,
+    "position": "Defender",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 600
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 600
+      },
+      {
+        "day": "Monday",
+        "start": 750,
+        "end": 900
+      },
+      {
+        "day": "Tuesday",
+        "start": 750,
+        "end": 900
+      },
+      {
+        "day": "Wednesday",
+        "start": 750,
+        "end": 900
+      },
+      {
+        "day": "Thursday",
+        "start": 750,
+        "end": 900
+      },
+      {
+        "day": "Friday",
+        "start": 750,
+        "end": 900
+      }
+    ]
+  },
+  {
+    "id": "0f6ed983-e406-4ab1-b026-987655cc4cad",
+    "trainingBlockId": null,
+    "name": "Jude Bosshardt",
+    "number": 27,
+    "position": "Goalkeeper",
+    "availabilities": [
+      {
+        "day": "Monday",
+        "start": 480,
+        "end": 585
+      },
+      {
+        "day": "Wednesday",
+        "start": 480,
+        "end": 585
+      },
+      {
+        "day": "Friday",
+        "start": 480,
+        "end": 585
+      },
+      {
+        "day": "Monday",
+        "start": 660,
+        "end": 1020
+      },
+      {
+        "day": "Wednesday",
+        "start": 660,
+        "end": 1020
+      },
+      {
+        "day": "Friday",
+        "start": 660,
+        "end": 1020
+      },
+      {
+        "day": "Tuesday",
+        "start": 750,
+        "end": 1020
+      },
+      {
+        "day": "Thursday",
+        "start": 750,
+        "end": 1020
+      }
+    ]
+  },
+  {
+    "id": "ff3ee5f5-0d87-4b1c-abaf-4a124cccbaf3",
+    "trainingBlockId": null,
+    "name": "Tre Barrett",
+    "number": 28,
+    "position": "Forward",
+    "availabilities": [],
+    "training_block_id": null
+  },
+  {
+    "id": "143fbff3-8cb2-4a6e-8f33-18d638d8eae8",
+    "trainingBlockId": null,
+    "name": "Evrit Fisher",
+    "number": 29,
+    "position": "Midfielder",
+    "availabilities": [],
+    "training_block_id": null
+  }
+]

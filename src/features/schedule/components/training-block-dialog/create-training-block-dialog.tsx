@@ -77,7 +77,7 @@ const CreateTrainingBlockDialog = () => {
       <DialogTrigger asChild>
         <Button variant="outline">
           <CalendarPlus />
-          <span className="hidden lg:block">Create Training Block</span>
+          Create Training Block
         </Button>
       </DialogTrigger>
       <DialogContent className="w-[450px]">

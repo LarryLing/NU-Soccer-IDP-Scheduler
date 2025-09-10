@@ -33,16 +33,16 @@ const TrainingBlockDialogSelectCombobox = ({
   return (
     <Popover modal open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        {selectedTrainingBlock ? (
-          <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between h-[50px]">
+        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+          {selectedTrainingBlock ? (
             <TrainingBlockDialogSelectItem {...selectedTrainingBlock} />
-          </Button>
-        ) : (
-          <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between h-">
-            Select Training Block...
-            <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        )}
+          ) : (
+            <>
+              <span>Select Training Block...</span>
+              <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </>
+          )}
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[400px] p-0">
         <Command>

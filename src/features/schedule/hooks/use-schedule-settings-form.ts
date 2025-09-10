@@ -20,7 +20,7 @@ import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStrin
 import { generateTrainingBlocks } from "../lib/schedule";
 import { type ScheduleSettingsForm, ScheduleSettingsFormSchema } from "../schemas/schedule-settings-form.schema";
 
-import type { UseScheduleSheetReturn } from "./use-schedule-settings-sheet";
+import type { UseScheduleSettingsSheetReturn } from "./use-schedule-settings-sheet";
 import useScheduleStore from "./use-schedule-store";
 
 export type UseScheduleSettingsFormReturn = {
@@ -31,7 +31,7 @@ export type UseScheduleSettingsFormReturn = {
 };
 
 export const useScheduleSettingsForm = (
-  closeScheduleSheet: UseScheduleSheetReturn["closeScheduleSheet"]
+  closeScheduleSettingsSheet: UseScheduleSettingsSheetReturn["closeScheduleSettingsSheet"]
 ): UseScheduleSettingsFormReturn => {
   const scheduleSettings = useScheduleStore((state) => state.scheduleSettings);
 
@@ -110,7 +110,7 @@ export const useScheduleSettingsForm = (
 
     toast.success("Successfully saved schedule settings");
 
-    closeScheduleSheet();
+    closeScheduleSettingsSheet();
   };
 
   return {

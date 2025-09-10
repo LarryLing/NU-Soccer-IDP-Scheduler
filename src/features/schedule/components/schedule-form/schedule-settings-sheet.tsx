@@ -2,19 +2,20 @@ import { CalendarCog } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { useScheduleSheet } from "@/features/schedule/hooks/use-schedule-settings-sheet";
+import { useScheduleSettingsSheet } from "@/features/schedule/hooks/use-schedule-settings-sheet";
 
 import ScheduleForm from "./schedule-settings-form";
 
-const ScheduleSheet = () => {
-  const { isScheduleSheetOpen, setIsScheduleSheetOpen, closeScheduleSheet } = useScheduleSheet();
+const ScheduleSettingsSheet = () => {
+  const { isScheduleSettingsSheetOpen, setIsScheduleSettingsSheetOpen, closeScheduleSettingsSheet } =
+    useScheduleSettingsSheet();
 
   return (
-    <Sheet open={isScheduleSheetOpen} onOpenChange={setIsScheduleSheetOpen}>
+    <Sheet open={isScheduleSettingsSheetOpen} onOpenChange={setIsScheduleSettingsSheetOpen}>
       <SheetTrigger asChild>
         <Button variant="outline">
           <CalendarCog />
-          <span className="hidden lg:block">Edit Settings</span>
+          Edit Schedule Settings
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-y-scroll">
@@ -24,10 +25,10 @@ const ScheduleSheet = () => {
             Enter field availability, training block duration, and maximum player count.
           </SheetDescription>
         </SheetHeader>
-        <ScheduleForm closeScheduleSheet={closeScheduleSheet} />
+        <ScheduleForm closeScheduleSettingsSheet={closeScheduleSettingsSheet} />
       </SheetContent>
     </Sheet>
   );
 };
 
-export default ScheduleSheet;
+export default ScheduleSettingsSheet;

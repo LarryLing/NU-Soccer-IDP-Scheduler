@@ -5,16 +5,16 @@ import { SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { DAYS } from "@/constants/days";
 
 import { useScheduleSettingsForm } from "../../hooks/use-schedule-settings-form";
-import type { UseScheduleSheetReturn } from "../../hooks/use-schedule-settings-sheet";
+import type { UseScheduleSettingsSheetReturn } from "../../hooks/use-schedule-settings-sheet";
 
-import ScheduleFormAvailabilityFieldArray from "./schedule-settings-form-availability-field-array";
+import ScheduleSettingsFormAvailabilityFieldArray from "./schedule-settings-form-availability-field-array";
 
-type ScheduleFormProps = {
-  closeScheduleSheet: UseScheduleSheetReturn["closeScheduleSheet"];
+type ScheduleSettingsFormProps = {
+  closeScheduleSettingsSheet: UseScheduleSettingsSheetReturn["closeScheduleSettingsSheet"];
 };
 
-const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
-  const { form, fieldArray, addAvailability, onSubmit } = useScheduleSettingsForm(closeScheduleSheet);
+const ScheduleSettingsForm = ({ closeScheduleSettingsSheet }: ScheduleSettingsFormProps) => {
+  const { form, fieldArray, addAvailability, onSubmit } = useScheduleSettingsForm(closeScheduleSettingsSheet);
 
   const {
     control,
@@ -33,7 +33,7 @@ const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
               .map((field, idx) => ({ ...field, originalIndex: idx }))
               .filter((field) => field.day === day);
             return (
-              <ScheduleFormAvailabilityFieldArray
+              <ScheduleSettingsFormAvailabilityFieldArray
                 key={day}
                 day={day}
                 dayFields={dayFields}
@@ -86,4 +86,4 @@ const ScheduleForm = ({ closeScheduleSheet }: ScheduleFormProps) => {
   );
 };
 
-export default ScheduleForm;
+export default ScheduleSettingsForm;
