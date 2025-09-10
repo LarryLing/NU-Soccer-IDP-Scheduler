@@ -9,7 +9,7 @@ import { assignPlayersToTrainingBlocks } from "../lib/schedule";
 
 import ScheduleSheet from "./schedule-form/schedule-settings-sheet";
 import CreateTrainingBlockDialog from "./training-block-dialog/create-training-block-dialog";
-import UnassignedPlayersPopover from "./unassigned-players-popover";
+import UnassignedPlayersPopover from "./unassigned-players-popover/unassigned-players-popover";
 
 const ScheduleActionBar = () => {
   const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
