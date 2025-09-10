@@ -2,6 +2,7 @@ import { useRef, type ChangeEvent, type RefObject } from "react";
 import { toast } from "sonner";
 import { ZodError } from "zod";
 
+import useScheduleStore from "@/features/schedule/hooks/use-schedule-store";
 import { PlayerSchema } from "@/schemas/player.schema";
 
 import usePlayersStore from "./use-players-store";
@@ -65,7 +66,39 @@ const usePlayersJson = (): UsePlayersJsonType => {
         const validatedPlayers = PlayerSchema.array().parse(parsed);
 
         const { setPlayers } = usePlayersStore.getState();
-        setPlayers(validatedPlayers);
+        const { trainingBlocks, setTrainingBlocks } = useScheduleStore.getState();
+
+        const updatedPlayers = [...validatedPlayers].map((validatedPlayer) => {
+          if (validatedPlayer.trainingBlockId === null) {
+            return validatedPlayer;
+          }
+
+          return {
+            ...validatedPlayer,
+            trainingBlockId: trainingBlocks.some(
+              (trainingBlock) => trainingBlock.id === validatedPlayer.trainingBlockId
+            )
+              ? validatedPlayer.trainingBlockId
+              : null,
+          };
+        });
+
+        const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+          const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
+            if (player.trainingBlockId === trainingBlock.id) {
+              return accumulator + 1;
+            }
+            return accumulator;
+          }, 0);
+
+          return {
+            ...trainingBlock,
+            assignedPlayerCount: updatedAssignPlayerCount,
+          };
+        });
+
+        setPlayers(updatedPlayers);
+        setTrainingBlocks(updatedTrainingBlocks);
 
         toast.success("Successfully uploaded players");
       } catch (error) {

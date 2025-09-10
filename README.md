@@ -2,7 +2,12 @@
 
 A frontend application the Northwestern Men's Soccer coaching staff for creating weekly training schedules based on player and field availability
 
-![Project Demo](images/demo.png)
+## Demos
+
+<img src="readme/demo1.png" alt="project demo 1" width="800"/>
+<img src="readme/demo2.png" alt="project demo 2" width="800"/>
+<img src="readme/demo3.png" alt="project demo 3" width="800"/>
+<img src="readme/demo4.png" alt="project demo 4" width="800"/>
 
 ## Built With
 
@@ -19,6 +24,10 @@ A frontend application the Northwestern Men's Soccer coaching staff for creating
 ![React Hook Form](https://img.shields.io/badge/React%20Hook%20Form-%23EC5990.svg?style=for-the-badge&logo=reacthookform&logoColor=white)
 ![Zod](https://img.shields.io/badge/zod-%233068b7.svg?style=for-the-badge&logo=zod&logoColor=white)
 ![Zustand](https://img.shields.io/badge/Zustand-5190cf?style=for-the-badge&logo=zustand&logoColor=white)
+
+## Usage
+
+You may use this [players.json](readme/players.json) file as a starting point
 
 ## Contributing
 

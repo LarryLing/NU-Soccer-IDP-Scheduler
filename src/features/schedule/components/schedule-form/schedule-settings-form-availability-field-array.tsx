@@ -5,32 +5,32 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import type { Day } from "@/constants/days";
 
-import type { UseScheduleFormReturn } from "../../hooks/use-schedule-form";
-import type { ScheduleForm } from "../../schemas/schedule-form.schema";
+import type { UseScheduleSettingsFormReturn } from "../../hooks/use-schedule-settings-form";
+import type { ScheduleSettingsForm } from "../../schemas/schedule-settings-form.schema";
 
-import ScheduleFormAvailabilityField from "./schedule-form-availability-field";
+import ScheduleSettingsFormAvailabilityField from "./schedule-settings-form-availability-field";
 
-type ScheduleFormAvailabilityFieldArrayProps = {
+type ScheduleSettingsFormAvailabilityFieldArrayProps = {
   day: Day;
-  dayFields: (FieldArrayWithId<ScheduleForm, "fieldAvailabilities", "id"> & {
+  dayFields: (FieldArrayWithId<ScheduleSettingsForm, "availabilities", "id"> & {
     originalIndex: number;
   })[];
-  addFieldAvailability: UseScheduleFormReturn["addFieldAvailability"];
+  addAvailability: UseScheduleSettingsFormReturn["addAvailability"];
   remove: UseFieldArrayRemove;
-  control: Control<ScheduleForm>;
+  control: Control<ScheduleSettingsForm>;
   disabled: boolean;
 };
 
-const ScheduleFormAvailabilityFieldArray = ({
+const ScheduleSettingsFormAvailabilityFieldArray = ({
   day,
   dayFields,
-  addFieldAvailability,
+  addAvailability,
   remove,
   control,
   disabled,
-}: ScheduleFormAvailabilityFieldArrayProps) => {
-  const handleAddFieldAvailability = () => {
-    addFieldAvailability(day);
+}: ScheduleSettingsFormAvailabilityFieldArrayProps) => {
+  const handleAddAvailability = () => {
+    addAvailability(day);
   };
 
   return (
@@ -41,7 +41,7 @@ const ScheduleFormAvailabilityFieldArray = ({
           <i className="text-sm text-muted-foreground">No field availabilities</i>
         ) : (
           dayFields.map((field) => (
-            <ScheduleFormAvailabilityField
+            <ScheduleSettingsFormAvailabilityField
               key={field.id}
               originalIndex={field.originalIndex}
               remove={remove}
@@ -51,7 +51,7 @@ const ScheduleFormAvailabilityFieldArray = ({
           ))
         )}
       </div>
-      <Button type="button" variant="outline" size="sm" onClick={handleAddFieldAvailability} disabled={disabled}>
+      <Button type="button" variant="outline" size="sm" onClick={handleAddAvailability} disabled={disabled}>
         <PlusIcon />
         Add Field Availability
       </Button>
@@ -59,4 +59,4 @@ const ScheduleFormAvailabilityFieldArray = ({
   );
 };
 
-export default ScheduleFormAvailabilityFieldArray;
+export default ScheduleSettingsFormAvailabilityFieldArray;

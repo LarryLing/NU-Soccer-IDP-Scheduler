@@ -5,9 +5,9 @@ const CalendarTimesColumn = () => {
 
   return (
     <div className="flex flex-col h-full pr-2">
-      {timesKeys.map((time) => (
-        <div key={time} className="relative text-sm h-full">
-          <p className="absolute bottom-0 m-0 w-full text-right translate-y-1/2">{time}</p>
+      {timesKeys.map((timeKey, index) => (
+        <div key={timeKey} className={`relative text-sm ${index === 0 ? "h-1/2" : "h-full"}`}>
+          <p className="absolute bottom-0 m-0 w-full text-right translate-y-1/2">{timeKey}</p>
         </div>
       ))}
     </div>

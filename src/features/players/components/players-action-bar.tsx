@@ -24,30 +24,28 @@ const PlayersActionBar = ({ table, openPlayerSheet }: ActionBarProps) => {
   };
 
   return (
-    <div className="w-full flex justify-between items-center gap-x-2">
-      <div className="flex gap-x-2">
-        <Button onClick={handleOpenPlayerSheet}>
-          <PlusIcon />
-          Add Player
-        </Button>
-        {selectedPlayerIds.length > 0 && <BulkActionsDropdownMenu selectedPlayerIds={selectedPlayerIds} />}
-      </div>
-      <div className="flex gap-x-2">
-        <Button size="icon" variant="outline" onClick={handleExportPlayersJson}>
-          <Download />
-        </Button>
-        <Button size="icon" variant="outline" onClick={handleOpenFileInput}>
-          <Upload />
-        </Button>
-        <input
-          ref={fileInputRef}
-          id="hidden"
-          type="file"
-          accept=".json,application/json"
-          onChange={handleImportPlayersJson}
-          className="hidden"
-        />
-      </div>
+    <div className="w-full flex flex-wrap justify-start items-center gap-2">
+      <Button onClick={handleOpenPlayerSheet}>
+        <PlusIcon />
+        Add Player
+      </Button>
+      {selectedPlayerIds.length > 0 && <BulkActionsDropdownMenu selectedPlayerIds={selectedPlayerIds} />}
+      <Button variant="outline" onClick={handleExportPlayersJson}>
+        <Download />
+        Export Players
+      </Button>
+      <Button variant="outline" onClick={handleOpenFileInput}>
+        <Upload />
+        Import Players
+      </Button>
+      <input
+        ref={fileInputRef}
+        id="hidden"
+        type="file"
+        accept=".json,application/json"
+        onChange={handleImportPlayersJson}
+        className="hidden"
+      />
     </div>
   );
 };

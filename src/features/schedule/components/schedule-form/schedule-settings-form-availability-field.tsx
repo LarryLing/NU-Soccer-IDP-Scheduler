@@ -4,21 +4,21 @@ import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import type { ScheduleForm } from "../../schemas/schedule-form.schema";
+import type { ScheduleSettingsForm } from "../../schemas/schedule-settings-form.schema";
 
-type ScheduleFormAvailabilityFieldProps = {
+type ScheduleSettingsFormAvailabilityFieldProps = {
   originalIndex: number;
   remove: UseFieldArrayRemove;
-  control: Control<ScheduleForm>;
+  control: Control<ScheduleSettingsForm>;
   disabled: boolean;
 };
 
-const ScheduleFormAvailabilityField = ({
+const ScheduleSettingsFormAvailabilityField = ({
   originalIndex,
   remove,
   control,
   disabled,
-}: ScheduleFormAvailabilityFieldProps) => {
+}: ScheduleSettingsFormAvailabilityFieldProps) => {
   const handleRemove = () => {
     remove(originalIndex);
   };
@@ -27,7 +27,7 @@ const ScheduleFormAvailabilityField = ({
     <div className="flex items-center gap-2">
       <FormField
         control={control}
-        name={`fieldAvailabilities.${originalIndex}.start` as const}
+        name={`availabilities.${originalIndex}.start` as const}
         render={({ field }) => (
           <FormItem>
             <FormControl>
@@ -40,7 +40,7 @@ const ScheduleFormAvailabilityField = ({
       <span className="text-sm">-</span>
       <FormField
         control={control}
-        name={`fieldAvailabilities.${originalIndex}.end` as const}
+        name={`availabilities.${originalIndex}.end` as const}
         render={({ field }) => (
           <FormItem>
             <FormControl>
@@ -57,4 +57,4 @@ const ScheduleFormAvailabilityField = ({
   );
 };
 
-export default ScheduleFormAvailabilityField;
+export default ScheduleSettingsFormAvailabilityField;

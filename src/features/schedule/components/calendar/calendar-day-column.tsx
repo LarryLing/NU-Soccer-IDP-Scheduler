@@ -3,18 +3,20 @@ import { memo, useMemo, type JSX } from "react";
 import type { Day } from "@/constants/days";
 import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
 import { getDayAbbreviation } from "@/lib/time";
+import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import useTrainingBlocksStore from "../../hooks/use-training-blocks-store";
+import useScheduleStore from "../../hooks/use-schedule-store";
+import TrainingBlockTrigger from "../training-block-dialog/edit-training-block-trigger";
 
 import CalendarCell from "./calendar-cell";
-import CalendarTrainingBlockPopover from "./calendar-training-block-popover";
 
 type CalendarDayColumnProps = {
   day: Day;
+  openTrainingBlockDialog: (trainingBlockId: TrainingBlock["id"]) => void;
 };
 
-const CalendarDayColumn = ({ day }: CalendarDayColumnProps) => {
-  const trainingBlocks = useTrainingBlocksStore((state) => state.trainingBlocks);
+const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnProps) => {
+  const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
 
   const cells = useMemo(() => {
     const timesEntries = Object.entries(CALENDAR_TIMES);
@@ -31,22 +33,23 @@ const CalendarDayColumn = ({ day }: CalendarDayColumnProps) => {
       );
 
       const children: JSX.Element[] = filteredTrainingBlocks.map((filteredTrainingBlock) => (
-        <CalendarTrainingBlockPopover
+        <TrainingBlockTrigger
           key={filteredTrainingBlock.id}
           currentCellStartInt={currentEntry[1]}
+          openTrainingBlockDialog={openTrainingBlockDialog}
           {...filteredTrainingBlock}
         />
       ));
 
       return <CalendarCell key={`${day}.${currentEntry[0]}.${nextEntry[0]}`}>{children}</CalendarCell>;
     });
-  }, [day, trainingBlocks]);
+  }, [day, openTrainingBlockDialog, trainingBlocks]);
 
   const dayAbbreviation = getDayAbbreviation(day);
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex justify-center items-center border-b border-dashed h-full text-sm">{dayAbbreviation}</div>
+      <div className="flex justify-center items-center border-b border-dashed h-1/2 text-sm">{dayAbbreviation}</div>
       {cells}
     </div>
   );

@@ -1,66 +1,92 @@
-import { CalendarOff, Download, Upload } from "lucide-react";
+import { CalendarIcon, CalendarOff } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
 
-import { useScheduleSheet } from "../hooks/use-schedule-sheet";
-import useTrainingBlocksJson from "../hooks/use-training-blocks-json";
-import useTrainingBlocksStore from "../hooks/use-training-blocks-store";
+import useScheduleStore from "../hooks/use-schedule-store";
+import { assignPlayersToTrainingBlocks } from "../lib/schedule";
 
-import ScheduleSheet from "./schedule-form/schedule-sheet";
-import UnassignedPlayersPopover from "./unassigned-players-popover";
+import ScheduleSheet from "./schedule-form/schedule-settings-sheet";
+import CreateTrainingBlockDialog from "./training-block-dialog/create-training-block-dialog";
+import UnassignedPlayersPopover from "./unassigned-players-popover/unassigned-players-popover";
 
 const ScheduleActionBar = () => {
-  const trainingBlocks = useTrainingBlocksStore((state) => state.trainingBlocks);
-
-  const { fileInputRef, handleOpenFileInput, handleExportTrainingBlocksJson, handleImportTrainingBlocksJson } =
-    useTrainingBlocksJson();
-
-  const scheduleSheetReturn = useScheduleSheet();
+  const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
 
   const handleClearSchedule = () => {
     const { players, setPlayers } = usePlayersStore.getState();
-    const { setTrainingBlocks } = useTrainingBlocksStore.getState();
+    const { setTrainingBlocks } = useScheduleStore.getState();
 
     const updatedPlayers = [...players].map((player) => {
       return {
         ...player,
-        training_block_id: null,
+        trainingBlockId: null,
       };
     });
 
-    setTrainingBlocks([]);
+    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+      return {
+        ...trainingBlock,
+        assignedPlayerCount: 0,
+      };
+    });
+
     setPlayers(updatedPlayers);
+    setTrainingBlocks(updatedTrainingBlocks);
   };
 
+  const handleAssignPlayers = () => {
+    if (trainingBlocks.length === 0) {
+      toast.error("Failed to create training schedule", {
+        description: "Field availability has not been set in schedule settings",
+      });
+      return;
+    }
+
+    const { setPlayers } = usePlayersStore.getState();
+    const { setTrainingBlocks } = useScheduleStore.getState();
+
+    const { updatedPlayers, assignedPlayerCounts } = assignPlayersToTrainingBlocks();
+
+    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
+      return {
+        ...trainingBlock,
+        assignedPlayerCount: assignedPlayerCounts[trainingBlock.id] || 0,
+      };
+    });
+
+    setPlayers(updatedPlayers);
+    setTrainingBlocks(updatedTrainingBlocks);
+
+    if (updatedPlayers.some((updatedPlayer) => updatedPlayer.trainingBlockId === null)) {
+      toast.warning("Some players could not be scheduled", {
+        description: "Please double check player availability and schedule settings",
+      });
+    }
+
+    toast.success("Successfully created training schedule");
+  };
+
+  const hasAssignedPlayers = trainingBlocks.some((trainingBlock) => trainingBlock.assignedPlayerCount > 0);
+
   return (
-    <div className="w-full flex justify-between items-center gap-x-2">
-      <div className="flex gap-x-2">
-        <ScheduleSheet {...scheduleSheetReturn} />
-        <UnassignedPlayersPopover />
-        {trainingBlocks.length > 0 && (
+    <div className="w-full flex flex-wrap justify-start items-center gap-2">
+      <Button onClick={handleAssignPlayers}>
+        <CalendarIcon />
+        Create Schedule
+      </Button>
+      <CreateTrainingBlockDialog />
+      <ScheduleSheet />
+      {hasAssignedPlayers && (
+        <>
+          <UnassignedPlayersPopover />
           <Button variant="destructive" onClick={handleClearSchedule}>
             <CalendarOff />
-            Clear
+            Clear Schedule
           </Button>
-        )}
-      </div>
-      <div className="flex gap-x-2">
-        <Button size="icon" variant="outline" onClick={handleExportTrainingBlocksJson}>
-          <Download />
-        </Button>
-        <Button size="icon" variant="outline" onClick={handleOpenFileInput}>
-          <Upload />
-        </Button>
-        <input
-          ref={fileInputRef}
-          id="hidden"
-          type="file"
-          accept=".json,application/json"
-          onChange={handleImportTrainingBlocksJson}
-          className="hidden"
-        />
-      </div>
+        </>
+      )}
     </div>
   );
 };
