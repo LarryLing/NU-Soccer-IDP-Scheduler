@@ -59,7 +59,10 @@ const EditTrainingBlockDialog = ({
         };
       }
 
-      return player;
+      return {
+        ...player,
+        trainingBlockId: player.trainingBlockId === selectedTrainingBlock.id ? null : player.trainingBlockId,
+      };
     });
 
     const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {

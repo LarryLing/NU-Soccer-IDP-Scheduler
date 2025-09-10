@@ -32,7 +32,7 @@ const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnPr
           trainingBlock.day === day && trainingBlock.start >= currentEntry[1] && trainingBlock.start < nextEntry[1]
       );
 
-      const children: (JSX.Element | null)[] = filteredTrainingBlocks.map((filteredTrainingBlock) => (
+      const children: JSX.Element[] = filteredTrainingBlocks.map((filteredTrainingBlock) => (
         <TrainingBlockTrigger
           key={filteredTrainingBlock.id}
           currentCellStartInt={currentEntry[1]}
@@ -49,7 +49,7 @@ const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnPr
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex justify-center items-center border-b border-dashed h-full text-sm">{dayAbbreviation}</div>
+      <div className="flex justify-center items-center border-b border-dashed h-1/2 text-sm">{dayAbbreviation}</div>
       {cells}
     </div>
   );

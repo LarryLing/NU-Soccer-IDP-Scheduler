@@ -19,8 +19,6 @@ export type UseTrainingBlockDialogReturn = {
 };
 
 const useTrainingBlockDialog = () => {
-  const players = usePlayersStore((state) => state.players);
-
   const [isTrainingBlockDialogOpen, setIsTrainingBlockDialogOpen] = useState<boolean>(false);
   const [selectedTrainingBlock, setSelectedTrainingBlock] = useState<TrainingBlock | null>(null);
   const [assignedPlayers, setAssignedPlayers] = useState<Player[]>([]);
@@ -31,17 +29,15 @@ const useTrainingBlockDialog = () => {
         .map((assignedPlayer) => assignedPlayer.name)
     : [];
 
-  const assignPlayer = useCallback(
-    (playerName: Player["name"], trainingBlockId: TrainingBlock["id"]) => {
-      const player = players.find((player) => player.name === playerName);
-      if (!player) return;
-      setAssignedPlayers((prevAssignedPlayers) => [
-        ...prevAssignedPlayers,
-        { ...player, trainingBlockId: trainingBlockId },
-      ]);
-    },
-    [players]
-  );
+  const assignPlayer = useCallback((playerName: Player["name"], trainingBlockId: TrainingBlock["id"]) => {
+    const { players } = usePlayersStore.getState();
+    const player = players.find((player) => player.name === playerName);
+    if (!player) return;
+    setAssignedPlayers((prevAssignedPlayers) => [
+      ...prevAssignedPlayers,
+      { ...player, trainingBlockId: trainingBlockId },
+    ]);
+  }, []);
 
   const unassignPlayer = useCallback(
     (playerId: Player["id"]) => {

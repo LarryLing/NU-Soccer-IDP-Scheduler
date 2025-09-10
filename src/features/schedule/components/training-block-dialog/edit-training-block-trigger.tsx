@@ -1,8 +1,5 @@
-import { AlertTriangleIcon } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import usePlayersStore from "@/features/players/hooks/use-players-store";
-import { getTimeStringWithMeridian } from "@/lib/time";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
@@ -16,7 +13,6 @@ const EditTrainingBlockTrigger = ({
   currentCellStartInt,
   openTrainingBlockDialog,
   id,
-  day,
   start,
   end,
   assignedPlayerCount,
@@ -32,9 +28,9 @@ const EditTrainingBlockTrigger = ({
   const topPercentage = ((start - currentCellStartInt) / 60) * 100;
   const heightPercentage = ((end - start) / 60) * 100;
 
-  const hasUnavailablePlayers = players
-    .filter((player) => player.trainingBlockId === id)
-    .some((player) => !isPlayerAvailableForTrainingBlock(player.id, id));
+  const assignedPlayers = players.filter((player) => player.trainingBlockId === id);
+  const assignedPlayerNames = assignedPlayers.map((assignedPlayer) => assignedPlayer.name);
+  const hasUnavailablePlayers = assignedPlayers.some((player) => !isPlayerAvailableForTrainingBlock(player.id, id));
 
   return (
     <Button
@@ -47,9 +43,10 @@ const EditTrainingBlockTrigger = ({
       }}
       onClick={handleOpenTrainingBlockDialog}
     >
-      {hasUnavailablePlayers && <AlertTriangleIcon />}
-      <p className={`text-nowrap truncate ${hasUnavailablePlayers ? "text-yellow-700 dark:text-yellow-300" : ""}`}>
-        {day} • {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)}
+      <p
+        className={`text-xs text-wrap truncate ${hasUnavailablePlayers ? "text-yellow-700 dark:text-yellow-300" : ""}`}
+      >
+        {assignedPlayerNames.join(", ")}
       </p>
     </Button>
   );
