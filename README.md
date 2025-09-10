@@ -2,7 +2,12 @@
 
 A frontend application the Northwestern Men's Soccer coaching staff for creating weekly training schedules based on player and field availability
 
-![Project Demo](images/demo.png)
+## Demos
+
+<img src="readme/demo1.png" alt="project demo 1" width="800"/>
+<img src="readme/demo2.png" alt="project demo 2" width="800"/>
+<img src="readme/demo3.png" alt="project demo 3" width="800"/>
+<img src="readme/demo4.png" alt="project demo 4" width="800"/>
 
 ## Built With
 
@@ -22,7 +27,7 @@ A frontend application the Northwestern Men's Soccer coaching staff for creating
 
 ## Usage
 
-You may use this [players.json]() file as a starting point
+You may use this [players.json](readme/players.json) file as a starting point
 
 ## Contributing
 
