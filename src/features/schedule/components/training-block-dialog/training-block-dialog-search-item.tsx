@@ -2,19 +2,15 @@ import { memo } from "react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Player } from "@/schemas/player.schema";
-import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
-
-type TrainingBlockDialogSearchItemProps = { selectedTrainingBlockId: TrainingBlock["id"] } & Pick<
+type TrainingBlockDialogSearchItemProps = { isPlayerAvailable: boolean; isPlayerAssigned: boolean } & Pick<
   Player,
-  "id" | "trainingBlockId" | "name" | "number" | "position"
+  "name" | "number" | "position"
 >;
 
 const TrainingBlockDialogSearchItem = ({
-  selectedTrainingBlockId,
-  id: playerId,
-  trainingBlockId,
+  isPlayerAvailable,
+  isPlayerAssigned,
   name,
   number,
   position,
@@ -27,9 +23,7 @@ const TrainingBlockDialogSearchItem = ({
       <div className="w-full">
         <p className="text-sm font-medium">{name}</p>
         <p className="text-sm text-muted-foreground">
-          {position} •{" "}
-          {isPlayerAvailableForTrainingBlock(playerId, selectedTrainingBlockId) ? "Available" : "Not Available"}{" "}
-          {trainingBlockId ? "(Assigned)" : ""}
+          {position} • {isPlayerAvailable ? "Available" : "Not Available"} {isPlayerAssigned ? "(Assigned)" : ""}
         </p>
       </div>
     </div>

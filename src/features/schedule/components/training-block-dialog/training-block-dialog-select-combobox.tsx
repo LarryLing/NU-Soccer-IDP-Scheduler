@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { usePlayers } from "@/features/players/hooks/use-players-store";
 
-import useScheduleStore from "../../hooks/use-schedule-store";
+import { useTrainingBlocks, useScheduleActions } from "../../hooks/use-schedule-store";
 import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 
 import TrainingBlockDialogSelectItem from "./training-block-dialog-select-item";
@@ -21,12 +22,17 @@ const TrainingBlockDialogSelectCombobox = ({
 }: TrainingBlockDialogSelectComboboxProps) => {
   const [open, setOpen] = useState(false);
 
-  const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
+  const players = usePlayers();
+  const trainingBlocks = useTrainingBlocks();
 
-  const filteredTrainingBlocks = trainingBlocks.filter((trainingBlock) => trainingBlock.assignedPlayerCount === 0);
+  const { getTrainingBlockById } = useScheduleActions();
+
+  const filteredTrainingBlocks = trainingBlocks.filter(
+    (trainingBlock) => !players.some((player) => player.trainingBlockId === trainingBlock.id)
+  );
 
   const handleSelectTrainingBlock = (value: string) => {
-    setSelectedTrainingBlock(trainingBlocks.find((trainingBlock) => trainingBlock.id === value) || null);
+    setSelectedTrainingBlock(getTrainingBlockById(value));
     setOpen(false);
   };
 

@@ -3,10 +3,17 @@ import { AlertTriangleIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
+import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
 
-type UnavailablePlayersAlertProps = Pick<UseTrainingBlockDialogReturn, "unavailablePlayerNames">;
+type UnavailablePlayersAlertProps = Pick<UseTrainingBlockDialogReturn, "selectedTrainingBlock" | "assignedPlayers">;
 
-const UnavailablePlayersAlert = ({ unavailablePlayerNames }: UnavailablePlayersAlertProps) => {
+const UnavailablePlayersAlert = ({ selectedTrainingBlock, assignedPlayers }: UnavailablePlayersAlertProps) => {
+  if (!selectedTrainingBlock) return null;
+
+  const unavailablePlayerNames = assignedPlayers
+    .filter((assignedPlayer) => !isPlayerAvailableForTrainingBlock(assignedPlayer, selectedTrainingBlock))
+    .map((assignedPlayer) => assignedPlayer.name);
+
   if (unavailablePlayerNames.length === 0) return null;
 
   return (
@@ -14,7 +21,7 @@ const UnavailablePlayersAlert = ({ unavailablePlayerNames }: UnavailablePlayersA
       <AlertTriangleIcon />
       <AlertTitle>This training block contains unavailable players</AlertTitle>
       <AlertDescription className="text-yellow-700 dark:text-yellow-300">
-        {unavailablePlayerNames.join(", ")}
+        {unavailablePlayerNames.join(" • ")}
       </AlertDescription>
     </Alert>
   );

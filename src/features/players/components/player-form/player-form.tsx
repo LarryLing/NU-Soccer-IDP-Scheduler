@@ -13,7 +13,7 @@ import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
 import PlayerFormAvailabilityFieldArray from "./player-form-availability-field-array";
 
 type PlayerFormProps = {
-  player?: Player;
+  player: Player | null;
   closePlayerSheet: UsePlayerSheetReturn["closePlayerSheet"];
 };
 

@@ -17,11 +17,10 @@ import {
 } from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 
-import { generateTrainingBlocks } from "../lib/schedule";
 import { type ScheduleSettingsForm, ScheduleSettingsFormSchema } from "../schemas/schedule-settings-form.schema";
 
 import type { UseScheduleSettingsSheetReturn } from "./use-schedule-settings-sheet";
-import useScheduleStore from "./use-schedule-store";
+import { useScheduleSettings, useScheduleActions } from "./use-schedule-store";
 
 export type UseScheduleSettingsFormReturn = {
   form: UseFormReturn<ScheduleSettingsForm>;
@@ -33,7 +32,8 @@ export type UseScheduleSettingsFormReturn = {
 export const useScheduleSettingsForm = (
   closeScheduleSettingsSheet: UseScheduleSettingsSheetReturn["closeScheduleSettingsSheet"]
 ): UseScheduleSettingsFormReturn => {
-  const scheduleSettings = useScheduleStore((state) => state.scheduleSettings);
+  const scheduleSettings = useScheduleSettings();
+  const { saveScheduleSettingsAndGenerateTrainingBlocks } = useScheduleActions();
 
   const form = useForm<ScheduleSettingsForm>({
     resolver: zodResolver(ScheduleSettingsFormSchema),
@@ -98,12 +98,7 @@ export const useScheduleSettingsForm = (
       return;
     }
 
-    const trainingBlocks = generateTrainingBlocks(transformedAvailabilities, data.duration);
-
-    const { setTrainingBlocks, setScheduleSettings } = useScheduleStore.getState();
-
-    setTrainingBlocks(trainingBlocks);
-    setScheduleSettings({
+    saveScheduleSettingsAndGenerateTrainingBlocks({
       ...data,
       availabilities: transformedAvailabilities,
     });

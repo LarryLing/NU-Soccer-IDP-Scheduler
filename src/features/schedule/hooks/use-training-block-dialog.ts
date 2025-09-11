@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
 
-import usePlayersStore from "@/features/players/hooks/use-players-store";
+import { usePlayersActions } from "@/features/players/hooks/use-players-store";
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import { isPlayerAvailableForTrainingBlock } from "../lib/schedule";
+import { useScheduleActions } from "./use-schedule-store";
 
 export type UseTrainingBlockDialogReturn = {
   isTrainingBlockDialogOpen: boolean;
@@ -12,40 +12,72 @@ export type UseTrainingBlockDialogReturn = {
   selectedTrainingBlock: TrainingBlock | null;
   setSelectedTrainingBlock: (selectedTrainingBlock: TrainingBlock | null) => void;
   assignedPlayers: Player[];
-  setAssignedPlayers: (assignedPlayers: Player[]) => void;
-  unavailablePlayerNames: Player["name"][];
-  assignPlayer: (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => void;
-  unassignPlayer: (playerId: Player["id"]) => void;
+  assignments: Record<Player["id"], Player["trainingBlockId"]>;
+  openTrainingBlockDialog: (trainingBlockId: TrainingBlock["id"]) => void;
+  addAssignment: (playerName: Player["name"]) => void;
+  removeAssignment: (playerId: Player["id"]) => void;
+  confirmAssignments: () => void;
 };
 
 const useTrainingBlockDialog = () => {
+  const { getPlayerById, getPlayerByName, getPlayersByTrainingBlockId, assignPlayersToTrainingBlocks } =
+    usePlayersActions();
+  const { getTrainingBlockById } = useScheduleActions();
+
   const [isTrainingBlockDialogOpen, setIsTrainingBlockDialogOpen] = useState<boolean>(false);
   const [selectedTrainingBlock, setSelectedTrainingBlock] = useState<TrainingBlock | null>(null);
   const [assignedPlayers, setAssignedPlayers] = useState<Player[]>([]);
+  const [assignments, setAssignments] = useState<Record<Player["id"], Player["trainingBlockId"]>>({});
 
-  const unavailablePlayerNames = selectedTrainingBlock
-    ? assignedPlayers
-        .filter((assignedPlayer) => !isPlayerAvailableForTrainingBlock(assignedPlayer.id, selectedTrainingBlock.id))
-        .map((assignedPlayer) => assignedPlayer.name)
-    : [];
-
-  const assignPlayer = useCallback((playerName: Player["name"], trainingBlockId: TrainingBlock["id"]) => {
-    const { players } = usePlayersStore.getState();
-    const player = players.find((player) => player.name === playerName);
-    if (!player) return;
-    setAssignedPlayers((prevAssignedPlayers) => [
-      ...prevAssignedPlayers,
-      { ...player, trainingBlockId: trainingBlockId },
-    ]);
-  }, []);
-
-  const unassignPlayer = useCallback(
-    (playerId: Player["id"]) => {
-      const updatedAssignedPlayers = [...assignedPlayers].filter((assignedPlayer) => assignedPlayer.id !== playerId);
-      setAssignedPlayers(updatedAssignedPlayers);
+  const openTrainingBlockDialog = useCallback(
+    (trainingBlockId: TrainingBlock["id"]) => {
+      setSelectedTrainingBlock(getTrainingBlockById(trainingBlockId));
+      setAssignedPlayers(getPlayersByTrainingBlockId(trainingBlockId));
+      setAssignments({});
+      setIsTrainingBlockDialogOpen(true);
     },
-    [assignedPlayers]
+    [getTrainingBlockById, getPlayersByTrainingBlockId]
   );
+
+  const addAssignment = useCallback(
+    (playerName: Player["name"]) => {
+      const player = getPlayerByName(playerName);
+      if (!player || !selectedTrainingBlock) return;
+
+      setAssignedPlayers((prevAssignedPlayers) => [...prevAssignedPlayers, player]);
+      setAssignments((prevAssignments) => {
+        return { ...prevAssignments, [player.id]: selectedTrainingBlock.id };
+      });
+    },
+    [getPlayerByName, selectedTrainingBlock]
+  );
+
+  const removeAssignment = useCallback(
+    (playerId: Player["id"]) => {
+      const player = getPlayerById(playerId);
+      if (!player || !selectedTrainingBlock) return;
+
+      setAssignedPlayers((prevAssignedPlayers) =>
+        [...prevAssignedPlayers].filter((prevAssignedPlayer) => prevAssignedPlayer.id !== player.id)
+      );
+      setAssignments((prevAssignments) => {
+        return {
+          ...prevAssignments,
+          [playerId]: player.trainingBlockId === selectedTrainingBlock.id ? null : player.trainingBlockId,
+        };
+      });
+    },
+    [getPlayerById, selectedTrainingBlock]
+  );
+
+  const confirmAssignments = useCallback(() => {
+    assignPlayersToTrainingBlocks(assignments);
+
+    setIsTrainingBlockDialogOpen(false);
+  }, [assignPlayersToTrainingBlocks, assignments]);
+
+  console.log(assignments);
+  console.log(assignedPlayers);
 
   return {
     isTrainingBlockDialogOpen,
@@ -53,10 +85,11 @@ const useTrainingBlockDialog = () => {
     selectedTrainingBlock,
     setSelectedTrainingBlock,
     assignedPlayers,
-    setAssignedPlayers,
-    unavailablePlayerNames,
-    assignPlayer,
-    unassignPlayer,
+    assignments,
+    openTrainingBlockDialog,
+    addAssignment,
+    removeAssignment,
+    confirmAssignments,
   };
 };
 

@@ -4,34 +4,31 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import usePlayersStore from "@/features/players/hooks/use-players-store";
+import { usePlayers } from "@/features/players/hooks/use-players-store";
 
 import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
+import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
 
 import TrainingBlockDialogSearchItem from "./training-block-dialog-search-item";
 
 type TrainingBlockDialogSearchComboboxProps = Pick<
   UseTrainingBlockDialogReturn,
-  "selectedTrainingBlock" | "assignedPlayers" | "assignPlayer"
+  "selectedTrainingBlock" | "assignedPlayers" | "addAssignment"
 >;
 
 const TrainingBlockDialogSearchCombobox = ({
   selectedTrainingBlock,
   assignedPlayers,
-  assignPlayer,
+  addAssignment,
 }: TrainingBlockDialogSearchComboboxProps) => {
   const [open, setOpen] = useState(false);
 
-  const players = usePlayersStore((state) => state.players);
+  const players = usePlayers();
 
   if (!selectedTrainingBlock) return null;
 
-  const filteredPlayers = players.filter(
-    (player) => !assignedPlayers.some((assignedPlayer) => assignedPlayer.id === player.id)
-  );
-
   const handleAssignPlayer = (value: string) => {
-    assignPlayer(value, selectedTrainingBlock.id);
+    addAssignment(value);
     setOpen(false);
   };
 
@@ -49,11 +46,23 @@ const TrainingBlockDialogSearchCombobox = ({
           <CommandList>
             <CommandEmpty>No players found.</CommandEmpty>
             <CommandGroup className="overflow-y-scroll">
-              {filteredPlayers.map((player) => (
-                <CommandItem key={player.id} value={player.name} onSelect={handleAssignPlayer}>
-                  <TrainingBlockDialogSearchItem selectedTrainingBlockId={selectedTrainingBlock.id} {...player} />
-                </CommandItem>
-              ))}
+              {players.map((player) => {
+                if (assignedPlayers.some((assignedPlayer) => assignedPlayer.id === player.id)) {
+                  return null;
+                }
+
+                return (
+                  <CommandItem key={player.id} value={player.name} onSelect={handleAssignPlayer}>
+                    <TrainingBlockDialogSearchItem
+                      isPlayerAvailable={isPlayerAvailableForTrainingBlock(player, selectedTrainingBlock)}
+                      isPlayerAssigned={
+                        player.trainingBlockId !== null && player.trainingBlockId !== selectedTrainingBlock.id
+                      }
+                      {...player}
+                    />
+                  </CommandItem>
+                );
+              })}
             </CommandGroup>
           </CommandList>
         </Command>

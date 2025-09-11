@@ -3,26 +3,24 @@ import { memo } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Player } from "@/schemas/player.schema";
-import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
-import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
 
 type TrainingBlockDialogAssignedPlayersItemProps = {
-  trainingBlockId: TrainingBlock["id"];
-} & Pick<UseTrainingBlockDialogReturn, "unassignPlayer"> &
-  Pick<Player, "id" | "name" | "number" | "position">;
+  isPlayerAvailable: boolean;
+} & Pick<Player, "id" | "name" | "number" | "position"> &
+  Pick<UseTrainingBlockDialogReturn, "removeAssignment">;
 
 const TrainingBlockDialogAssignedPlayersItem = ({
-  trainingBlockId,
-  id: playerId,
+  isPlayerAvailable,
+  id,
   name,
   number,
   position,
-  unassignPlayer,
+  removeAssignment,
 }: TrainingBlockDialogAssignedPlayersItemProps) => {
-  const handleUnassignPlayer = (value: string) => {
-    if (value === "remove") unassignPlayer(playerId);
+  const handleRemoveAssignment = (value: string) => {
+    if (value === "remove") removeAssignment(id);
   };
 
   return (
@@ -34,14 +32,12 @@ const TrainingBlockDialogAssignedPlayersItem = ({
         <p className="text-sm font-medium">{name}</p>
         <p className="text-sm text-muted-foreground">{position}</p>
       </div>
-      <Select defaultValue="availablility-status" onValueChange={handleUnassignPlayer}>
+      <Select defaultValue="availablility-status" onValueChange={handleRemoveAssignment}>
         <SelectTrigger>
           <SelectValue />
         </SelectTrigger>
         <SelectContent align="center">
-          <SelectItem value="availablility-status">
-            {isPlayerAvailableForTrainingBlock(playerId, trainingBlockId) ? "Available" : "Not Available"}
-          </SelectItem>
+          <SelectItem value="availablility-status">{isPlayerAvailable ? "Available" : "Not Available"}</SelectItem>
           <SelectItem value="remove">Remove</SelectItem>
         </SelectContent>
       </Select>

@@ -18,9 +18,11 @@ function Index() {
   const columns = getColumns(openPlayerSheet);
   const { table } = usePlayersTable(columns);
 
+  const selectedPlayerIds = table.getFilteredSelectedRowModel().rows.map((row) => row.original.id);
+
   return (
     <>
-      <PlayersActionBar table={table} {...playerSheetReturn} />
+      <PlayersActionBar selectedPlayerIds={selectedPlayerIds} {...playerSheetReturn} />
       <PlayersTable table={table} numColumns={columns.length} />
       <PlayerSheet {...playerSheetReturn} />
     </>

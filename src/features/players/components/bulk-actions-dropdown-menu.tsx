@@ -9,30 +9,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Player } from "@/schemas/player.schema";
 
-import usePlayersStore from "../hooks/use-players-store";
+import { usePlayersActions } from "../hooks/use-players-store";
 
 type BulkActionsDropdownMenuProps = {
   selectedPlayerIds: Player["id"][];
 };
 
-export const BulkActionsDropdownMenu = ({ selectedPlayerIds }: BulkActionsDropdownMenuProps) => {
-  const handleClearAvailabilities = () => {
-    const { players, setPlayers } = usePlayersStore.getState();
+const BulkActionsDropdownMenu = ({ selectedPlayerIds }: BulkActionsDropdownMenuProps) => {
+  const { clearManyPlayerAvailabilities, deleteManyPlayers } = usePlayersActions();
 
-    const updatedPlayers = [...players].map((player) => {
-      return {
-        ...player,
-        availabilities: [],
-      };
-    });
-
-    setPlayers(updatedPlayers);
+  const handleClearManyPlayerAvailabilities = () => {
+    clearManyPlayerAvailabilities(selectedPlayerIds);
   };
 
-  const handleDeletePlayers = () => {
-    const { setPlayers } = usePlayersStore.getState();
-
-    setPlayers([]);
+  const handleDeleteManyPlayers = () => {
+    deleteManyPlayers(selectedPlayerIds);
   };
 
   return (
@@ -46,11 +37,11 @@ export const BulkActionsDropdownMenu = ({ selectedPlayerIds }: BulkActionsDropdo
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={handleClearAvailabilities} variant="destructive">
+        <DropdownMenuItem onClick={handleClearManyPlayerAvailabilities} variant="destructive">
           <CalendarOff />
           Clear Availabilities
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDeletePlayers} variant="destructive">
+        <DropdownMenuItem onClick={handleDeleteManyPlayers} variant="destructive">
           <TrashIcon />
           Delete Players
         </DropdownMenuItem>
@@ -58,3 +49,5 @@ export const BulkActionsDropdownMenu = ({ selectedPlayerIds }: BulkActionsDropdo
     </DropdownMenu>
   );
 };
+
+export default BulkActionsDropdownMenu;

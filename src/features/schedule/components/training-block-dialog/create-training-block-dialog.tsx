@@ -11,9 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import usePlayersStore from "@/features/players/hooks/use-players-store";
 
-import useScheduleStore from "../../hooks/use-schedule-store";
 import useTrainingBlockDialog from "../../hooks/use-training-block-dialog";
 
 import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
@@ -28,49 +26,10 @@ const CreateTrainingBlockDialog = () => {
     selectedTrainingBlock,
     setSelectedTrainingBlock,
     assignedPlayers,
-    setAssignedPlayers,
-    unavailablePlayerNames,
-    assignPlayer,
-    unassignPlayer,
+    addAssignment,
+    removeAssignment,
+    confirmAssignments,
   } = useTrainingBlockDialog();
-
-  const createTrainingBlock = () => {
-    if (!selectedTrainingBlock) return;
-
-    const { players, setPlayers } = usePlayersStore.getState();
-    const { trainingBlocks, setTrainingBlocks } = useScheduleStore.getState();
-
-    const updatedPlayers = [...players].map((player) => {
-      if (assignedPlayers.some((assignedPlayer) => assignedPlayer.id === player.id)) {
-        return {
-          ...player,
-          trainingBlockId: selectedTrainingBlock.id,
-        };
-      }
-
-      return player;
-    });
-
-    const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
-      const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
-        if (player.trainingBlockId === trainingBlock.id) {
-          return accumulator + 1;
-        }
-        return accumulator;
-      }, 0);
-
-      return {
-        ...trainingBlock,
-        assignedPlayerCount: updatedAssignPlayerCount,
-      };
-    });
-
-    setPlayers(updatedPlayers);
-    setTrainingBlocks(updatedTrainingBlocks);
-    setSelectedTrainingBlock(null);
-    setAssignedPlayers([]);
-    setIsTrainingBlockDialogOpen(false);
-  };
 
   return (
     <Dialog open={isTrainingBlockDialogOpen} onOpenChange={setIsTrainingBlockDialogOpen}>
@@ -94,20 +53,20 @@ const CreateTrainingBlockDialog = () => {
         <TrainingBlockDialogSearchCombobox
           selectedTrainingBlock={selectedTrainingBlock}
           assignedPlayers={assignedPlayers}
-          assignPlayer={assignPlayer}
+          addAssignment={addAssignment}
         />
         <TrainingBlockDialogAssignedPlayersList
           selectedTrainingBlock={selectedTrainingBlock}
           assignedPlayers={assignedPlayers}
-          unassignPlayer={unassignPlayer}
+          removeAssignment={removeAssignment}
         />
-        <UnavailablePlayersAlert unavailablePlayerNames={unavailablePlayerNames} />
+        <UnavailablePlayersAlert selectedTrainingBlock={selectedTrainingBlock} assignedPlayers={assignedPlayers} />
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button
-            onClick={createTrainingBlock}
+            onClick={confirmAssignments}
             disabled={selectedTrainingBlock === null || assignedPlayers.length === 0}
           >
             Create Training Block
