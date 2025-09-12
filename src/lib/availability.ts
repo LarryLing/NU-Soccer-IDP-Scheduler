@@ -1,5 +1,5 @@
 import { DAYS } from "@/constants/days";
-import type { AvailabilityForm } from "@/schemas/availability-form.schema";
+import type { AvailabilityForm } from "@/schemas/availability-field.schema";
 import type { Availability } from "@/schemas/availability.schema";
 
 import { calculateMinutesFromTimeString, getTimeStringWithoutMeridian } from "./time";

@@ -9,17 +9,17 @@ import { usePlayers } from "@/features/players/hooks/use-players-store";
 import { useTrainingBlocks, useScheduleActions } from "../../hooks/use-schedule-store";
 import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 
-import TrainingBlockDialogSelectItem from "./training-block-dialog-select-item";
+import TrainingBlockDialogSelectItem from "./training-block-dialog-select-block-item";
 
-type TrainingBlockDialogSelectComboboxProps = Pick<
+type TrainingBlockDialogSelectBlockComboboxProps = Pick<
   UseTrainingBlockDialogReturn,
   "selectedTrainingBlock" | "setSelectedTrainingBlock"
 >;
 
-const TrainingBlockDialogSelectCombobox = ({
+const TrainingBlockDialogSelectBlockCombobox = ({
   selectedTrainingBlock,
   setSelectedTrainingBlock,
-}: TrainingBlockDialogSelectComboboxProps) => {
+}: TrainingBlockDialogSelectBlockComboboxProps) => {
   const [open, setOpen] = useState(false);
 
   const players = usePlayers();
@@ -68,4 +68,4 @@ const TrainingBlockDialogSelectCombobox = ({
   );
 };
 
-export default TrainingBlockDialogSelectCombobox;
+export default TrainingBlockDialogSelectBlockCombobox;

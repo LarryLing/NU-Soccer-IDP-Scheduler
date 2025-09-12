@@ -23,8 +23,6 @@ const EditTrainingBlockTrigger = ({
 
   const assignedPlayers = players.filter((player) => player.trainingBlockId === id);
 
-  if (assignedPlayers.length === 0) return null;
-
   const handleOpenTrainingBlockDialog = () => {
     openTrainingBlockDialog(id);
   };

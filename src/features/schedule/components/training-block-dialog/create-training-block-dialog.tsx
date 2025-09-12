@@ -15,8 +15,8 @@ import {
 import useTrainingBlockDialog from "../../hooks/use-training-block-dialog";
 
 import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
-import TrainingBlockDialogSearchCombobox from "./training-block-dialog-search-combobox";
-import TrainingBlockDialogSelectCombobox from "./training-block-dialog-select-combobox";
+import TrainingBlockDialogSearchPlayersCombobox from "./training-block-dialog-search-players-combobox";
+import TrainingBlockDialogSelectBlockCombobox from "./training-block-dialog-select-block-combobox";
 import UnavailablePlayersAlert from "./unavailable-players-alert";
 
 const CreateTrainingBlockDialog = () => {
@@ -46,11 +46,11 @@ const CreateTrainingBlockDialog = () => {
             Create a training block with custom player assignments
           </DialogDescription>
         </DialogHeader>
-        <TrainingBlockDialogSelectCombobox
+        <TrainingBlockDialogSelectBlockCombobox
           selectedTrainingBlock={selectedTrainingBlock}
           setSelectedTrainingBlock={setSelectedTrainingBlock}
         />
-        <TrainingBlockDialogSearchCombobox
+        <TrainingBlockDialogSearchPlayersCombobox
           selectedTrainingBlock={selectedTrainingBlock}
           assignedPlayers={assignedPlayers}
           addAssignment={addAssignment}

@@ -14,7 +14,7 @@ import type { Player } from "@/schemas/player.schema";
 import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 
 import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
-import TrainingBlockDialogSearchCombobox from "./training-block-dialog-search-combobox";
+import TrainingBlockDialogSearchPlayersCombobox from "./training-block-dialog-search-players-combobox";
 import UnavailablePlayersAlert from "./unavailable-players-alert";
 
 type EditTrainingBlockDialogProps = Pick<
@@ -62,7 +62,7 @@ const EditTrainingBlockDialog = ({
             {day} • {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)}
           </DialogDescription>
         </DialogHeader>
-        <TrainingBlockDialogSearchCombobox
+        <TrainingBlockDialogSearchPlayersCombobox
           selectedTrainingBlock={selectedTrainingBlock}
           assignedPlayers={assignedPlayers}
           addAssignment={addAssignment}

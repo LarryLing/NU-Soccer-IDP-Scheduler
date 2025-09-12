@@ -1,3 +1,4 @@
+import AvailabilityFieldArray from "@/components/availability-field-array/availability-field-array";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -6,8 +7,6 @@ import { DAYS } from "@/constants/days";
 
 import { useScheduleSettingsForm } from "../../hooks/use-schedule-settings-form";
 import type { UseScheduleSettingsSheetReturn } from "../../hooks/use-schedule-settings-sheet";
-
-import ScheduleSettingsFormAvailabilityFieldArray from "./schedule-settings-form-availability-field-array";
 
 type ScheduleSettingsFormProps = {
   closeScheduleSettingsSheet: UseScheduleSettingsSheetReturn["closeScheduleSettingsSheet"];
@@ -33,7 +32,7 @@ const ScheduleSettingsForm = ({ closeScheduleSettingsSheet }: ScheduleSettingsFo
               .map((field, idx) => ({ ...field, originalIndex: idx }))
               .filter((field) => field.day === day);
             return (
-              <ScheduleSettingsFormAvailabilityFieldArray
+              <AvailabilityFieldArray
                 key={day}
                 day={day}
                 dayFields={dayFields}

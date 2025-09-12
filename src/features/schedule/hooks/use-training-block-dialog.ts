@@ -76,9 +76,6 @@ const useTrainingBlockDialog = () => {
     setIsTrainingBlockDialogOpen(false);
   }, [assignPlayersToTrainingBlocks, assignments]);
 
-  console.log(assignments);
-  console.log(assignedPlayers);
-
   return {
     isTrainingBlockDialogOpen,
     setIsTrainingBlockDialogOpen,

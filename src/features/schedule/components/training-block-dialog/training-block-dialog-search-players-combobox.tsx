@@ -9,18 +9,18 @@ import { usePlayers } from "@/features/players/hooks/use-players-store";
 import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
 import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
 
-import TrainingBlockDialogSearchItem from "./training-block-dialog-search-item";
+import TrainingBlockDialogSearchPlayerItem from "./training-block-dialog-search-players-item";
 
-type TrainingBlockDialogSearchComboboxProps = Pick<
+type TrainingBlockDialogSearchPlayersComboboxProps = Pick<
   UseTrainingBlockDialogReturn,
   "selectedTrainingBlock" | "assignedPlayers" | "addAssignment"
 >;
 
-const TrainingBlockDialogSearchCombobox = ({
+const TrainingBlockDialogSearchPlayerCombobox = ({
   selectedTrainingBlock,
   assignedPlayers,
   addAssignment,
-}: TrainingBlockDialogSearchComboboxProps) => {
+}: TrainingBlockDialogSearchPlayersComboboxProps) => {
   const [open, setOpen] = useState(false);
 
   const players = usePlayers();
@@ -53,7 +53,7 @@ const TrainingBlockDialogSearchCombobox = ({
 
                 return (
                   <CommandItem key={player.id} value={player.name} onSelect={handleAssignPlayer}>
-                    <TrainingBlockDialogSearchItem
+                    <TrainingBlockDialogSearchPlayerItem
                       isPlayerAvailable={isPlayerAvailableForTrainingBlock(player, selectedTrainingBlock)}
                       isPlayerAssigned={
                         player.trainingBlockId !== null && player.trainingBlockId !== selectedTrainingBlock.id
@@ -71,4 +71,4 @@ const TrainingBlockDialogSearchCombobox = ({
   );
 };
 
-export default TrainingBlockDialogSearchCombobox;
+export default TrainingBlockDialogSearchPlayerCombobox;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { AvailabilityFormSchema } from "@/schemas/availability-form.schema";
+import { AvailabilityFieldSchema } from "@/schemas/availability-field.schema";
 
 export const ScheduleSettingsFormSchema = z.object({
   duration: z.coerce
@@ -19,7 +19,7 @@ export const ScheduleSettingsFormSchema = z.object({
     .max(4, {
       message: "Maximum number of players must be less than or equal to 4",
     }),
-  availabilities: z.array(AvailabilityFormSchema),
+  availabilities: z.array(AvailabilityFieldSchema),
 });
 
 export type ScheduleSettingsForm = z.infer<typeof ScheduleSettingsFormSchema>;

@@ -32,6 +32,7 @@ const ScheduleActionBar = () => {
 
       return;
     }
+
     const assignments = createSchedule(players);
 
     if (Object.values(assignments).some((value) => value === null)) {
