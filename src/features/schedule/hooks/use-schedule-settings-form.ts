@@ -13,7 +13,7 @@ import type { Day } from "@/constants/days";
 import {
   findOverlapInAvailabilities,
   transformIntoAvailabilityArray,
-  transformIntoAvailabilityFormArray,
+  transformIntoAvailabilityFieldArray,
 } from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 
@@ -41,7 +41,7 @@ export const useScheduleSettingsForm = (
     reValidateMode: "onSubmit",
     defaultValues: {
       ...scheduleSettings,
-      availabilities: transformIntoAvailabilityFormArray(scheduleSettings.availabilities),
+      availabilities: transformIntoAvailabilityFieldArray(scheduleSettings.availabilities),
     },
   });
 

@@ -1,7 +1,7 @@
 import { DAYS } from "@/constants/days";
 
-import useTrainingBlockDialog from "../../hooks/use-training-block-dialog";
-import EditTrainingBlockDialog from "../training-block-dialog/edit-training-block-dialog";
+import useTrainingBlockDialog from "../../hooks/use-edit-training-block-dialog";
+import EditTrainingBlockDialog from "../edit-training-block-dialog/edit-training-block-dialog";
 
 import CalendarDayColumn from "./calendar-day-column";
 import CalendarTimesColumn from "./calendar-times-column";

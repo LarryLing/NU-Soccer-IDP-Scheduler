@@ -1,24 +1,23 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { usePlayersActions } from "@/features/players/hooks/use-players-store";
 import { getTimeStringWithMeridian } from "@/lib/time";
-import type { Player } from "@/schemas/player.schema";
 
-import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
+import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 
-import TrainingBlockDialogAssignedPlayersList from "./training-block-dialog-assigned-players-list";
-import TrainingBlockDialogSearchPlayersCombobox from "./training-block-dialog-search-players-combobox";
+import AssignedPlayersList from "./assigned-players-list";
+import SearchPlayersCombobox from "./search-players-combobox";
 import UnavailablePlayersAlert from "./unavailable-players-alert";
 
 type EditTrainingBlockDialogProps = Pick<
-  UseTrainingBlockDialogReturn,
+  UseEditTrainingBlockDialogReturn,
   | "isTrainingBlockDialogOpen"
   | "setIsTrainingBlockDialogOpen"
   | "selectedTrainingBlock"
@@ -37,21 +36,9 @@ const EditTrainingBlockDialog = ({
   removeAssignment,
   confirmAssignments,
 }: EditTrainingBlockDialogProps) => {
-  const { assignPlayersToTrainingBlocks } = usePlayersActions();
-
   if (!selectedTrainingBlock) return null;
 
   const { day, start, end } = selectedTrainingBlock;
-
-  const deleteTrainingBlock = () => {
-    if (!selectedTrainingBlock) return;
-
-    const assignments: Record<Player["id"], Player["trainingBlockId"]> = {};
-    assignedPlayers.forEach((assignedPlayer) => (assignments[assignedPlayer.id] = null));
-    assignPlayersToTrainingBlocks(assignments);
-
-    setIsTrainingBlockDialogOpen(false);
-  };
 
   return (
     <Dialog open={isTrainingBlockDialogOpen} onOpenChange={setIsTrainingBlockDialogOpen}>
@@ -62,21 +49,21 @@ const EditTrainingBlockDialog = ({
             {day} • {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)}
           </DialogDescription>
         </DialogHeader>
-        <TrainingBlockDialogSearchPlayersCombobox
+        <SearchPlayersCombobox
           selectedTrainingBlock={selectedTrainingBlock}
           assignedPlayers={assignedPlayers}
           addAssignment={addAssignment}
         />
-        <TrainingBlockDialogAssignedPlayersList
+        <AssignedPlayersList
           selectedTrainingBlock={selectedTrainingBlock}
           assignedPlayers={assignedPlayers}
           removeAssignment={removeAssignment}
         />
         <UnavailablePlayersAlert selectedTrainingBlock={selectedTrainingBlock} assignedPlayers={assignedPlayers} />
         <DialogFooter>
-          <Button variant="destructive" onClick={deleteTrainingBlock}>
-            Delete Training Block
-          </Button>
+          <DialogClose asChild>
+            <Button variant="outline">Close</Button>
+          </DialogClose>
           <Button onClick={confirmAssignments}>Save Training Block</Button>
         </DialogFooter>
       </DialogContent>

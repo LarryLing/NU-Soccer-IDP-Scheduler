@@ -13,7 +13,7 @@ import { GOALKEEPER } from "@/features/players/constants/positions";
 import {
   findOverlapInAvailabilities,
   transformIntoAvailabilityArray,
-  transformIntoAvailabilityFormArray,
+  transformIntoAvailabilityFieldArray,
 } from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 import type { Player } from "@/schemas/player.schema";
@@ -44,7 +44,7 @@ export const usePlayerForm = (
       name: player?.name ?? "",
       number: player?.number ?? 0,
       position: player?.position ?? GOALKEEPER,
-      availabilities: transformIntoAvailabilityFormArray(player?.availabilities ?? []),
+      availabilities: transformIntoAvailabilityFieldArray(player?.availabilities ?? []),
     },
   });
 

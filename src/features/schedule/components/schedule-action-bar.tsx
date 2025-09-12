@@ -7,8 +7,7 @@ import type { Player } from "@/schemas/player.schema";
 
 import { useScheduleActions, useTrainingBlocks } from "../hooks/use-schedule-store";
 
-import ScheduleSheet from "./schedule-form/schedule-settings-sheet";
-import CreateTrainingBlockDialog from "./training-block-dialog/create-training-block-dialog";
+import ScheduleSheet from "./schedule-settings-form/schedule-settings-sheet";
 import UnassignedPlayersPopover from "./unassigned-players-popover/unassigned-players-popover";
 
 const ScheduleActionBar = () => {
@@ -54,7 +53,6 @@ const ScheduleActionBar = () => {
         <CalendarIcon />
         Create Schedule
       </Button>
-      <CreateTrainingBlockDialog />
       <ScheduleSheet />
       {hasAssignedPlayers && (
         <>

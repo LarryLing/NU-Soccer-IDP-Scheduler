@@ -3,18 +3,12 @@ import { memo } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Player } from "@/schemas/player.schema";
 
-type TrainingBlockDialogSearchPlayersItemProps = { isPlayerAvailable: boolean; isPlayerAssigned: boolean } & Pick<
+type SearchPlayersItemProps = { isPlayerAvailable: boolean; isPlayerAssigned: boolean } & Pick<
   Player,
   "name" | "number" | "position"
 >;
 
-const TrainingBlockDialogSearchPlayersItem = ({
-  isPlayerAvailable,
-  isPlayerAssigned,
-  name,
-  number,
-  position,
-}: TrainingBlockDialogSearchPlayersItemProps) => {
+const SearchPlayersItem = ({ isPlayerAvailable, isPlayerAssigned, name, number, position }: SearchPlayersItemProps) => {
   return (
     <div className="flex items-center justify-start gap-2">
       <Avatar className="size-9">
@@ -30,4 +24,4 @@ const TrainingBlockDialogSearchPlayersItem = ({
   );
 };
 
-export default memo(TrainingBlockDialogSearchPlayersItem);
+export default memo(SearchPlayersItem);

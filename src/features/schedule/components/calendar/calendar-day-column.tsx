@@ -6,7 +6,7 @@ import { getDayAbbreviation } from "@/lib/time";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import { useTrainingBlocks } from "../../hooks/use-schedule-store";
-import TrainingBlockTrigger from "../training-block-dialog/edit-training-block-trigger";
+import TrainingBlockTrigger from "../edit-training-block-dialog/edit-training-block-trigger";
 
 import CalendarCell from "./calendar-cell";
 

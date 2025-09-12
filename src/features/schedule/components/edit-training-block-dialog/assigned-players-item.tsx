@@ -4,21 +4,21 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Player } from "@/schemas/player.schema";
 
-import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
+import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 
-type TrainingBlockDialogAssignedPlayersItemProps = {
+type AssignedPlayersItemProps = {
   isPlayerAvailable: boolean;
 } & Pick<Player, "id" | "name" | "number" | "position"> &
-  Pick<UseTrainingBlockDialogReturn, "removeAssignment">;
+  Pick<UseEditTrainingBlockDialogReturn, "removeAssignment">;
 
-const TrainingBlockDialogAssignedPlayersItem = ({
+const AssignedPlayersItem = ({
   isPlayerAvailable,
   id,
   name,
   number,
   position,
   removeAssignment,
-}: TrainingBlockDialogAssignedPlayersItemProps) => {
+}: AssignedPlayersItemProps) => {
   const handleRemoveAssignment = (value: string) => {
     if (value === "remove") removeAssignment(id);
   };
@@ -45,4 +45,4 @@ const TrainingBlockDialogAssignedPlayersItem = ({
   );
 };
 
-export default memo(TrainingBlockDialogAssignedPlayersItem);
+export default memo(AssignedPlayersItem);

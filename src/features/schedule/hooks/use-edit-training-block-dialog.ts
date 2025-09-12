@@ -6,7 +6,7 @@ import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import { useScheduleActions } from "./use-schedule-store";
 
-export type UseTrainingBlockDialogReturn = {
+export type UseEditTrainingBlockDialogReturn = {
   isTrainingBlockDialogOpen: boolean;
   setIsTrainingBlockDialogOpen: (isTrainingBlockDialogOpen: boolean) => void;
   selectedTrainingBlock: TrainingBlock | null;
@@ -19,7 +19,7 @@ export type UseTrainingBlockDialogReturn = {
   confirmAssignments: () => void;
 };
 
-const useTrainingBlockDialog = () => {
+const useEditTrainingBlockDialog = () => {
   const { getPlayerById, getPlayerByName, getPlayersByTrainingBlockId, assignPlayersToTrainingBlocks } =
     usePlayersActions();
   const { getTrainingBlockById } = useScheduleActions();
@@ -90,4 +90,4 @@ const useTrainingBlockDialog = () => {
   };
 };
 
-export default useTrainingBlockDialog;
+export default useEditTrainingBlockDialog;

@@ -6,21 +6,21 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { usePlayers } from "@/features/players/hooks/use-players-store";
 
-import type { UseTrainingBlockDialogReturn } from "../../hooks/use-training-block-dialog";
+import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
 import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
 
-import TrainingBlockDialogSearchPlayerItem from "./training-block-dialog-search-players-item";
+import SearchPlayersItem from "./search-players-item";
 
-type TrainingBlockDialogSearchPlayersComboboxProps = Pick<
-  UseTrainingBlockDialogReturn,
+type SearchPlayersComboboxProps = Pick<
+  UseEditTrainingBlockDialogReturn,
   "selectedTrainingBlock" | "assignedPlayers" | "addAssignment"
 >;
 
-const TrainingBlockDialogSearchPlayerCombobox = ({
+const SearchPlayersCombobox = ({
   selectedTrainingBlock,
   assignedPlayers,
   addAssignment,
-}: TrainingBlockDialogSearchPlayersComboboxProps) => {
+}: SearchPlayersComboboxProps) => {
   const [open, setOpen] = useState(false);
 
   const players = usePlayers();
@@ -53,7 +53,7 @@ const TrainingBlockDialogSearchPlayerCombobox = ({
 
                 return (
                   <CommandItem key={player.id} value={player.name} onSelect={handleAssignPlayer}>
-                    <TrainingBlockDialogSearchPlayerItem
+                    <SearchPlayersItem
                       isPlayerAvailable={isPlayerAvailableForTrainingBlock(player, selectedTrainingBlock)}
                       isPlayerAssigned={
                         player.trainingBlockId !== null && player.trainingBlockId !== selectedTrainingBlock.id
@@ -71,4 +71,4 @@ const TrainingBlockDialogSearchPlayerCombobox = ({
   );
 };
 
-export default TrainingBlockDialogSearchPlayerCombobox;
+export default SearchPlayersCombobox;

@@ -23,4 +23,4 @@ export const AvailabilityFieldSchema = z
     }
   );
 
-export type AvailabilityForm = z.infer<typeof AvailabilityFieldSchema>;
+export type AvailabilityField = z.infer<typeof AvailabilityFieldSchema>;
