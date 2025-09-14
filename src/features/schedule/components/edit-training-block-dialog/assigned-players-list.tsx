@@ -32,7 +32,7 @@ const AssignedPlayersList = ({
               />
             ))
           ) : (
-            <p className="text-sm font-medium text-muted-foreground">No players assigned...</p>
+            <p className="text-sm font-medium text-muted-foreground">No players assigned</p>
           )}
         </div>
       </ScrollArea>

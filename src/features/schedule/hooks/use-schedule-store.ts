@@ -5,8 +5,7 @@ import { DAYS } from "@/constants/days";
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import { calculateCombinedScore } from "../lib/math";
-import { getTrainingBlockIdsForPlayer } from "../lib/schedule";
+import { getTrainingBlockIdsForPlayer, selectRandomAvailablePlayer, selectRandomTrainingBlock } from "../lib/schedule";
 import type { ScheduleSettings } from "../schemas/schedule-settings.schema";
 
 export type ScheduleStoreActions = {
@@ -28,7 +27,7 @@ const useScheduleStore = create<UseScheduleStoreReturn>()(
       scheduleSettings: {
         availabilities: [],
         duration: 30,
-        maximumPlayerCount: 4,
+        targetPlayerCount: 4,
       },
       actions: {
         getTrainingBlockById: (trainingBlockId) => {
@@ -68,63 +67,40 @@ const useScheduleStore = create<UseScheduleStoreReturn>()(
         },
         createSchedule: (players) => {
           const { trainingBlocks, scheduleSettings } = get();
-          const { maximumPlayerCount } = scheduleSettings;
+          const { targetPlayerCount } = scheduleSettings;
 
-          const assignedPlayerCounts: Record<TrainingBlock["id"], number> = {};
-          trainingBlocks.forEach((trainingBlock) => {
-            assignedPlayerCounts[trainingBlock.id] = 0;
-          });
-
-          const availableTrainingBlockIdsMap: Record<Player["id"], TrainingBlock["id"][]> = {};
-          players.forEach((player) => {
-            availableTrainingBlockIdsMap[player.id] = getTrainingBlockIdsForPlayer(player, trainingBlocks);
-          });
+          const availablePlayers: Player[] = [];
+          const availableTrainingBlocks: TrainingBlock[] = [...trainingBlocks];
 
           const assignments: Record<Player["id"], Player["trainingBlockId"]> = {};
 
-          [...players]
-            .sort((a, b) => {
-              const aBlocks = availableTrainingBlockIdsMap[a.id]?.length || 0;
-              const bBlocks = availableTrainingBlockIdsMap[b.id]?.length || 0;
-              return aBlocks - bBlocks;
-            })
-            .forEach((player) => {
-              const availableBlockIds = availableTrainingBlockIdsMap[player.id] || [];
-              if (availableBlockIds.length === 0) {
-                assignments[player.id] = null;
-                return;
-              }
+          players.forEach((player) => {
+            const trainingBlocksForPlayer = getTrainingBlockIdsForPlayer(player, trainingBlocks);
+            if (trainingBlocksForPlayer.length > 0) availablePlayers.push(player);
+            assignments[player.id] = null;
+          });
 
-              let bestBlockIds: TrainingBlock["id"][] = [];
-              let bestScore = -Infinity;
+          while (availablePlayers.length > 0 && availableTrainingBlocks.length > 0) {
+            const { selectedTrainingBlock, selectedTrainingBlockIndex } =
+              selectRandomTrainingBlock(availableTrainingBlocks);
 
-              for (const blockId of availableBlockIds) {
-                const tempCounts = { ...assignedPlayerCounts };
-                tempCounts[blockId]!++;
+            let playerCount = 0;
+            while (playerCount < targetPlayerCount && availablePlayers.length > 0) {
+              const result = selectRandomAvailablePlayer(
+                availablePlayers,
+                selectedTrainingBlock,
+                availableTrainingBlocks
+              );
+              if (!result) break;
+              const { selectedPlayer, selectedPlayerIndex } = result;
 
-                const score = calculateCombinedScore(tempCounts, maximumPlayerCount);
+              assignments[selectedPlayer.id] = selectedTrainingBlock.id;
+              availablePlayers.splice(selectedPlayerIndex, 1);
+              playerCount += 1;
+            }
 
-                if (bestScore < score) {
-                  bestScore = score;
-                  bestBlockIds = [blockId];
-                } else if (bestScore === score) {
-                  bestBlockIds.push(blockId);
-                }
-              }
-
-              if (bestBlockIds.length > 0) {
-                const randomBlockIndex = Math.floor(Math.random() * bestBlockIds.length);
-
-                const bestBlockId = bestBlockIds[randomBlockIndex] || null;
-                assignments[player.id] = bestBlockId;
-
-                if (bestBlockId) assignedPlayerCounts[bestBlockId]!++;
-
-                return;
-              }
-
-              assignments[player.id] = null;
-            });
+            availableTrainingBlocks.splice(selectedTrainingBlockIndex, 1);
+          }
 
           return assignments;
         },

@@ -58,12 +58,12 @@ const ScheduleSettingsForm = ({ closeScheduleSettingsSheet }: ScheduleSettingsFo
           />
           <FormField
             control={control}
-            name="maximumPlayerCount"
+            name="targetPlayerCount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Maximum Player Count</FormLabel>
+                <FormLabel>Target Player Count</FormLabel>
                 <FormControl>
-                  <Input type="number" disabled {...field} />
+                  <Input type="number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
