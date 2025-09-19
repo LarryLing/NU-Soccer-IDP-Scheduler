@@ -18,7 +18,7 @@ const usePlayersJson = (): UsePlayersJsonType => {
   const players = usePlayers();
   const trainingBlocks = useTrainingBlocks();
 
-  const { createPlayer } = usePlayersActions();
+  const { createPlayer, deleteManyPlayers } = usePlayersActions();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -67,6 +67,9 @@ const usePlayersJson = (): UsePlayersJsonType => {
 
         const parsed = JSON.parse(result);
         const validatedPlayers = PlayerSchema.array().parse(parsed);
+
+        const oldPlayerIds = players.map((player) => player.id);
+        deleteManyPlayers(oldPlayerIds);
 
         validatedPlayers.forEach((validatedPlayer) => {
           if (validatedPlayer.trainingBlockId === null) {
