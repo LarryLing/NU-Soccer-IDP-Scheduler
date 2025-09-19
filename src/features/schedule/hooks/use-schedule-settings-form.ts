@@ -33,7 +33,7 @@ export const useScheduleSettingsForm = (
   closeScheduleSettingsSheet: UseScheduleSettingsSheetReturn["closeScheduleSettingsSheet"]
 ): UseScheduleSettingsFormReturn => {
   const scheduleSettings = useScheduleSettings();
-  const { saveScheduleSettingsAndGenerateTrainingBlocks } = useScheduleActions();
+  const { saveScheduleSettings } = useScheduleActions();
 
   const form = useForm<ScheduleSettingsForm>({
     resolver: zodResolver(ScheduleSettingsFormSchema),
@@ -98,7 +98,7 @@ export const useScheduleSettingsForm = (
       return;
     }
 
-    saveScheduleSettingsAndGenerateTrainingBlocks({
+    saveScheduleSettings({
       ...data,
       availabilities: transformedAvailabilities,
     });

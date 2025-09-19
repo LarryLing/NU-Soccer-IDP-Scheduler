@@ -18,43 +18,75 @@ export const getTrainingBlockIdsForPlayer = (player: Player, trainingBlocks: Tra
     .map((trainingBlock) => trainingBlock.id);
 };
 
-export const selectRandomTrainingBlock = (availableTrainingBlocks: TrainingBlock[]) => {
-  const selectedTrainingBlockIndex = Math.floor(Math.random() * availableTrainingBlocks.length);
-  const selectedTrainingBlock = availableTrainingBlocks[selectedTrainingBlockIndex];
-  return { selectedTrainingBlock: selectedTrainingBlock!, selectedTrainingBlockIndex };
+export const calculateTrainingBlockHeuristic = (playerCount: number, targetPlayerCount: number) => {
+  const k = 1;
+  const x = playerCount;
+  const t = targetPlayerCount;
+
+  if (0 <= x && x <= t) {
+    return k * (x / t) ** 2;
+  } else {
+    return k * (1 / (x * t)) ** (x - t);
+  }
 };
 
-export const selectRandomAvailablePlayer = (
-  availablePlayers: Player[],
-  selectedTrainingBlock: TrainingBlock,
-  availableTrainingBlocks: TrainingBlock[]
+export const calculateStateHeuristic = (
+  assignments: Record<Player["id"], Player["trainingBlockId"]>,
+  targetPlayerCount: number
 ) => {
-  const playersForTrainingBlock = availablePlayers.filter((availablePlayer) =>
-    isPlayerAvailableForTrainingBlock(availablePlayer, selectedTrainingBlock)
-  );
+  const assignedTrainingBlockCounts: Record<TrainingBlock["id"], number> = {};
 
-  if (playersForTrainingBlock.length === 0) return null;
+  Object.values(assignments).forEach((trainingBlockId) => {
+    if (!trainingBlockId) return;
 
-  const availabilityCounts = playersForTrainingBlock.map(
-    (player) => getTrainingBlockIdsForPlayer(player, availableTrainingBlocks).length
-  );
-
-  const maxAvailability = Math.max(...availabilityCounts);
-
-  let currentCumulativeWeight = 0;
-  const cumulativeWeights = availabilityCounts.map((availabilityCount) => {
-    const weight = maxAvailability - availabilityCount + 1;
-    currentCumulativeWeight += weight;
-    return currentCumulativeWeight;
+    if (trainingBlockId in assignedTrainingBlockCounts) {
+      assignedTrainingBlockCounts[trainingBlockId]! += 1;
+    } else {
+      assignedTrainingBlockCounts[trainingBlockId] = 1;
+    }
   });
 
-  const maxCumulativeWeight = cumulativeWeights[cumulativeWeights.length - 1]!;
-  const randomWeight = Math.random() * maxCumulativeWeight;
+  let stateHeuristic = 0;
+  Object.values(assignedTrainingBlockCounts).forEach(
+    (playerCount) => (stateHeuristic += calculateTrainingBlockHeuristic(playerCount, targetPlayerCount))
+  );
+  return stateHeuristic;
+};
 
-  const selectedPlayer = playersForTrainingBlock.find((_player, index) => randomWeight < cumulativeWeights[index]!);
-  if (!selectedPlayer) return null;
+export const selectPlayerId = (
+  seenPlayerIds: Set<Player["id"]>,
+  trainingBlocksForPlayers: Record<string, Set<string>>
+) => {
+  return (
+    Object.keys(trainingBlocksForPlayers)
+      .filter((playerId) => trainingBlocksForPlayers[playerId]!.size !== 0 && !seenPlayerIds.has(playerId))
+      .sort((a, b) => trainingBlocksForPlayers[a]!.size - trainingBlocksForPlayers[b]!.size)[0] || null
+  );
+};
 
-  const selectedPlayerIndex = availablePlayers.findIndex((availablePlayer) => availablePlayer.id === selectedPlayer.id);
+export const selectTrainingBlockId = (
+  selectedPlayerId: Player["id"],
+  assignments: Record<Player["id"], Player["trainingBlockId"]>,
+  trainingBlocksForPlayer: Set<TrainingBlock["id"]>,
+  targetPlayerCount: number
+) => {
+  let maxStateHeuristic = Number.NEGATIVE_INFINITY;
+  const candidateTrainingBlockIds = [];
 
-  return { selectedPlayer, selectedPlayerIndex };
+  for (const trainingBlockId of trainingBlocksForPlayer) {
+    const tempAssignments: Record<Player["id"], Player["trainingBlockId"]> = { ...assignments };
+    tempAssignments[selectedPlayerId] = trainingBlockId;
+
+    const stateHeuristic = calculateStateHeuristic(tempAssignments, targetPlayerCount);
+    if (stateHeuristic > maxStateHeuristic) {
+      maxStateHeuristic = stateHeuristic;
+      candidateTrainingBlockIds.length = 0;
+      candidateTrainingBlockIds.push(trainingBlockId);
+    } else if (stateHeuristic === maxStateHeuristic) {
+      candidateTrainingBlockIds.push(trainingBlockId);
+    }
+  }
+
+  const randomIndex = Math.floor(Math.random() * candidateTrainingBlockIds.length);
+  return candidateTrainingBlockIds[randomIndex] || null;
 };
