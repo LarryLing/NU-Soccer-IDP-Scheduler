@@ -17,24 +17,26 @@ const AssignedPlayersList = ({
 }: AssignedPlayersListProps) => {
   if (!selectedTrainingBlock) return null;
 
+  const scrollAreaHeight = Math.min(assignedPlayers.length, 10);
+
   return (
     <div>
       <h3 className="text-md font-medium mb-2">Assigned Players</h3>
-      <ScrollArea>
-        <div className="flex flex-col gap-2 max-h-[185px] pr-3">
-          {assignedPlayers.length > 0 ? (
-            assignedPlayers.map((assignedPlayer) => (
+      <ScrollArea className={`h-[${scrollAreaHeight * 48}px] pr-3`}>
+        {assignedPlayers.length > 0 ? (
+          <div className="flex flex-col gap-2">
+            {assignedPlayers.map((assignedPlayer) => (
               <AssignedPlayersItem
                 key={assignedPlayer.id}
                 isPlayerAvailable={isPlayerAvailableForTrainingBlock(assignedPlayer, selectedTrainingBlock)}
                 {...assignedPlayer}
                 removeAssignment={removeAssignment}
               />
-            ))
-          ) : (
-            <p className="text-sm font-medium text-muted-foreground">No players assigned</p>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm font-medium text-muted-foreground">No players assigned</p>
+        )}
       </ScrollArea>
     </div>
   );

@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { getTimeStringWithMeridian } from "@/lib/time";
 
 import type { UseEditTrainingBlockDialogReturn } from "../../hooks/use-edit-training-block-dialog";
@@ -36,9 +39,15 @@ const EditTrainingBlockDialog = ({
   removeAssignment,
   confirmAssignments,
 }: EditTrainingBlockDialogProps) => {
+  const [filters, setFilters] = useState<string[]>(["available"]);
+
   if (!selectedTrainingBlock) return null;
 
   const { day, start, end } = selectedTrainingBlock;
+
+  const handleSetFilter = (values: string[]) => {
+    setFilters(values);
+  };
 
   return (
     <Dialog open={isTrainingBlockDialogOpen} onOpenChange={setIsTrainingBlockDialogOpen}>
@@ -46,14 +55,29 @@ const EditTrainingBlockDialog = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1">Edit Training Block</DialogTitle>
           <DialogDescription className="flex items-center gap-1">
-            {day} • {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)}
+            {day} • {getTimeStringWithMeridian(start)} - {getTimeStringWithMeridian(end)} • {assignedPlayers.length}{" "}
+            Players
           </DialogDescription>
         </DialogHeader>
-        <SearchPlayersCombobox
-          selectedTrainingBlock={selectedTrainingBlock}
-          assignedPlayers={assignedPlayers}
-          addAssignment={addAssignment}
-        />
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <h3 className="text-sm font-medium">Filter Player Search</h3>
+            <ToggleGroup type="multiple" value={filters} onValueChange={handleSetFilter} variant="outline">
+              <ToggleGroupItem value="available" className="w-[110px] hover:bg-background">
+                Available
+              </ToggleGroupItem>
+              <ToggleGroupItem value="unassigned" className="w-[110px] hover:bg-background">
+                Unassigned
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+          <SearchPlayersCombobox
+            filters={filters}
+            selectedTrainingBlock={selectedTrainingBlock}
+            assignedPlayers={assignedPlayers}
+            addAssignment={addAssignment}
+          />
+        </div>
         <AssignedPlayersList
           selectedTrainingBlock={selectedTrainingBlock}
           assignedPlayers={assignedPlayers}

@@ -72,18 +72,14 @@ const usePlayersJson = (): UsePlayersJsonType => {
         deleteManyPlayers(oldPlayerIds);
 
         validatedPlayers.forEach((validatedPlayer) => {
-          if (validatedPlayer.trainingBlockId === null) {
-            createPlayer(validatedPlayer);
-          } else {
-            createPlayer({
-              ...validatedPlayer,
-              trainingBlockId: trainingBlocks.some(
-                (trainingBlock) => trainingBlock.id === validatedPlayer.trainingBlockId
-              )
+          createPlayer({
+            ...validatedPlayer,
+            trainingBlockId: validatedPlayer.trainingBlockId
+              ? trainingBlocks.some((trainingBlock) => trainingBlock.id === validatedPlayer.trainingBlockId)
                 ? validatedPlayer.trainingBlockId
-                : null,
-            });
-          }
+                : null
+              : null,
+          });
         });
 
         toast.success("Successfully uploaded players");
