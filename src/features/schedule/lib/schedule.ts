@@ -53,17 +53,6 @@ export const calculateStateHeuristic = (
   return stateHeuristic;
 };
 
-export const selectPlayerId = (
-  seenPlayerIds: Set<Player["id"]>,
-  trainingBlocksForPlayers: Record<string, Set<string>>
-) => {
-  return (
-    Object.keys(trainingBlocksForPlayers)
-      .filter((playerId) => trainingBlocksForPlayers[playerId]!.size !== 0 && !seenPlayerIds.has(playerId))
-      .sort((a, b) => trainingBlocksForPlayers[a]!.size - trainingBlocksForPlayers[b]!.size)[0] || null
-  );
-};
-
 export const selectTrainingBlockId = (
   selectedPlayerId: Player["id"],
   assignments: Record<Player["id"], Player["trainingBlockId"]>,

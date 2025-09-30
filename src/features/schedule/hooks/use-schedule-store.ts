@@ -4,8 +4,9 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import { getTrainingBlockIdsForPlayer, selectPlayerId, selectTrainingBlockId } from "../lib/schedule";
+import { getTrainingBlockIdsForPlayer, selectTrainingBlockId } from "../lib/schedule";
 import type { ScheduleSettings } from "../schemas/schedule-settings.schema";
+import { MaxHeap } from "../lib/maxheap";
 
 export type ScheduleStoreActions = {
   getTrainingBlockById: (trainingBlockId: TrainingBlock["id"]) => TrainingBlock | null;
@@ -17,6 +18,11 @@ export type UseScheduleStoreReturn = {
   trainingBlocks: TrainingBlock[];
   scheduleSettings: ScheduleSettings;
   actions: ScheduleStoreActions;
+};
+
+type HeapType = {
+  playerId: Player["id"];
+  trainingBlocksForPlayer: Set<TrainingBlock["id"]>;
 };
 
 const useScheduleStore = create<UseScheduleStoreReturn>()(
@@ -39,24 +45,21 @@ const useScheduleStore = create<UseScheduleStoreReturn>()(
           const { trainingBlocks, scheduleSettings } = get();
           const { targetPlayerCount } = scheduleSettings;
 
-          const trainingBlocksForPlayers: Record<Player["id"], Set<TrainingBlock["id"]>> = {};
           const assignments: Record<Player["id"], Player["trainingBlockId"]> = {};
+          const trainingBlocksForPlayers = new MaxHeap<HeapType>((a: HeapType, b: HeapType) => {
+            return b.trainingBlocksForPlayer.size - a.trainingBlocksForPlayer.size;
+          });
 
           players.forEach((player) => {
-            trainingBlocksForPlayers[player.id] = new Set(getTrainingBlockIdsForPlayer(player, trainingBlocks));
+            trainingBlocksForPlayers.add({
+              playerId: player.id,
+              trainingBlocksForPlayer: new Set(getTrainingBlockIdsForPlayer(player, trainingBlocks)),
+            });
             assignments[player.id] = null;
           });
 
-          const seenPlayerIds = new Set<Player["id"]>();
-          while (true) {
-            const selectedPlayerId = selectPlayerId(seenPlayerIds, trainingBlocksForPlayers);
-            if (!selectedPlayerId) break;
-
-            const trainingBlocksForPlayer = trainingBlocksForPlayers[selectedPlayerId]!;
-            if (trainingBlocksForPlayer.size === 0) {
-              seenPlayerIds.add(selectedPlayerId);
-              continue;
-            }
+          while (trainingBlocksForPlayers.peek()) {
+            const { playerId: selectedPlayerId, trainingBlocksForPlayer } = trainingBlocksForPlayers.remove()!;
 
             const selectedTrainingBlockId = selectTrainingBlockId(
               selectedPlayerId,
@@ -66,7 +69,6 @@ const useScheduleStore = create<UseScheduleStoreReturn>()(
             );
 
             assignments[selectedPlayerId] = selectedTrainingBlockId;
-            seenPlayerIds.add(selectedPlayerId);
           }
 
           return assignments;
