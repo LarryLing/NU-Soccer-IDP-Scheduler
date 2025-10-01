@@ -2,14 +2,17 @@ import { CalendarX2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import usePlayersStore from "@/features/players/hooks/use-players-store";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { usePlayers } from "@/features/players/hooks/use-players-store";
 
 import UnassignedPlayersPopoverItem from "./unassigned-players-popover-item";
 
 const UnassignedPlayersPopover = () => {
-  const players = usePlayersStore((state) => state.players);
+  const players = usePlayers();
 
   const unassignedPlayers = players.filter((player) => player.trainingBlockId === null);
+
+  const scrollAreaHeight = Math.min(unassignedPlayers.length, 8);
 
   return (
     <Popover>
@@ -19,10 +22,12 @@ const UnassignedPlayersPopover = () => {
           {unassignedPlayers.length} Unassigned Players
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="overflow-y-scroll max-h-[320px] p-1">
-        {unassignedPlayers.map((unassignedPlayer) => (
-          <UnassignedPlayersPopoverItem key={unassignedPlayer.id} {...unassignedPlayer} />
-        ))}
+      <PopoverContent asChild>
+        <ScrollArea className={`h-[${scrollAreaHeight * 40}px] p-1`}>
+          {unassignedPlayers.map((unassignedPlayer) => (
+            <UnassignedPlayersPopoverItem key={unassignedPlayer.id} {...unassignedPlayer} />
+          ))}
+        </ScrollArea>
       </PopoverContent>
     </Popover>
   );

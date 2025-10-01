@@ -1,5 +1,7 @@
+import { memo } from "react";
+
 import { Button } from "@/components/ui/button";
-import usePlayersStore from "@/features/players/hooks/use-players-store";
+import { usePlayers } from "@/features/players/hooks/use-players-store";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
@@ -7,19 +9,19 @@ import { isPlayerAvailableForTrainingBlock } from "../../lib/schedule";
 type EditTrainingBlockTriggerProps = {
   currentCellStartInt: number;
   openTrainingBlockDialog: (trainingBlockId: TrainingBlock["id"]) => void;
-} & Pick<TrainingBlock, "id" | "day" | "start" | "end" | "assignedPlayerCount">;
+} & Pick<TrainingBlock, "id" | "day" | "start" | "end">;
 
 const EditTrainingBlockTrigger = ({
   currentCellStartInt,
   openTrainingBlockDialog,
   id,
+  day,
   start,
   end,
-  assignedPlayerCount,
 }: EditTrainingBlockTriggerProps) => {
-  const players = usePlayersStore((state) => state.players);
+  const players = usePlayers();
 
-  if (assignedPlayerCount === 0) return null;
+  const assignedPlayers = players.filter((player) => player.trainingBlockId === id);
 
   const handleOpenTrainingBlockDialog = () => {
     openTrainingBlockDialog(id);
@@ -28,9 +30,10 @@ const EditTrainingBlockTrigger = ({
   const topPercentage = ((start - currentCellStartInt) / 60) * 100;
   const heightPercentage = ((end - start) / 60) * 100;
 
-  const assignedPlayers = players.filter((player) => player.trainingBlockId === id);
   const assignedPlayerNames = assignedPlayers.map((assignedPlayer) => assignedPlayer.name);
-  const hasUnavailablePlayers = assignedPlayers.some((player) => !isPlayerAvailableForTrainingBlock(player.id, id));
+  const hasUnavailablePlayers = assignedPlayers.some(
+    (player) => !isPlayerAvailableForTrainingBlock(player, { id, day, start, end })
+  );
 
   return (
     <Button
@@ -46,10 +49,10 @@ const EditTrainingBlockTrigger = ({
       <p
         className={`text-xs text-wrap truncate ${hasUnavailablePlayers ? "text-yellow-700 dark:text-yellow-300" : ""}`}
       >
-        {assignedPlayerNames.join(", ")}
+        {assignedPlayerNames.join(" • ")}
       </p>
     </Button>
   );
 };
 
-export default EditTrainingBlockTrigger;
+export default memo(EditTrainingBlockTrigger);

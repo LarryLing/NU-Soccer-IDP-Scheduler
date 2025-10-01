@@ -3,7 +3,7 @@ import { z } from "zod";
 import { DAYS } from "@/constants/days";
 import { calculateMinutesFromTimeString } from "@/lib/time";
 
-export const AvailabilityFormSchema = z
+export const AvailabilityFieldSchema = z
   .object({
     day: z.enum(DAYS),
     start: z.string().min(1, {
@@ -23,4 +23,4 @@ export const AvailabilityFormSchema = z
     }
   );
 
-export type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
+export type AvailabilityField = z.infer<typeof AvailabilityFieldSchema>;

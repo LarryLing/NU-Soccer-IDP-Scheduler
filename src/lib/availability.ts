@@ -1,10 +1,10 @@
 import { DAYS } from "@/constants/days";
-import type { AvailabilityForm } from "@/schemas/availability-form.schema";
+import type { AvailabilityField } from "@/schemas/availability-field.schema";
 import type { Availability } from "@/schemas/availability.schema";
 
 import { calculateMinutesFromTimeString, getTimeStringWithoutMeridian } from "./time";
 
-export const transformIntoAvailabilityArray = (availabilities: AvailabilityForm[]): Availability[] => {
+export const transformIntoAvailabilityArray = (availabilities: AvailabilityField[]): Availability[] => {
   return availabilities
     .map((availability) => {
       return {
@@ -16,7 +16,7 @@ export const transformIntoAvailabilityArray = (availabilities: AvailabilityForm[
     .sort((a, b) => a.start - b.start);
 };
 
-export const transformIntoAvailabilityFormArray = (availabilities: Availability[]): AvailabilityForm[] => {
+export const transformIntoAvailabilityFieldArray = (availabilities: Availability[]): AvailabilityField[] => {
   return availabilities.map((availability) => {
     return {
       day: availability.day,

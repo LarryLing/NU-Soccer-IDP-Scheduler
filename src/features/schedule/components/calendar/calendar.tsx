@@ -1,31 +1,14 @@
-import { useCallback } from "react";
-
 import { DAYS } from "@/constants/days";
-import usePlayersStore from "@/features/players/hooks/use-players-store";
-import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import useScheduleStore from "../../hooks/use-schedule-store";
-import useTrainingBlockDialog from "../../hooks/use-training-block-dialog";
-import EditTrainingBlockDialog from "../training-block-dialog/edit-training-block-dialog";
+import useTrainingBlockDialog from "../../hooks/use-edit-training-block-dialog";
+import EditTrainingBlockDialog from "../edit-training-block-dialog/edit-training-block-dialog";
 
 import CalendarDayColumn from "./calendar-day-column";
 import CalendarTimesColumn from "./calendar-times-column";
 
 const Calendar = () => {
   const useTrainingBlockDialogReturn = useTrainingBlockDialog();
-  const { setIsTrainingBlockDialogOpen, setSelectedTrainingBlock, setAssignedPlayers } = useTrainingBlockDialogReturn;
-
-  const openTrainingBlockDialog = useCallback(
-    (trainingBlockId: TrainingBlock["id"]) => {
-      const { players } = usePlayersStore.getState();
-      const { trainingBlocks } = useScheduleStore.getState();
-
-      setSelectedTrainingBlock(trainingBlocks.find((trainingBlock) => trainingBlock.id === trainingBlockId) || null);
-      setAssignedPlayers(players.filter((player) => player.trainingBlockId === trainingBlockId));
-      setIsTrainingBlockDialogOpen(true);
-    },
-    [setAssignedPlayers, setIsTrainingBlockDialogOpen, setSelectedTrainingBlock]
-  );
+  const { openTrainingBlockDialog } = useTrainingBlockDialogReturn;
 
   return (
     <>

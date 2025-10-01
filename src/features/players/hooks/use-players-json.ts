@@ -2,10 +2,10 @@ import { useRef, type ChangeEvent, type RefObject } from "react";
 import { toast } from "sonner";
 import { ZodError } from "zod";
 
-import useScheduleStore from "@/features/schedule/hooks/use-schedule-store";
+import { useTrainingBlocks } from "@/features/schedule/hooks/use-schedule-store";
 import { PlayerSchema } from "@/schemas/player.schema";
 
-import usePlayersStore from "./use-players-store";
+import { usePlayers, usePlayersActions } from "./use-players-store";
 
 type UsePlayersJsonType = {
   fileInputRef: RefObject<HTMLInputElement | null>;
@@ -15,6 +15,11 @@ type UsePlayersJsonType = {
 };
 
 const usePlayersJson = (): UsePlayersJsonType => {
+  const players = usePlayers();
+  const trainingBlocks = useTrainingBlocks();
+
+  const { createPlayer, deleteManyPlayers } = usePlayersActions();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleOpenFileInput = () => {
@@ -23,8 +28,6 @@ const usePlayersJson = (): UsePlayersJsonType => {
   };
 
   const handleExportPlayersJson = () => {
-    const { players } = usePlayersStore.getState();
-
     const stringifiedJson = JSON.stringify(players, null, 2);
 
     const blob = new Blob([stringifiedJson], { type: "application/json" });
@@ -65,40 +68,19 @@ const usePlayersJson = (): UsePlayersJsonType => {
         const parsed = JSON.parse(result);
         const validatedPlayers = PlayerSchema.array().parse(parsed);
 
-        const { setPlayers } = usePlayersStore.getState();
-        const { trainingBlocks, setTrainingBlocks } = useScheduleStore.getState();
+        const oldPlayerIds = players.map((player) => player.id);
+        deleteManyPlayers(oldPlayerIds);
 
-        const updatedPlayers = [...validatedPlayers].map((validatedPlayer) => {
-          if (validatedPlayer.trainingBlockId === null) {
-            return validatedPlayer;
-          }
-
-          return {
+        validatedPlayers.forEach((validatedPlayer) => {
+          createPlayer({
             ...validatedPlayer,
-            trainingBlockId: trainingBlocks.some(
-              (trainingBlock) => trainingBlock.id === validatedPlayer.trainingBlockId
-            )
-              ? validatedPlayer.trainingBlockId
+            trainingBlockId: validatedPlayer.trainingBlockId
+              ? trainingBlocks.some((trainingBlock) => trainingBlock.id === validatedPlayer.trainingBlockId)
+                ? validatedPlayer.trainingBlockId
+                : null
               : null,
-          };
+          });
         });
-
-        const updatedTrainingBlocks = [...trainingBlocks].map((trainingBlock) => {
-          const updatedAssignPlayerCount = updatedPlayers.reduce((accumulator, player) => {
-            if (player.trainingBlockId === trainingBlock.id) {
-              return accumulator + 1;
-            }
-            return accumulator;
-          }, 0);
-
-          return {
-            ...trainingBlock,
-            assignedPlayerCount: updatedAssignPlayerCount,
-          };
-        });
-
-        setPlayers(updatedPlayers);
-        setTrainingBlocks(updatedTrainingBlocks);
 
         toast.success("Successfully uploaded players");
       } catch (error) {

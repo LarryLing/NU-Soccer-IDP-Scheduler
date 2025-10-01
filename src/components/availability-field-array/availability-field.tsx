@@ -3,22 +3,17 @@ import type { Control, UseFieldArrayRemove } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import type { PlayerForm } from "@/features/players/schemas/player-form.schema";
+import type { ScheduleSettingsForm } from "@/features/schedule/schemas/schedule-settings-form.schema";
 
-import type { ScheduleSettingsForm } from "../../schemas/schedule-settings-form.schema";
-
-type ScheduleSettingsFormAvailabilityFieldProps = {
+type AvailabilityFieldProps = {
   originalIndex: number;
   remove: UseFieldArrayRemove;
-  control: Control<ScheduleSettingsForm>;
+  control: Control<PlayerForm> | Control<ScheduleSettingsForm>;
   disabled: boolean;
 };
 
-const ScheduleSettingsFormAvailabilityField = ({
-  originalIndex,
-  remove,
-  control,
-  disabled,
-}: ScheduleSettingsFormAvailabilityFieldProps) => {
+const AvailabilityField = ({ originalIndex, remove, control, disabled }: AvailabilityFieldProps) => {
   const handleRemove = () => {
     remove(originalIndex);
   };
@@ -57,4 +52,4 @@ const ScheduleSettingsFormAvailabilityField = ({
   );
 };
 
-export default ScheduleSettingsFormAvailabilityField;
+export default AvailabilityField;

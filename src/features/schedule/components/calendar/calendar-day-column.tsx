@@ -5,8 +5,8 @@ import { CALENDAR_TIMES } from "@/features/schedule/constants/calendar-times";
 import { getDayAbbreviation } from "@/lib/time";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import useScheduleStore from "../../hooks/use-schedule-store";
-import TrainingBlockTrigger from "../training-block-dialog/edit-training-block-trigger";
+import { useTrainingBlocks } from "../../hooks/use-schedule-store";
+import TrainingBlockTrigger from "../edit-training-block-dialog/edit-training-block-trigger";
 
 import CalendarCell from "./calendar-cell";
 
@@ -16,7 +16,7 @@ type CalendarDayColumnProps = {
 };
 
 const CalendarDayColumn = ({ day, openTrainingBlockDialog }: CalendarDayColumnProps) => {
-  const trainingBlocks = useScheduleStore((state) => state.trainingBlocks);
+  const trainingBlocks = useTrainingBlocks();
 
   const cells = useMemo(() => {
     const timesEntries = Object.entries(CALENDAR_TIMES);

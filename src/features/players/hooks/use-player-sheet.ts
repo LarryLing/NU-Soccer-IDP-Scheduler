@@ -2,10 +2,10 @@ import { useCallback, useState } from "react";
 
 import type { Player } from "@/schemas/player.schema";
 
-import usePlayersStore from "./use-players-store";
+import { usePlayersActions } from "./use-players-store";
 
 export type UsePlayerSheetReturn = {
-  player: Player | undefined;
+  player: Player | null;
   isPlayerSheetOpen: boolean;
   setIsPlayerSheetOpen: (isPlayerSheetOpen: boolean) => void;
   openPlayerSheet: (playerId?: Player["id"]) => void;
@@ -13,21 +13,18 @@ export type UsePlayerSheetReturn = {
 };
 
 export const usePlayerSheet = (): UsePlayerSheetReturn => {
-  const [player, setPlayer] = useState<Player | undefined>(undefined);
+  const { getPlayerById } = usePlayersActions();
+
+  const [player, setPlayer] = useState<Player | null>(null);
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState<boolean>(false);
 
-  const openPlayerSheet = useCallback((playerId?: Player["id"]) => {
-    if (playerId) {
-      const { players } = usePlayersStore.getState();
-      const player = players.find((player) => player.id === playerId);
-      setPlayer(player);
-    }
-
+  const openPlayerSheet = (playerId?: Player["id"]) => {
+    setPlayer(playerId ? getPlayerById(playerId) : null);
     setIsPlayerSheetOpen(true);
-  }, []);
+  };
 
   const closePlayerSheet = useCallback(() => {
-    setPlayer(undefined);
+    setPlayer(null);
     setIsPlayerSheetOpen(false);
   }, []);
 

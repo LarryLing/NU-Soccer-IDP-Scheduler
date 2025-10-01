@@ -12,14 +12,14 @@ import { useState } from "react";
 
 import type { Player } from "@/schemas/player.schema";
 
-import usePlayersStore from "./use-players-store";
+import { usePlayers } from "./use-players-store";
 
 export type UsePlayersTableReturn = {
   table: Table<Player>;
 };
 
 export const usePlayersTable = (columns: ColumnDef<Player>[]): UsePlayersTableReturn => {
-  const players = usePlayersStore((state) => state.players);
+  const players = usePlayers();
 
   const [sorting, setSorting] = useState<SortingState>([
     {

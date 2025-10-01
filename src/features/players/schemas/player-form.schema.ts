@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { POSITIONS } from "@/features/players/constants/positions";
-import { AvailabilityFormSchema } from "@/schemas/availability-form.schema";
+import { AvailabilityFieldSchema } from "@/schemas/availability-field.schema";
 
 export const PlayerFormSchema = z.object({
   name: z
@@ -21,7 +21,7 @@ export const PlayerFormSchema = z.object({
       message: "Number must be less than or equal to 99",
     }),
   position: z.enum(POSITIONS),
-  availabilities: z.array(AvailabilityFormSchema),
+  availabilities: z.array(AvailabilityFieldSchema),
 });
 
 export type PlayerForm = z.infer<typeof PlayerFormSchema>;

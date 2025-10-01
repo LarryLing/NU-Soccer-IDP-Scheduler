@@ -1,3 +1,4 @@
+import AvailabilityFieldArray from "@/components/availability-field-array/availability-field-array";
 import { Button } from "@/components/ui/button";
 import { Form, FormItem, FormField, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -10,10 +11,8 @@ import type { Player } from "@/schemas/player.schema";
 import { usePlayerForm } from "../../hooks/use-player-form";
 import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
 
-import PlayerFormAvailabilityFieldArray from "./player-form-availability-field-array";
-
 type PlayerFormProps = {
-  player?: Player;
+  player: Player | null;
   closePlayerSheet: UsePlayerSheetReturn["closePlayerSheet"];
 };
 
@@ -95,7 +94,7 @@ const PlayerForm = ({ player, closePlayerSheet }: PlayerFormProps) => {
               .map((field, idx) => ({ ...field, originalIndex: idx }))
               .filter((field) => field.day === day);
             return (
-              <PlayerFormAvailabilityFieldArray
+              <AvailabilityFieldArray
                 key={day}
                 day={day}
                 dayFields={dayFields}

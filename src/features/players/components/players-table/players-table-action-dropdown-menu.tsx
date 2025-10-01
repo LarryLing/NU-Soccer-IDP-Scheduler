@@ -11,7 +11,7 @@ import {
 import type { Player } from "@/schemas/player.schema";
 
 import type { UsePlayerSheetReturn } from "../../hooks/use-player-sheet";
-import usePlayersStore from "../../hooks/use-players-store";
+import { usePlayersActions } from "../../hooks/use-players-store";
 
 type PlayersTableActionDropdownMenuProps = {
   playerId: Player["id"];
@@ -19,28 +19,14 @@ type PlayersTableActionDropdownMenuProps = {
 };
 
 export const PlayersTableActionDropdownMenu = ({ playerId, openPlayerSheet }: PlayersTableActionDropdownMenuProps) => {
-  const handleClearAvailability = () => {
-    const { players, setPlayers } = usePlayersStore.getState();
+  const { clearPlayerAvailabilities, deletePlayer } = usePlayersActions();
 
-    const updatedPlayers = [...players].map((player) => {
-      if (player.id === playerId) {
-        return {
-          ...player,
-          availabilities: [],
-        };
-      }
-
-      return player;
-    });
-
-    setPlayers(updatedPlayers);
+  const handleClearPlayerAvailabilities = () => {
+    clearPlayerAvailabilities(playerId);
   };
 
   const handleDeletePlayer = () => {
-    const { players, setPlayers } = usePlayersStore.getState();
-
-    const updatedPlayers = [...players].filter((player) => player.id !== playerId);
-    setPlayers(updatedPlayers);
+    deletePlayer(playerId);
   };
 
   const handleOpenPlayerSheet = () => {
@@ -60,7 +46,7 @@ export const PlayersTableActionDropdownMenu = ({ playerId, openPlayerSheet }: Pl
           Edit Player
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleClearAvailability} variant="destructive">
+        <DropdownMenuItem onClick={handleClearPlayerAvailabilities} variant="destructive">
           <CalendarOff />
           Clear Availabilities
         </DropdownMenuItem>

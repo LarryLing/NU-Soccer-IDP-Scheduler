@@ -1,51 +1,8 @@
-import { DAYS } from "@/constants/days";
-import type { Day } from "@/constants/days";
-import usePlayersStore from "@/features/players/hooks/use-players-store";
 import type { Availability } from "@/schemas/availability.schema";
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
 
-import useScheduleStore from "../hooks/use-schedule-store";
-
-import { calculateCombinedScore } from "./math";
-
-export const generateTrainingBlocks = (availabilities: Availability[], trainingBlockDuration: number) => {
-  const trainingBlocks: TrainingBlock[] = [];
-  for (const day of DAYS) {
-    const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
-
-    for (let i = 0; i < dayAvailabilities.length; i++) {
-      let currentInt = dayAvailabilities[i]?.start ?? 0;
-      const endInt = dayAvailabilities[i]?.end ?? 0;
-
-      while (currentInt < endInt) {
-        const createdTrainingBlock: TrainingBlock = {
-          id: crypto.randomUUID(),
-          day: day as Day,
-          start: currentInt,
-          end: currentInt + trainingBlockDuration,
-          assignedPlayerCount: 0,
-        };
-
-        trainingBlocks.push(createdTrainingBlock);
-
-        currentInt += trainingBlockDuration;
-      }
-    }
-  }
-
-  return trainingBlocks;
-};
-
-export const isPlayerAvailableForTrainingBlock = (playerId: Player["id"], trainingBlockId: TrainingBlock["id"]) => {
-  const players = usePlayersStore.getState().players;
-  const trainingBlocks = useScheduleStore.getState().trainingBlocks;
-
-  const player = players.find((player) => player.id === playerId);
-  const trainingBlock = trainingBlocks.find((trainingBlock) => trainingBlock.id === trainingBlockId);
-
-  if (!player || !trainingBlock) return false;
-
+export const isPlayerAvailableForTrainingBlock = (player: Player, trainingBlock: TrainingBlock) => {
   return (player.availabilities as Availability[]).some((availability) => {
     return (
       availability.day === trainingBlock.day &&
@@ -55,83 +12,70 @@ export const isPlayerAvailableForTrainingBlock = (playerId: Player["id"], traini
   });
 };
 
-const getTrainingBlockIdsForPlayer = (player: Player, trainingBlocks: TrainingBlock[]) => {
+export const getTrainingBlockIdsForPlayer = (player: Player, trainingBlocks: TrainingBlock[]) => {
   return trainingBlocks
-    .filter((trainingBlock) => isPlayerAvailableForTrainingBlock(player.id, trainingBlock.id))
+    .filter((trainingBlock) => isPlayerAvailableForTrainingBlock(player, trainingBlock))
     .map((trainingBlock) => trainingBlock.id);
 };
 
-export const assignPlayersToTrainingBlocks = () => {
-  const { players } = usePlayersStore.getState();
-  const { trainingBlocks, scheduleSettings } = useScheduleStore.getState();
-  const { maximumPlayerCount } = scheduleSettings;
+export const calculateTrainingBlockHeuristic = (playerCount: number, targetPlayerCount: number) => {
+  const k = 1;
+  const x = playerCount;
+  const t = targetPlayerCount;
 
-  const assignedPlayerCounts: Record<TrainingBlock["id"], TrainingBlock["assignedPlayerCount"]> = {};
-  trainingBlocks.forEach((trainingBlock) => {
-    assignedPlayerCounts[trainingBlock.id] = 0;
+  if (0 <= x && x <= t) {
+    return k * (x / t) ** 2;
+  } else {
+    return k * (1 / (x * t)) ** (x - t);
+  }
+};
+
+export const calculateStateHeuristic = (
+  assignments: Record<Player["id"], Player["trainingBlockId"]>,
+  targetPlayerCount: number
+) => {
+  const assignedTrainingBlockCounts: Record<TrainingBlock["id"], number> = {};
+
+  Object.values(assignments).forEach((trainingBlockId) => {
+    if (!trainingBlockId) return;
+
+    if (trainingBlockId in assignedTrainingBlockCounts) {
+      assignedTrainingBlockCounts[trainingBlockId]! += 1;
+    } else {
+      assignedTrainingBlockCounts[trainingBlockId] = 1;
+    }
   });
 
-  const availableTrainingBlockIdsMap: Record<Player["id"], TrainingBlock["id"][]> = {};
-  players.forEach((player) => {
-    availableTrainingBlockIdsMap[player.id] = getTrainingBlockIdsForPlayer(player, trainingBlocks);
-  });
+  let stateHeuristic = 0;
+  Object.values(assignedTrainingBlockCounts).forEach(
+    (playerCount) => (stateHeuristic += calculateTrainingBlockHeuristic(playerCount, targetPlayerCount))
+  );
+  return stateHeuristic;
+};
 
-  const updatedPlayers = [...players]
-    .sort((a, b) => {
-      const aBlocks = availableTrainingBlockIdsMap[a.id]?.length || 0;
-      const bBlocks = availableTrainingBlockIdsMap[b.id]?.length || 0;
-      return aBlocks - bBlocks;
-    })
-    .map((player) => {
-      const availableBlockIds = availableTrainingBlockIdsMap[player.id] || [];
-      if (availableBlockIds.length === 0) {
-        return {
-          ...player,
-          trainingBlockId: null,
-        };
-      }
+export const selectTrainingBlockId = (
+  selectedPlayerId: Player["id"],
+  assignments: Record<Player["id"], Player["trainingBlockId"]>,
+  trainingBlocksForPlayer: Set<TrainingBlock["id"]>,
+  targetPlayerCount: number
+) => {
+  let maxStateHeuristic = Number.NEGATIVE_INFINITY;
+  const candidateTrainingBlockIds = [];
 
-      let bestBlockIds: TrainingBlock["id"][] = [];
-      let bestScore = -Infinity;
+  for (const trainingBlockId of trainingBlocksForPlayer) {
+    const tempAssignments: Record<Player["id"], Player["trainingBlockId"]> = { ...assignments };
+    tempAssignments[selectedPlayerId] = trainingBlockId;
 
-      for (const blockId of availableBlockIds) {
-        const tempCounts = { ...assignedPlayerCounts };
-        tempCounts[blockId]!++;
+    const stateHeuristic = calculateStateHeuristic(tempAssignments, targetPlayerCount);
+    if (stateHeuristic > maxStateHeuristic) {
+      maxStateHeuristic = stateHeuristic;
+      candidateTrainingBlockIds.length = 0;
+      candidateTrainingBlockIds.push(trainingBlockId);
+    } else if (stateHeuristic === maxStateHeuristic) {
+      candidateTrainingBlockIds.push(trainingBlockId);
+    }
+  }
 
-        const score = calculateCombinedScore(tempCounts, maximumPlayerCount);
-
-        if (bestScore < score) {
-          bestScore = score;
-          bestBlockIds = [blockId];
-        } else if (bestScore === score) {
-          bestBlockIds.push(blockId);
-        }
-      }
-
-      if (bestBlockIds.length > 0) {
-        const randomBlockIndex = Math.floor(Math.random() * bestBlockIds.length);
-
-        const bestBlockId = bestBlockIds[randomBlockIndex];
-        if (!bestBlockId) {
-          return {
-            ...player,
-            trainingBlockId: null,
-          };
-        }
-
-        assignedPlayerCounts[bestBlockId]!++;
-
-        return {
-          ...player,
-          trainingBlockId: bestBlockId,
-        };
-      }
-
-      return {
-        ...player,
-        trainingBlockId: null,
-      };
-    });
-
-  return { updatedPlayers, assignedPlayerCounts };
+  const randomIndex = Math.floor(Math.random() * candidateTrainingBlockIds.length);
+  return candidateTrainingBlockIds[randomIndex] || null;
 };

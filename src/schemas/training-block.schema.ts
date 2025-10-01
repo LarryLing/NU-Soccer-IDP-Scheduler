@@ -23,12 +23,6 @@ export const TrainingBlockSchema = z.object({
     .max(1439, {
       message: "End time must be less than or equal to 1439",
     }),
-  assignedPlayerCount: z
-    .number({ message: "Missing or invalid assigned player count" })
-    .min(0, {
-      message: "Assigned player count must be greater than or equal to 0",
-    })
-    .default(0),
 });
 
 export type TrainingBlock = z.infer<typeof TrainingBlockSchema>;

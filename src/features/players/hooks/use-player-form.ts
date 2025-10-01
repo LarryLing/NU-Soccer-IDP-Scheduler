@@ -13,7 +13,7 @@ import { GOALKEEPER } from "@/features/players/constants/positions";
 import {
   findOverlapInAvailabilities,
   transformIntoAvailabilityArray,
-  transformIntoAvailabilityFormArray,
+  transformIntoAvailabilityFieldArray,
 } from "@/lib/availability";
 import { calculateMinutesFromTimeString, getTimeStringWithMeridian, getTimeStringWithoutMeridian } from "@/lib/time";
 import type { Player } from "@/schemas/player.schema";
@@ -21,7 +21,7 @@ import type { Player } from "@/schemas/player.schema";
 import { type PlayerForm, PlayerFormSchema } from "../schemas/player-form.schema";
 
 import type { UsePlayerSheetReturn } from "./use-player-sheet";
-import usePlayersStore from "./use-players-store";
+import { usePlayersActions } from "./use-players-store";
 
 export type UsePlayerFormReturn = {
   form: UseFormReturn<PlayerForm>;
@@ -32,8 +32,10 @@ export type UsePlayerFormReturn = {
 
 export const usePlayerForm = (
   closePlayerSheet: UsePlayerSheetReturn["closePlayerSheet"],
-  player?: Player
+  player: Player | null
 ): UsePlayerFormReturn => {
+  const { createPlayer, updatePlayer } = usePlayersActions();
+
   const form = useForm<PlayerForm>({
     resolver: zodResolver(PlayerFormSchema),
     mode: "onSubmit",
@@ -42,7 +44,7 @@ export const usePlayerForm = (
       name: player?.name ?? "",
       number: player?.number ?? 0,
       position: player?.position ?? GOALKEEPER,
-      availabilities: transformIntoAvailabilityFormArray(player?.availabilities ?? []),
+      availabilities: transformIntoAvailabilityFieldArray(player?.availabilities ?? []),
     },
   });
 
@@ -96,39 +98,20 @@ export const usePlayerForm = (
       return;
     }
 
-    const { players, setPlayers } = usePlayersStore.getState();
-
-    let updatedPlayers = [...players];
     if (player) {
-      updatedPlayers = [...players].map((updatedPlayer) => {
-        if (updatedPlayer.id === player.id) {
-          return {
-            id: player.id,
-            trainingBlockId: player.trainingBlockId,
-            name: data.name,
-            number: data.number,
-            position: data.position,
-            availabilities: transformedAvailabilities,
-          };
-        }
-
-        return updatedPlayer;
+      updatePlayer({
+        ...player,
+        ...data,
+        availabilities: transformedAvailabilities,
       });
     } else {
-      updatedPlayers = [
-        ...players,
-        {
-          id: crypto.randomUUID(),
-          trainingBlockId: null,
-          name: data.name,
-          number: data.number,
-          position: data.position,
-          availabilities: transformedAvailabilities,
-        },
-      ];
+      createPlayer({
+        ...data,
+        id: crypto.randomUUID(),
+        trainingBlockId: null,
+        availabilities: transformedAvailabilities,
+      });
     }
-
-    setPlayers(updatedPlayers);
 
     toast.success("Successfully saved player");
 

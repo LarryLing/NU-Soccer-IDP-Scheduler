@@ -11,14 +11,15 @@ export const ScheduleSettingsSchema = z.object({
     .max(60, {
       message: "Duration must be less than or equal to 60 minutes",
     }),
-  maximumPlayerCount: z.coerce
+  targetPlayerCount: z.coerce
     .number({ message: "Maximum number of players is required" })
     .min(1, {
       message: "Maximum number of players must be greater than or equal to 1",
     })
-    .max(4, {
-      message: "Maximum number of players must be less than or equal to 4",
-    }),
+    .max(5, {
+      message: "Maximum number of players must be less than or equal to 5",
+    })
+    .default(4),
   availabilities: z.array(AvailabilitySchema),
 });
 
