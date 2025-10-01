@@ -6,7 +6,7 @@ import type { TrainingBlock } from "@/schemas/training-block.schema";
 
 import { getTrainingBlockIdsForPlayer, selectTrainingBlockId } from "../lib/schedule";
 import type { ScheduleSettings } from "../schemas/schedule-settings.schema";
-import { MaxHeap } from "../lib/maxheap";
+import { Heap } from "../lib/heap";
 
 export type ScheduleStoreActions = {
   getTrainingBlockById: (trainingBlockId: TrainingBlock["id"]) => TrainingBlock | null;
@@ -46,7 +46,7 @@ const useScheduleStore = create<UseScheduleStoreReturn>()(
           const { targetPlayerCount } = scheduleSettings;
 
           const assignments: Record<Player["id"], Player["trainingBlockId"]> = {};
-          const trainingBlocksForPlayers = new MaxHeap<HeapType>((a: HeapType, b: HeapType) => {
+          const trainingBlocksForPlayers = new Heap<HeapType>((a: HeapType, b: HeapType) => {
             return b.trainingBlocksForPlayer.size - a.trainingBlocksForPlayer.size;
           });
 
@@ -60,6 +60,8 @@ const useScheduleStore = create<UseScheduleStoreReturn>()(
 
           while (trainingBlocksForPlayers.peek()) {
             const { playerId: selectedPlayerId, trainingBlocksForPlayer } = trainingBlocksForPlayers.remove()!;
+
+            console.log(trainingBlocksForPlayer.size);
 
             const selectedTrainingBlockId = selectTrainingBlockId(
               selectedPlayerId,

@@ -1,4 +1,4 @@
-export class MaxHeap<T> {
+export class Heap<T> {
   private heap: T[] = [];
   private comparator: (a: T, b: T) => number;
 
