@@ -1,19 +1,22 @@
-import type { Control, UseFieldArrayRemove } from "react-hook-form";
+import type { Control, UseFieldArrayRemove, FieldValues, Path } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { PlayerForm } from "@/features/players/schemas/player-form.schema";
-import type { ScheduleSettingsForm } from "@/features/schedule/schemas/schedule-settings-form.schema";
 
-type AvailabilityFieldProps = {
+type AvailabilityFieldProps<T extends FieldValues> = {
   originalIndex: number;
   remove: UseFieldArrayRemove;
-  control: Control<PlayerForm> | Control<ScheduleSettingsForm>;
+  control: Control<T>;
   disabled: boolean;
 };
 
-const AvailabilityField = ({ originalIndex, remove, control, disabled }: AvailabilityFieldProps) => {
+const AvailabilityField = <T extends FieldValues>({
+  originalIndex,
+  remove,
+  control,
+  disabled,
+}: AvailabilityFieldProps<T>) => {
   const handleRemove = () => {
     remove(originalIndex);
   };
@@ -22,7 +25,7 @@ const AvailabilityField = ({ originalIndex, remove, control, disabled }: Availab
     <div className="flex items-center gap-2">
       <FormField
         control={control}
-        name={`availabilities.${originalIndex}.start` as const}
+        name={`availabilities.${originalIndex}.start` as Path<T>}
         render={({ field }) => (
           <FormItem>
             <FormControl>
@@ -35,7 +38,7 @@ const AvailabilityField = ({ originalIndex, remove, control, disabled }: Availab
       <span className="text-sm">-</span>
       <FormField
         control={control}
-        name={`availabilities.${originalIndex}.end` as const}
+        name={`availabilities.${originalIndex}.end` as Path<T>}
         render={({ field }) => (
           <FormItem>
             <FormControl>

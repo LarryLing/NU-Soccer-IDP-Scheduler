@@ -1,5 +1,5 @@
 import { PlusIcon } from "lucide-react";
-import type { Control, FieldArrayWithId, UseFieldArrayRemove } from "react-hook-form";
+import type { Control, FieldArrayWithId, FieldValues, UseFieldArrayRemove } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -10,25 +10,25 @@ import type { ScheduleSettingsForm } from "@/features/schedule/schemas/schedule-
 
 import AvailabilityField from "./availability-field";
 
-type AvailabilityFieldArrayProps = {
+type AvailabilityFieldArrayProps<T extends FieldValues> = {
   day: Day;
   dayFields: (FieldArrayWithId<PlayerForm | ScheduleSettingsForm, "availabilities", "id"> & {
     originalIndex: number;
   })[];
   addAvailability: UsePlayerFormReturn["addAvailability"] | UsePlayerFormReturn["addAvailability"];
   remove: UseFieldArrayRemove;
-  control: Control<PlayerForm> | Control<ScheduleSettingsForm>;
+  control: Control<T>;
   disabled: boolean;
 };
 
-const AvailabilityFieldArray = ({
+const AvailabilityFieldArray = <T extends FieldValues>({
   day,
   dayFields,
   addAvailability,
   remove,
   control,
   disabled,
-}: AvailabilityFieldArrayProps) => {
+}: AvailabilityFieldArrayProps<T>) => {
   const handleAddAvailability = () => {
     addAvailability(day);
   };
