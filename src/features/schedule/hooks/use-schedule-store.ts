@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 import type { Player } from "@/schemas/player.schema";
 import type { TrainingBlock } from "@/schemas/training-block.schema";
+import { DAYS, type Day } from "@/constants/days";
 
 import { getTrainingBlockIdsForPlayer, selectTrainingBlockId } from "../lib/schedule";
 import type { ScheduleSettings } from "../schemas/schedule-settings.schema";
@@ -39,7 +40,32 @@ const useScheduleStore = create<UseScheduleStoreReturn>()(
           return get().trainingBlocks.find((trainingBlock) => trainingBlock.id === trainingBlockId) || null;
         },
         saveScheduleSettings: (scheduleSettings) => {
-          set(() => ({ scheduleSettings }));
+          const { availabilities, duration } = scheduleSettings;
+
+          const createdTrainingBlocks: TrainingBlock[] = [];
+            for (const day of DAYS) {
+            const dayAvailabilities = availabilities.filter((availability) => availability.day === day);
+          
+            for (let i = 0; i < dayAvailabilities.length; i++) {
+              let currentTime = dayAvailabilities[i]?.start ?? 0;
+              const endTime = dayAvailabilities[i]?.end ?? 0;
+        
+              while (currentTime < endTime) {
+                const createdTrainingBlock: TrainingBlock = {
+                  id: crypto.randomUUID(),
+                  day: day as Day,
+                  start: currentTime,
+                  end: currentTime + duration,
+                };
+        
+                createdTrainingBlocks.push(createdTrainingBlock);
+        
+                currentTime += duration;
+              }
+            }
+          }
+
+          set(() => ({ scheduleSettings, trainingBlocks: createdTrainingBlocks }));
         },
         createSchedule: (players) => {
           const { trainingBlocks, scheduleSettings } = get();
@@ -60,8 +86,6 @@ const useScheduleStore = create<UseScheduleStoreReturn>()(
 
           while (trainingBlocksForPlayers.peek()) {
             const { playerId: selectedPlayerId, trainingBlocksForPlayer } = trainingBlocksForPlayers.remove()!;
-
-            console.log(trainingBlocksForPlayer.size);
 
             const selectedTrainingBlockId = selectTrainingBlockId(
               selectedPlayerId,
